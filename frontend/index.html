@@ -9,12 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
-/* ═══════════════════════════════════════════════════════════════
-   DESIGN TOKENS  — Scribe Library Management System
-   UX Laws applied: Aesthetic-Usability, Von Restorff, Serial Position,
-   Similarity, Common Region, Uniform Connectedness, Chunking
-═══════════════════════════════════════════════════════════════ */
+
 :root {
   /* Palette — warm ink-on-paper with a single assertive blue accent */
   --ink:        #1C1810;        /* primary text */
@@ -662,7 +659,7 @@ h1, h2, h3, h4 {
   background: transparent;
   color: var(--accent);
   border-radius: var(--r-sm);
-  font-size: 12px;
+  font-size: var(--text-xs);
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
@@ -854,16 +851,26 @@ h1, h2, h3, h4 {
   line-height: 1.9;
   color: var(--ink-mid);
   max-width: 68ch;
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
 }
 
 .reader-full-text {
-  white-space: pre-wrap;
   font-family: 'Lora', serif;
   font-size: 16px;
   line-height: 1.9;
   color: var(--ink-mid);
   max-width: 68ch;
 }
+
+.reader-full-text p {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}
+
+.reader-full-text p + p { margin-top: var(--sp-5); }
 
 /* ── Cart Sidebar ───────────────────────────────────────────── */
 .overlay {
@@ -984,7 +991,7 @@ h1, h2, h3, h4 {
 
 .btn-checkout {
   width: 100%;
-  padding: 13px;
+  padding: 12px;
   background: var(--accent);
   color: #fff;
   border: none;
@@ -993,11 +1000,13 @@ h1, h2, h3, h4 {
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  transition: background var(--dur-fast);
+  transition: background var(--dur-fast), transform var(--dur-fast);
+  letter-spacing: .1px;
 }
 
 .btn-checkout:hover { background: var(--accent-h); }
-.btn-checkout:disabled { opacity: .5; cursor: not-allowed; }
+.btn-checkout:active { transform: scale(.99); }
+.btn-checkout:disabled { opacity: .55; cursor: not-allowed; transform: none; }
 
 /* ── Modals ─────────────────────────────────────────────────── */
 .modal-overlay {
@@ -1009,6 +1018,7 @@ h1, h2, h3, h4 {
   align-items: center;
   justify-content: center;
   padding: var(--sp-5);
+  overflow-y: auto;
   backdrop-filter: blur(3px);
 }
 
@@ -1019,8 +1029,12 @@ h1, h2, h3, h4 {
   border-radius: var(--r-lg);
   width: 100%;
   max-width: 500px;
+  max-height: min(86vh, calc(100vh - 40px));
   box-shadow: var(--shadow-lg);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
 }
 
 .modal-header {
@@ -1030,10 +1044,11 @@ h1, h2, h3, h4 {
   align-items: center;
   justify-content: space-between;
   background: var(--surface-2);
+  flex-shrink: 0;
 }
 
 .modal-header h3 { font-size: var(--text-md); }
-.modal-body { padding: var(--sp-6); }
+.modal-body { padding: var(--sp-6); overflow-y: auto; flex: 1 1 auto; min-height: 0; }
 
 .modal-footer {
   padding: var(--sp-4) var(--sp-6);
@@ -1041,6 +1056,7 @@ h1, h2, h3, h4 {
   display: flex;
   gap: var(--sp-3);
   justify-content: flex-end;
+  flex-shrink: 0;
 }
 
 .btn-secondary {
@@ -1073,6 +1089,8 @@ h1, h2, h3, h4 {
 
 .btn-confirm:hover { background: var(--accent-h); }
 .btn-confirm:disabled { opacity: .5; cursor: not-allowed; }
+.btn-confirm.in-cart { background: var(--success-bg); color: var(--success); border: 1px solid var(--success); }
+.btn-confirm.in-cart:hover { background: var(--success-bg); filter: brightness(0.97); }
 
 /* ── Summary Cards (Dashboard) ──────────────────────────────── */
 /* Chunking: 4 related stats as one visual group */
@@ -1195,8 +1213,11 @@ h1, h2, h3, h4 {
 .status-pending   { background: var(--warning-bg); color: var(--warning); }
 .status-paid      { background: var(--success-bg); color: var(--success); }
 .status-suspended { background: var(--danger-bg);  color: var(--danger); }
+.status-inactive  { background: var(--surface-2);  color: var(--ink-light); }
 .status-available { background: var(--success-bg); color: var(--success); }
 .status-checked-out { background: var(--warning-bg); color: var(--warning); }
+.status-approved  { background: var(--success-bg); color: var(--success); }
+.status-rejected  { background: var(--danger-bg);  color: var(--danger); }
 
 /* ── Borrowed Books ─────────────────────────────────────────── */
 /* Zeigarnik: due-date progress visible to motivate returns */
@@ -1321,6 +1342,70 @@ h1, h2, h3, h4 {
 .btn-sm.primary:hover { background: var(--accent-h); }
 .btn-sm.ghost { background: var(--surface-2); color: var(--ink-mid); border: 1px solid var(--border); }
 .btn-sm.ghost:hover { background: var(--border); color: var(--ink); }
+
+/* ── Circulation Desk: action selector ─────────────────────── */
+.circ-action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-5);
+}
+
+.circ-action-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--sp-6);
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  display: block;
+  width: 100%;
+  transition: box-shadow var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.circ-action-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-deep);
+  transform: translateY(-2px);
+}
+
+.circ-action-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  background: var(--accent-pale);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-bottom: var(--sp-4);
+}
+
+.circ-action-card h3 { font-size: var(--text-md); margin-bottom: 4px; }
+.circ-action-card p { font-size: var(--text-sm); color: var(--ink-light); }
+
+.circ-back-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: var(--sp-5);
+  padding: 4px 0;
+}
+
+.circ-back-btn:hover { text-decoration: underline; }
+
+@media (max-width: 768px) {
+  .circ-action-grid { grid-template-columns: 1fr; }
+}
 
 /* ── Portal badge ───────────────────────────────────────────── */
 .portal-badge {
@@ -1489,7 +1574,6 @@ h1, h2, h3, h4 {
   .reader-content { padding: var(--sp-5) var(--sp-4); }
   .data-table th, .data-table td { padding: 9px var(--sp-3); font-size: var(--text-xs); }
   .user-name { display: none; }
-  #circ-panels { grid-template-columns: 1fr !important; }
 }
 
 @media (max-width: 480px) {
@@ -1771,7 +1855,7 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
         <input type="password" id="reg-password" placeholder="Min 8 characters" />
       </div>
       <div class="form-group">
-        <label>Phone <span style="color:var(--text-light);font-weight:400">(optional)</span></label>
+        <label>Phone <span style="color:var(--ink-light);font-weight:400">(optional)</span></label>
         <input type="tel" id="reg-phone" placeholder="+91 98765 43210" />
       </div>
       <button class="btn-primary" onclick="doRegister()" id="register-btn">Create Account</button>
@@ -1825,7 +1909,7 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
           <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
           <input type="text" id="catalog-search" placeholder="Search by title or author…" onkeydown="if(event.key==='Enter')searchBooks()" />
         </div>
-        <select class="filter-select" id="catalog-category">
+        <select class="filter-select" id="catalog-category" onchange="searchBooks()">
           <option value="">All Categories</option>
           <option value="Fiction">Fiction</option>
           <option value="Non-fiction">Non-fiction</option>
@@ -2003,13 +2087,14 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
         <p>All registered library members</p>
       </div>
       <div class="admin-controls">
+        <button class="btn-sm primary" onclick="openAddMemberModal()">+ Add Member</button>
         <select class="filter-select" id="member-status-filter" onchange="loadAdminMembers()">
           <option value="">All Members</option>
           <option value="Active">Active</option>
           <option value="Suspended">Suspended</option>
           <option value="Inactive">Inactive</option>
         </select>
-        <button class="btn-sm primary" onclick="loadAdminMembers()">Refresh</button>
+        <button class="btn-sm ghost" onclick="loadAdminMembers()">Refresh</button>
       </div>
       <div id="admin-members-wrap">
         <div class="loading"><div class="spinner"></div>Loading…</div>
@@ -2045,41 +2130,125 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
         <h2>Circulation Desk</h2>
         <p>Check out and return books for members</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" id="circ-panels">
-        <!-- Checkout Panel -->
-        <div class="table-card">
-          <div class="table-card-header"><h3><i class="fa-solid fa-arrow-up-from-bracket"></i> Checkout Book</h3></div>
-          <div style="padding:20px">
-            <div class="form-group">
-              <label>Search Member</label>
-              <input type="text" id="circ-member-search" placeholder="Name, email, or member code" oninput="debounceSearchMember()" />
-            </div>
-            <div id="circ-member-results" style="margin-bottom:12px;max-height:160px;overflow-y:auto;"></div>
-            <div id="circ-selected-member" style="display:none;margin-bottom:14px;" class="success-msg"></div>
 
-            <div class="form-group">
-              <label>Book Barcode</label>
-              <input type="text" id="circ-barcode" placeholder="Scan or enter barcode" oninput="debounceSearchBarcode()" />
-            </div>
-            <div id="circ-book-result" style="margin-bottom:14px;"></div>
+      <!-- Action selector -->
+      <div class="circ-action-grid" id="circ-action-selector">
+        <button class="circ-action-card" onclick="selectCircAction('checkout')">
+          <div class="circ-action-icon"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
+          <h3>Checkout Book</h3>
+          <p>Issue a book to a member</p>
+        </button>
+        <button class="circ-action-card" onclick="selectCircAction('return')">
+          <div class="circ-action-icon"><i class="fa-solid fa-inbox"></i></div>
+          <h3>Return Book</h3>
+          <p>Process a book being returned</p>
+        </button>
+        <button class="circ-action-card" onclick="selectCircAction('fine')">
+          <div class="circ-action-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+          <h3>Create Fine</h3>
+          <p>Charge a member for damage, loss, or an overdue book</p>
+        </button>
+      </div>
 
-            <button class="btn-primary" onclick="doCheckout()" id="checkout-btn" disabled>Checkout</button>
+    </div>
+  </div>
+</div>
+
+<!-- Circulation Desk: action popup -->
+<div class="modal-overlay" id="circ-workspace">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <h3 id="circ-modal-title"><i class="fa-solid fa-arrow-up-from-bracket"></i> Checkout Book</h3>
+      <button class="btn-close" onclick="closeCircModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Checkout Panel -->
+      <div id="circ-panel-checkout" style="display:none">
+        <div class="form-group">
+          <label>Search Member</label>
+          <input type="text" id="circ-member-search" placeholder="Name, email, or member code" oninput="debounceSearchMember()" />
+        </div>
+        <div id="circ-member-results" style="margin-bottom:12px;max-height:160px;overflow-y:auto;"></div>
+        <div id="circ-selected-member" style="display:none;margin-bottom:14px;" class="success-msg"></div>
+
+        <div class="form-group">
+          <label>Book Barcode</label>
+          <input type="text" id="circ-barcode" placeholder="Scan or enter barcode" oninput="debounceSearchBarcode()" />
+        </div>
+        <div id="circ-book-result" style="margin-bottom:14px;"></div>
+
+        <button class="btn-primary" onclick="doCheckout()" id="checkout-btn" disabled>Checkout</button>
+      </div>
+
+      <!-- Return Panel -->
+      <div id="circ-panel-return" style="display:none">
+        <div class="form-group">
+          <label>Book Barcode</label>
+          <input type="text" id="return-barcode" placeholder="Scan or enter barcode" oninput="debounceReturnBarcode()" />
+        </div>
+        <div id="return-book-result" style="margin-bottom:14px;"></div>
+        <button class="btn-primary" onclick="doReturn()" id="return-btn" disabled>Process Return</button>
+      </div>
+
+      <!-- Create Fine Panel -->
+      <div id="circ-panel-fine" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:flex-end">
+          <div class="form-group" style="margin-bottom:0">
+            <label>Search Member</label>
+            <input
+              type="text"
+              id="fine-member-search"
+              placeholder="Name, email or member code"
+              onkeydown="if(event.key==='Enter') searchFineMembers()"
+            />
           </div>
+          <button class="btn-primary" onclick="searchFineMembers()">Search</button>
         </div>
 
-        <!-- Return Panel -->
-        <div class="table-card">
-          <div class="table-card-header"><h3><i class="fa-solid fa-inbox"></i> Return Book</h3></div>
-          <div style="padding:20px">
-            <div class="form-group">
-              <label>Book Barcode</label>
-              <input type="text" id="return-barcode" placeholder="Scan or enter barcode" oninput="debounceReturnBarcode()" />
-            </div>
-            <div id="return-book-result" style="margin-bottom:14px;"></div>
-            <button class="btn-primary" onclick="doReturn()" id="return-btn" disabled>Process Return</button>
+        <!-- Member results -->
+        <div id="fine-member-results" style="margin-top:12px;max-height:160px;overflow-y:auto;"></div>
+
+        <!-- Selected member + transactions -->
+        <div id="fine-txn-section" style="display:none;margin-top:16px;">
+          <div id="fine-selected-member-info" class="success-msg" style="margin-bottom:12px;"></div>
+
+          <div class="form-group">
+            <label>Select Transaction</label>
+            <select id="fine-txn-select" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--surface)">
+              <option value="">-- Select a transaction --</option>
+            </select>
           </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="form-group">
+              <label>Reason</label>
+              <select id="fine-reason" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--surface)">
+                <option value="Damage">Damage</option>
+                <option value="Lost">Lost</option>
+                <option value="Overdue">Overdue</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Amount (₹)</label>
+              <input
+                type="number"
+                id="fine-amount"
+                placeholder="e.g. 50"
+                min="1"
+                style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px"
+              />
+            </div>
+          </div>
+
+          <div id="fine-create-error" style="display:none;color:var(--danger);font-size:13px;margin-bottom:10px;"></div>
+
+          <button class="btn-primary" onclick="submitCreateFine()" id="create-fine-btn">
+            Create Fine
+          </button>
         </div>
       </div>
+
     </div>
   </div>
 </div>
@@ -2161,6 +2330,55 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
   </div>
 </div>
 
+<!-- ─── Member Detail Modal ──────────────────────────────────── -->
+<div class="modal-overlay" id="member-detail-modal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <h3>Member Details</h3>
+      <button class="btn-close" onclick="closeMemberDetailModal()">✕</button>
+    </div>
+    <div class="modal-body" id="member-detail-body">
+      <div class="loading"><div class="spinner"></div>Loading…</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeMemberDetailModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Add Member Modal ─────────────────────────────────────── -->
+<div class="modal-overlay" id="add-member-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add New Member</h3>
+      <button class="btn-close" onclick="closeAddMemberModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="add-member-error" class="error-msg" style="display:none"></div>
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" id="am-name" placeholder="Member's full name" />
+      </div>
+      <div class="form-group">
+        <label>Email *</label>
+        <input type="email" id="am-email" placeholder="you@example.com" />
+      </div>
+      <div class="form-group">
+        <label>Password *</label>
+        <input type="password" id="am-password" placeholder="Min 8 characters" />
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" id="am-phone" placeholder="+91 98765 43210 (optional)" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeAddMemberModal()">Cancel</button>
+      <button class="btn-confirm" onclick="submitAddMember()" id="add-member-btn">Add Member</button>
+    </div>
+  </div>
+</div>
+
 <!-- ─── Ebook Preview Modal ──────────────────────────────────── -->
 <div class="modal-overlay" id="ebook-preview-modal">
   <div class="modal">
@@ -2169,6 +2387,17 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
       <button class="btn-close" onclick="closePreviewModal()">✕</button>
     </div>
     <div class="modal-body" id="ebook-preview-body"></div>
+  </div>
+</div>
+
+<!-- ─── Book Preview Modal ───────────────────────────────────── -->
+<div class="modal-overlay" id="book-preview-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="book-preview-title">Book Preview</h3>
+      <button class="btn-close" onclick="closeBookPreviewModal()">✕</button>
+    </div>
+    <div class="modal-body" id="book-preview-body"></div>
   </div>
 </div>
 
@@ -2189,6 +2418,7 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
   let selectedCopy   = null;
   let returnCopyId   = null;
   let ebookCatalog    = [];
+  let catalogBooks    = [];
   let activeReaderBookId = null;
   let purchasingEbookId = null;
   let memberSearchDebounce, barcodeSearchDebounce, returnBarcodeDebounce;
@@ -2386,11 +2616,11 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     if (userRole === 'member') {
       document.getElementById('cart-btn').style.display = '';
       const pages = [
-        { id: 'catalog',  label: 'Catalog' },
-        { id: 'borrowed', label: 'Borrowed' },
-        { id: 'purchased', label: 'Purchased' },
-        { id: 'fines',    label: 'Fines' },
-        { id: 'history',  label: 'History' },
+        { id: 'catalog',  label: '<i class="fa-solid fa-book-open"></i> Catalog' },
+        { id: 'borrowed', label: '<i class="fa-solid fa-arrow-up-from-bracket"></i> Borrowed' },
+        { id: 'purchased', label: '<i class="fa-solid fa-tablet-screen-button"></i> Purchased' },
+        { id: 'fines',    label: '<i class="fa-solid fa-file-invoice-dollar"></i> Fines' },
+        { id: 'history',  label: '<i class="fa-regular fa-clock"></i> History' },
       ];
       pages.forEach(p => {
         const btn = document.createElement('button');
@@ -2442,7 +2672,7 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     else if (id === 'admin-transactions')  loadAdminTransactions();
     else if (id === 'admin-members')       loadAdminMembers();
     else if (id === 'admin-books')         loadAdminBooks();
-    else if (id === 'admin-circulation')   initCirculation();
+    else if (id === 'admin-circulation')   showCircSelector();
   }
 
   // ── Member: Catalog ───────────────────────────────────────
@@ -2473,6 +2703,7 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
       return;
     }
 
+    catalogBooks = books;
     wrap.innerHTML = `<div class="books-grid">${books.map(renderBookCard).join('')}</div>`;
   }
 
@@ -2511,13 +2742,10 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
   }
 
   async function purchaseCatalogEbook(bookId) {
-    const r = await api('POST', `/ebooks/purchase/${bookId}`);
-    if (!r.ok) {
-      toast(r.data.error || 'Could not purchase ebook.', 'error');
-      return;
-    }
-    toast(`Purchased "${r.data.data.title}".`, 'success');
-    searchBooks();
+    const book = catalogBooks.find(b => b.id === bookId);
+    const title = book ? book.title : 'this ebook';
+    const price = book ? book.price : 0;
+    await payForEbook(bookId, title, price, () => searchBooks());
   }
 
   function toggleCart(book) {
@@ -2647,7 +2875,7 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     if (!borrowed_books.length) {
       html += '<div class="empty-state"><div class="empty-icon"><i class="fa-regular fa-envelope-open"></i></div><h3>No books borrowed</h3><p>Browse the catalog to find your next read.</p></div>';
     } else {
-      html += `<h3 style="font-family:\'Lora\',serif;font-size:18px;margin-bottom:16px;color:var(--text-dark)">Currently Borrowed</h3><div class="borrowed-grid">`;
+      html += `<h3 style="font-family:\'Lora\',serif;font-size:var(--text-lg);margin-bottom:16px;color:var(--ink)">Currently Borrowed</h3><div class="borrowed-grid">`;
       html += borrowed_books.map(txn => {
         const due = new Date(txn.due_date);
         const now = new Date();
@@ -2760,22 +2988,73 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
   }
 
   async function purchaseEbook(bookId) {
+    const book = ebookCatalog.find(item => item.id === bookId);
+    const title = book ? book.title : 'this ebook';
+    const price = book ? book.price : 0;
+
     purchasingEbookId = bookId;
     renderEbookCatalog();
 
-    const r = await api('POST', `/ebooks/purchase/${bookId}`);
-    purchasingEbookId = null;
-
-    if (!r.ok) {
-      toast(r.data.error || 'Could not purchase ebook.', 'error');
+    await payForEbook(bookId, title, price, (updated) => {
+      if (updated) ebookCatalog = ebookCatalog.map(b => b.id === bookId ? { ...b, ...updated } : b);
+      purchasingEbookId = null;
       renderEbookCatalog();
+    }, () => {
+      purchasingEbookId = null;
+      renderEbookCatalog();
+    });
+  }
+
+  // Creates a Razorpay order for an ebook purchase, opens checkout, and on
+  // successful payment confirms the purchase server-side.
+  // onDone(updatedBook) fires after a successful purchase; onCancel fires if
+  // the order couldn't be created, payment failed, or the modal was dismissed.
+  async function payForEbook(bookId, title, price, onDone, onCancel) {
+    const orderRes = await api('POST', '/payments/create-order', { book_id: bookId });
+    if (!orderRes.ok) {
+      toast(orderRes.data?.error || 'Could not start payment.', 'danger');
+      if (onCancel) onCancel();
       return;
     }
+    const { order_id, amount: amountPaise, currency, razorpay_key_id } = orderRes.data.data;
 
-    const updated = r.data.data;
-    ebookCatalog = ebookCatalog.map(book => book.id === bookId ? { ...book, ...updated } : book);
-    renderEbookCatalog();
-    toast(`Purchased "${updated.title}". You can read it now.`, 'success');
+    const rzp = new Razorpay({
+      key: razorpay_key_id,
+      order_id: order_id,
+      amount: amountPaise,
+      currency: currency,
+      name: 'Scribe Library',
+      description: `Ebook purchase — ${title}`,
+      prefill: {
+        name: userInfo ? userInfo.full_name : '',
+        email: userInfo ? userInfo.email : '',
+        contact: userInfo ? userInfo.phone : '',
+      },
+      theme: { color: '#2B5F8A' },
+      handler: async function () {
+        const r = await api('POST', `/ebooks/purchase/${bookId}`);
+        if (!r.ok) {
+          toast(r.data?.error || 'Payment received, but activation failed. Contact support.', 'danger');
+          if (onCancel) onCancel();
+          return;
+        }
+        toast(`Purchased "${title}". You can read it now.`, 'success');
+        if (onDone) onDone(r.data.data);
+      },
+      modal: {
+        ondismiss: function () {
+          toast('Payment cancelled.', 'warning');
+          if (onCancel) onCancel();
+        },
+      },
+    });
+
+    rzp.on('payment.failed', function (response) {
+      toast(`Payment failed: ${response.error.description}`, 'danger');
+      if (onCancel) onCancel();
+    });
+
+    rzp.open();
   }
 
   function previewEbook(bookId) {
@@ -2784,8 +3063,8 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
 
     const sample = (book.sample || []).map(section => `
       <section style="margin-top:18px">
-        <h4 style="font-size:15px;margin-bottom:6px">${esc(section.heading)}</h4>
-        <p style="color:var(--text-mid);font-size:13px;line-height:1.7">${esc(section.body)}</p>
+        <h4 style="font-size:var(--text-md);margin-bottom:6px">${esc(section.heading)}</h4>
+        <p style="color:var(--ink-mid);font-size:13px;line-height:1.7">${esc(section.body)}</p>
       </section>`).join('');
 
     const ownedAction = book.owned
@@ -2798,8 +3077,8 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
         <img src="${bookCoverSvg(book, 88, 120)}" style="width:88px;height:120px;border-radius:8px;object-fit:cover;box-shadow:var(--shadow-sm)" alt="">
         <div>
           <div class="category-tag">${esc(book.category)}</div>
-          <p style="font-size:13px;color:var(--text-light);margin-top:8px">${esc(book.author)}</p>
-          <p style="font-size:13px;color:var(--text-mid);margin-top:10px">${esc(book.description || '')}</p>
+          <p style="font-size:13px;color:var(--ink-light);margin-top:8px">${esc(book.author)}</p>
+          <p style="font-size:13px;color:var(--ink-mid);margin-top:10px">${esc(book.description || '')}</p>
         </div>
       </div>
       ${sample}
@@ -2889,11 +3168,16 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     }
 
     const text = typeof r.data === 'string' ? r.data : '';
+    const paragraphs = text
+      .split(/\n\s*\n/)                 // split on blank lines = paragraph breaks
+      .map(p => p.replace(/\s*\n\s*/g, ' ').trim())  // collapse hard line-breaks within a paragraph
+      .filter(p => p.length > 0);
+
     content.innerHTML = `
-      <p style="font-family:'Inter',sans-serif;font-size:12px;color:var(--text-light);margin-bottom:18px">
+      <p style="font-family:'Inter',sans-serif;font-size:var(--text-xs);color:var(--ink-light);margin-bottom:18px">
         Full text from ${esc(sourceLabel || 'Project Gutenberg')}.
       </p>
-      <div class="reader-full-text">${esc(text)}</div>`;
+      <div class="reader-full-text">${paragraphs.map(p => `<p>${esc(p)}</p>`).join('')}</div>`;
   }
 
   // ── Member: Fines ─────────────────────────────────────────
@@ -2919,12 +3203,12 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
       html += `<div class="table-card"><div class="table-card-header"><h3>Fine History</h3></div><table class="data-table">
         <thead><tr><th>Fine Code</th><th>Reason</th><th>Amount</th><th>Date</th><th>Status</th><th></th></tr></thead><tbody>`;
       html += fines.map(f => `<tr>
-        <td style="font-family:monospace;font-size:12px">${f.fine_code}</td>
+        <td style="font-family:monospace;font-size:var(--text-xs)">${f.fine_code}</td>
         <td>${esc(f.reason)}</td>
         <td style="font-weight:600">₹${f.amount.toFixed(2)}</td>
         <td>${new Date(f.calculated_on).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</td>
         <td><span class="status-pill status-${f.status.toLowerCase()}">${f.status}</span></td>
-        <td>${f.status === 'Pending' ? `<button class="btn-pay" onclick="payFine('${f.fine_code}',${f.amount})">Pay Now</button>` : (f.paid_on ? `Paid ${new Date(f.paid_on).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}` : '')}</td>
+        <td>${f.status === 'Pending' ? `<button class="btn-pay" onclick="payFine('${f.id}','${f.fine_code}',${f.amount})",${f.amount})">Pay Now</button>` : (f.paid_on ? `Paid ${new Date(f.paid_on).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}` : '')}</td>
       </tr>`).join('');
       html += '</tbody></table></div>';
     }
@@ -2932,12 +3216,44 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     wrap.innerHTML = html;
   }
 
-  async function payFine(fineCode, amount) {
-    // In a production app, this would integrate with Razorpay
-    // For now, show info about the payment flow
-    toast(`Payment gateway: ₹${amount.toFixed(2)} — Please contact the library desk or integrate Razorpay keys.`, 'warning');
+  async function payFine(fineId, fineCode, amount) {
+  const orderRes = await api('POST', '/payments/create-order', { fine_id: fineId });
+  if (!orderRes.ok) {
+    toast(orderRes.data.error || 'Could not start payment.', 'danger');
+    return;
   }
+  const { order_id, amount: amountPaise, currency, razorpay_key_id } = orderRes.data.data;
 
+  const rzp = new Razorpay({
+    key: razorpay_key_id,
+    order_id: order_id,
+    amount: amountPaise,
+    currency: currency,
+    name: 'Scribe Library',
+    description: `Fine payment — ${fineCode}`,
+    prefill: {
+      name: userInfo ? userInfo.full_name : '',
+      email: userInfo ? userInfo.email : '',
+      contact: userInfo ? userInfo.phone : '',
+    },
+    theme: { color: '#2B5F8A' },
+    handler: function () {
+      toast('Payment received! Updating your fine status…', 'success');
+      setTimeout(loadFines, 2000);
+    },
+    modal: {
+      ondismiss: function () {
+        toast('Payment cancelled.', 'warning');
+      },
+    },
+  });
+
+  rzp.on('payment.failed', function (response) {
+    toast(`Payment failed: ${response.error.description}`, 'danger');
+  });
+
+  rzp.open();
+}
   // ── Member: History ───────────────────────────────────────
   async function loadHistory() {
     const wrap = document.getElementById('history-wrap');
@@ -2951,17 +3267,17 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
       return;
     }
 
-    let html = `<div class="table-card"><div class="table-card-header"><h3>All Transactions</h3><span style="font-size:12px;color:var(--text-light)">${history.length} records</span></div>
+    let html = `<div class="table-card"><div class="table-card-header"><h3>All Transactions</h3><span style="font-size:var(--text-xs);color:var(--ink-light)">${history.length} records</span></div>
       <table class="data-table"><thead><tr><th>Book</th><th>Checked Out</th><th>Due</th><th>Returned</th><th>Fine</th></tr></thead><tbody>`;
     html += history.map(h => `<tr>
       <td>
         <div style="font-weight:500">${esc(h.book?.title || '—')}</div>
-        <div style="font-size:11px;color:var(--text-light)">${esc(h.book?.author || '')}</div>
+        <div style="font-size:11px;color:var(--ink-light)">${esc(h.book?.author || '')}</div>
       </td>
       <td>${fmtDate(h.checked_out_at)}</td>
       <td>${fmtDate(h.due_date)}</td>
-      <td>${h.returned_at ? fmtDate(h.returned_at) : '<em style="color:var(--text-light)">—</em>'}</td>
-      <td>${h.fine ? `<span style="color:var(--danger);font-weight:600">₹${h.fine.amount.toFixed(2)}</span> <span class="status-pill status-${h.fine.status.toLowerCase()}">${h.fine.status}</span>` : '<span style="color:var(--text-light)">—</span>'}</td>
+      <td>${h.returned_at ? fmtDate(h.returned_at) : '<em style="color:var(--ink-light)">—</em>'}</td>
+      <td>${h.fine ? `<span style="color:var(--danger);font-weight:600">₹${h.fine.amount.toFixed(2)}</span> <span class="status-pill status-${h.fine.status.toLowerCase()}">${h.fine.status}</span>` : '<span style="color:var(--ink-light)">—</span>'}</td>
     </tr>`).join('');
     html += '</tbody></table></div>';
     wrap.innerHTML = html;
@@ -3036,14 +3352,14 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
       return;
     }
 
-    let html = `<div class="table-card"><div class="table-card-header"><h3>Borrow Requests</h3><span style="font-size:12px;color:var(--text-light)">${requests.length} records</span></div>
+    let html = `<div class="table-card"><div class="table-card-header"><h3>Borrow Requests</h3><span style="font-size:var(--text-xs);color:var(--ink-light)">${requests.length} records</span></div>
       <table class="data-table"><thead><tr><th>Code</th><th>Member</th><th>Book</th><th>Available</th><th>Requested</th><th>Status</th><th></th></tr></thead><tbody>`;
     html += requests.map(req => {
       const pending = req.status === 'Pending';
       return `<tr>
         <td style="font-family:monospace;font-size:11px">${req.reservation_code}</td>
-        <td>${esc(req.member?.full_name || '—')}<br><span style="font-size:11px;color:var(--text-light)">${esc(req.member?.member_code || '')}</span></td>
-        <td>${esc(req.book?.title || '—')}<br><span style="font-size:11px;color:var(--text-light)">${esc(req.book?.author || '')}</span></td>
+        <td>${esc(req.member?.full_name || '—')}<br><span style="font-size:11px;color:var(--ink-light)">${esc(req.member?.member_code || '')}</span></td>
+        <td>${esc(req.book?.title || '—')}<br><span style="font-size:11px;color:var(--ink-light)">${esc(req.book?.author || '')}</span></td>
         <td>${req.book?.available_copies || 0}</td>
         <td>${fmtDate(req.requested_at)}</td>
         <td><span class="status-pill status-${req.status.toLowerCase()}">${req.status}</span></td>
@@ -3085,11 +3401,11 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     const txns = r.data.data;
     if (!txns.length) { wrap.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fa-regular fa-clipboard"></i></div><h3>No transactions</h3><p>No records match the current filter.</p></div>'; return; }
 
-    let html = `<div class="table-card"><div class="table-card-header"><h3>Transactions</h3><span style="font-size:12px;color:var(--text-light)">${txns.length} records</span></div>
+    let html = `<div class="table-card"><div class="table-card-header"><h3>Transactions</h3><span style="font-size:var(--text-xs);color:var(--ink-light)">${txns.length} records</span></div>
       <table class="data-table"><thead><tr><th>Code</th><th>Member</th><th>Book</th><th>Barcode</th><th>Checked Out</th><th>Due</th><th>Returned</th><th>Status</th></tr></thead><tbody>`;
     html += txns.map(t => `<tr>
       <td style="font-family:monospace;font-size:11px">${t.txn_code}</td>
-      <td>${esc(t.member?.full_name || '—')}<br><span style="font-size:11px;color:var(--text-light)">${t.member?.member_code||''}</span></td>
+      <td>${esc(t.member?.full_name || '—')}<br><span style="font-size:11px;color:var(--ink-light)">${t.member?.member_code||''}</span></td>
       <td>${esc(t.book?.title || '—')}</td>
       <td style="font-family:monospace;font-size:11px">${t.copy?.barcode||'—'}</td>
       <td>${fmtDate(t.checked_out_at)}</td>
@@ -3102,6 +3418,8 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
   }
 
   // ── Admin: Members ────────────────────────────────────────
+  let adminMembersList = [];
+
   async function loadAdminMembers() {
     const wrap = document.getElementById('admin-members-wrap');
     wrap.innerHTML = '<div class="loading"><div class="spinner"></div>Loading…</div>';
@@ -3112,15 +3430,16 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     if (!r.ok) { wrap.innerHTML = errorHTML(r.data.error); return; }
 
     const members = r.data.data;
+    adminMembersList = members;
     if (!members.length) { wrap.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-users"></i></div><h3>No members found</h3></div>'; return; }
 
-    let html = `<div class="table-card"><div class="table-card-header"><h3>Members</h3><span style="font-size:12px;color:var(--text-light)">${members.length} records</span></div>
+    let html = `<div class="table-card"><div class="table-card-header"><h3>Members</h3><span style="font-size:var(--text-xs);color:var(--ink-light)">${members.length} records</span></div>
       <table class="data-table"><thead><tr><th>Code</th><th>Name</th><th>Email</th><th>Phone</th><th>Borrowed</th><th>Fines</th><th>Status</th><th>Since</th></tr></thead><tbody>`;
-    html += members.map(m => `<tr>
+    html += members.map((m, idx) => `<tr onclick="openMemberDetail(${idx})" style="cursor:pointer">
       <td style="font-family:monospace;font-size:11px">${m.member_code}</td>
       <td style="font-weight:500">${esc(m.full_name)}</td>
-      <td style="font-size:12px">${esc(m.email)}</td>
-      <td style="font-size:12px">${m.phone || '—'}</td>
+      <td>${esc(m.email)}</td>
+      <td>${m.phone || '—'}</td>
       <td>${m.books_borrowed}</td>
       <td style="${m.current_fines > 0 ? 'color:var(--danger);font-weight:600' : ''}">₹${m.current_fines.toFixed(2)}</td>
       <td><span class="status-pill status-${m.status.toLowerCase()}">${m.status}</span></td>
@@ -3128,6 +3447,127 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     </tr>`).join('');
     html += '</tbody></table></div>';
     wrap.innerHTML = html;
+  }
+
+  // ── Admin: Member Detail Modal ─────────────────────────────
+  async function openMemberDetail(idx) {
+    const modal = document.getElementById('member-detail-modal');
+    const body = document.getElementById('member-detail-body');
+    body.innerHTML = '<div class="loading"><div class="spinner"></div>Loading…</div>';
+    modal.classList.add('open');
+
+    const m = adminMembersList[idx];
+    if (!m) { body.innerHTML = errorHTML('Member not found.'); return; }
+
+    const since = new Date(m.member_since).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+
+    let txnRowsHtml = '<div class="loading"><div class="spinner"></div>Loading borrow history…</div>';
+    body.innerHTML = `
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--accent-pale);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-size:20px;font-weight:600;flex-shrink:0">
+          ${esc((m.full_name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase())}
+        </div>
+        <div>
+          <div style="font-family:'Lora',serif;font-size:var(--text-lg);font-weight:500">${esc(m.full_name)}</div>
+          <div style="font-size:var(--text-xs);color:var(--ink-light);font-family:monospace">${m.member_code}</div>
+        </div>
+        <span class="status-pill status-${m.status.toLowerCase()}" style="margin-left:auto">${m.status}</span>
+      </div>
+
+      <div class="summary-cards" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:20px">
+        <div class="summary-card accent-sky"><div class="card-label">Borrowed</div><div class="card-value">${m.books_borrowed}</div></div>
+        <div class="summary-card accent-blush"><div class="card-label">Fines</div><div class="card-value" style="${m.current_fines>0?'color:var(--danger)':''}">₹${m.current_fines.toFixed(2)}</div></div>
+        <div class="summary-card accent-sage"><div class="card-label">Member Since</div><div class="card-value" style="font-size:var(--text-base)">${since}</div></div>
+      </div>
+
+      <div style="border:1px solid var(--border);border-radius:var(--r-md);padding:var(--sp-4);margin-bottom:20px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;font-size:13px">
+          <div><div style="color:var(--ink-light);font-size:11px;margin-bottom:2px">EMAIL</div>${esc(m.email)}</div>
+          <div><div style="color:var(--ink-light);font-size:11px;margin-bottom:2px">PHONE</div>${m.phone ? esc(m.phone) : '—'}</div>
+        </div>
+      </div>
+
+      <h4 style="font-size:var(--text-sm);margin-bottom:10px;color:var(--ink-mid)">Active Transactions</h4>
+      <div id="member-detail-txns">${txnRowsHtml}</div>
+    `;
+
+    // The /members/ list endpoint's id isn't accepted by the circulation
+    // endpoints — resolve the matching circulation member id via search first.
+    const txnWrap = document.getElementById('member-detail-txns');
+    const searchR = await api('GET', `/circulation/search/member?q=${encodeURIComponent(m.member_code)}`);
+    const circMember = searchR.ok ? (searchR.data.data || []).find(x => x.member_code === m.member_code) : null;
+
+    if (!circMember) {
+      if (txnWrap) txnWrap.innerHTML = '<div style="color:var(--ink-light);font-size:13px">Couldn\'t load transaction details.</div>';
+      return;
+    }
+
+    const r = await api('GET', `/circulation/members/${circMember.id}/transactions`);
+    if (!txnWrap) return;
+    if (!r.ok) { txnWrap.innerHTML = '<div style="color:var(--ink-light);font-size:13px">Couldn\'t load transaction details.</div>'; return; }
+
+    const txns = r.data.data.transactions;
+    if (!txns.length) {
+      txnWrap.innerHTML = '<div style="color:var(--ink-light);font-size:13px">No active transactions.</div>';
+      return;
+    }
+
+    txnWrap.innerHTML = `<table class="data-table"><thead><tr><th>Book</th><th>Due</th><th>Status</th></tr></thead><tbody>
+      ${txns.map(t => {
+        const due = new Date(t.due_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+        const overdue = t.days_overdue > 0;
+        return `<tr>
+          <td>${esc(t.book.title)}</td>
+          <td>${due}${overdue ? ` <span style="color:var(--danger);font-size:11px">(${t.days_overdue}d overdue)</span>` : ''}</td>
+          <td><span class="status-pill ${overdue ? 'status-overdue' : 'status-active'}">${overdue ? 'Overdue' : 'Active'}</span></td>
+        </tr>`;
+      }).join('')}
+    </tbody></table>`;
+  }
+
+  function closeMemberDetailModal() {
+    document.getElementById('member-detail-modal').classList.remove('open');
+  }
+
+  // ── Admin: Add Member Modal ────────────────────────────────
+  function openAddMemberModal() {
+    ['am-name','am-email','am-password','am-phone'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('add-member-error').style.display = 'none';
+    document.getElementById('add-member-modal').classList.add('open');
+  }
+
+  function closeAddMemberModal() {
+    document.getElementById('add-member-modal').classList.remove('open');
+  }
+
+  async function submitAddMember() {
+    const name = document.getElementById('am-name').value.trim();
+    const email = document.getElementById('am-email').value.trim();
+    const password = document.getElementById('am-password').value;
+    const phone = document.getElementById('am-phone').value.trim();
+    const errEl = document.getElementById('add-member-error');
+    errEl.style.display = 'none';
+
+    if (!name || !email || !password) {
+      errEl.textContent = 'Full name, email, and password are required.';
+      errEl.style.display = '';
+      return;
+    }
+    if (password.length < 8) {
+      errEl.textContent = 'Password must be at least 8 characters.';
+      errEl.style.display = '';
+      return;
+    }
+
+    const btn = document.getElementById('add-member-btn');
+    btn.disabled = true; btn.textContent = 'Adding…';
+    const r = await api('POST', '/auth/register', { full_name: name, email, password, phone: phone || undefined });
+    btn.disabled = false; btn.textContent = 'Add Member';
+
+    if (!r.ok) { errEl.textContent = r.data?.error || 'Failed to add member.'; errEl.style.display = ''; return; }
+    closeAddMemberModal();
+    toast(`✅ ${name} added as a new member`, 'success');
+    loadAdminMembers();
   }
 
   // ── Admin: Books ──────────────────────────────────────────
@@ -3143,7 +3583,7 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     const books = r.data.data;
     if (!books.length) { wrap.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-book"></i></div><h3>No books found</h3></div>'; return; }
 
-    let html = `<div class="table-card"><div class="table-card-header"><h3>Book Catalog</h3><span style="font-size:12px;color:var(--text-light)">${books.length} titles</span></div>
+    let html = `<div class="table-card"><div class="table-card-header"><h3>Book Catalog</h3><span style="font-size:var(--text-xs);color:var(--ink-light)">${books.length} titles</span></div>
       <table class="data-table"><thead><tr><th></th><th>Code</th><th>Title</th><th>Author</th><th>Category</th><th>Total Copies</th><th>Available</th></tr></thead><tbody>`;
     html += books.map(b => `<tr>
       <td style="width:44px"><img src="${bookCoverSvg(b,36,50)}" style="border-radius:4px;display:block"></td>
@@ -3196,6 +3636,42 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
   }
 
   // ── Admin: Circulation ────────────────────────────────────
+  const CIRC_ACTION_TITLES = {
+    checkout: '<i class="fa-solid fa-arrow-up-from-bracket"></i> Checkout Book',
+    return:   '<i class="fa-solid fa-inbox"></i> Return Book',
+    fine:     '<i class="fa-solid fa-file-invoice-dollar"></i> Create Fine',
+  };
+
+  function showCircSelector() {
+    initCirculation();
+    resetFinePanel();
+  }
+
+  function selectCircAction(action) {
+    document.getElementById('circ-modal-title').innerHTML = CIRC_ACTION_TITLES[action] || '';
+    ['checkout', 'return', 'fine'].forEach(a => {
+      document.getElementById(`circ-panel-${a}`).style.display = a === action ? '' : 'none';
+    });
+    document.getElementById('circ-workspace').classList.add('open');
+  }
+
+  function closeCircModal() {
+    document.getElementById('circ-workspace').classList.remove('open');
+    initCirculation();
+    resetFinePanel();
+  }
+
+  function resetFinePanel() {
+    fineTargetMember = null;
+    document.getElementById('fine-member-search').value = '';
+    document.getElementById('fine-member-results').innerHTML = '';
+    document.getElementById('fine-selected-member-info').innerHTML = '';
+    document.getElementById('fine-txn-section').style.display = 'none';
+    document.getElementById('fine-txn-select').innerHTML = '<option value="">-- Select a transaction --</option>';
+    document.getElementById('fine-amount').value = '';
+    document.getElementById('fine-create-error').style.display = 'none';
+  }
+
   function initCirculation() {
     selectedMember = null;
     selectedCopy   = null;
@@ -3223,12 +3699,12 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     const r = await api('GET', `/circulation/search/member?q=${encodeURIComponent(q)}`);
     if (!r.ok) { res.innerHTML = `<div class="error-msg">${r.data.error}</div>`; return; }
     const members = r.data.data;
-    if (!members.length) { res.innerHTML = '<div style="color:var(--text-light);font-size:13px;padding:8px">No members found</div>'; return; }
+    if (!members.length) { res.innerHTML = '<div style="color:var(--ink-light);font-size:13px;padding:8px">No members found</div>'; return; }
     res.innerHTML = members.map(m => `<div onclick="selectMember(${JSON.stringify(m).replace(/"/g,'&quot;')})"
-      style="padding:10px 14px;border-radius:8px;cursor:pointer;border:1px solid var(--border);margin-bottom:6px;background:var(--warm-white);transition:background 0.2s"
-      onmouseover="this.style.background='var(--parchment)'" onmouseout="this.style.background='var(--warm-white)'">
+      style="padding:10px 14px;border-radius:8px;cursor:pointer;border:1px solid var(--border);margin-bottom:6px;background:var(--surface);transition:background var(--dur-fast)"
+      onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background='var(--surface)'">
       <div style="font-weight:500;font-size:13px">${esc(m.full_name)}</div>
-      <div style="font-size:11px;color:var(--text-light)">${m.member_code} · ${m.email} · <span style="color:${m.status==='Active'?'var(--success)':'var(--danger)'}">${m.status}</span></div>
+      <div style="font-size:11px;color:var(--ink-light)">${m.member_code} · ${m.email} · <span style="color:${m.status==='Active'?'var(--success)':'var(--danger)'}">${m.status}</span></div>
     </div>`).join('');
   }
 
@@ -3256,9 +3732,9 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     const d = r.data.data;
     selectedCopy = d.copy;
     const avail = d.copy.status === 'Available';
-    res.innerHTML = `<div style="padding:12px;border-radius:8px;border:1px solid ${avail?'var(--sage)':'var(--blush)'};background:${avail?'#F2F8F5':'#FDF3F3'}">
+    res.innerHTML = `<div style="padding:12px;border-radius:8px;border:1px solid ${avail?'var(--success)':'var(--danger)'};background:${avail?'var(--success-bg)':'var(--danger-bg)'}">
       <div style="font-weight:500;font-size:13px">${esc(d.book.title)}</div>
-      <div style="font-size:11px;color:var(--text-light);margin:3px 0">${esc(d.book.author)} · ${d.copy.copy_code}</div>
+      <div style="font-size:11px;color:var(--ink-light);margin:3px 0">${esc(d.book.author)} · ${d.copy.copy_code}</div>
       <span class="status-pill status-${d.copy.status.toLowerCase()}">${d.copy.status}</span>
       ${d.current_transaction ? `<div style="font-size:11px;margin-top:6px;color:var(--warning)"><i class="fa-solid fa-triangle-exclamation"></i> Currently checked out</div>` : ''}
     </div>`;
@@ -3278,7 +3754,7 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     btn.textContent = 'Checkout';
     if (!r.ok) { toast(r.data.error || 'Checkout failed.', 'error'); btn.disabled = false; return; }
     toast(`✅ Book checked out to ${selectedMember.full_name}`, 'success');
-    initCirculation();
+    closeCircModal();
   }
 
   function debounceReturnBarcode() {
@@ -3297,19 +3773,19 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     returnCopyId = checkedOut ? d.copy.id : null;
     document.getElementById('return-btn').disabled = !checkedOut;
 
-    let html = `<div style="padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--cream)">
+    let html = `<div style="padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--surface-2)">
       <div style="font-weight:500;font-size:13px">${esc(d.book.title)}</div>
-      <div style="font-size:11px;color:var(--text-light);margin:3px 0">${esc(d.book.author)}</div>
+      <div style="font-size:11px;color:var(--ink-light);margin:3px 0">${esc(d.book.author)}</div>
       <span class="status-pill status-${d.copy.status.toLowerCase().replace(' ','-')}">${d.copy.status}</span>`;
     if (d.current_transaction) {
       const txn = d.current_transaction;
-      html += `<div style="font-size:12px;margin-top:8px;color:var(--text-mid)">
+      html += `<div style="font-size:11px;margin-top:8px;color:var(--ink-mid)">
         Borrowed by: <strong>${esc(txn.member_name || '—')}</strong><br>
         Due: ${fmtDate(txn.due_date)}<br>
         Days overdue: ${txn.days_overdue || 0}
       </div>`;
     }
-    if (!checkedOut) html += `<div style="font-size:12px;margin-top:6px;color:var(--text-light)">This copy is not currently checked out.</div>`;
+    if (!checkedOut) html += `<div style="font-size:11px;margin-top:6px;color:var(--ink-light)">This copy is not currently checked out.</div>`;
     html += '</div>';
     res.innerHTML = html;
   }
@@ -3328,6 +3804,7 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     returnCopyId = null;
     document.getElementById('return-barcode').value = '';
     document.getElementById('return-book-result').innerHTML = '';
+    closeCircModal();
   }
 
   // ── Utilities ─────────────────────────────────────────────
@@ -3345,19 +3822,50 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     return `<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><h3>Error loading data</h3><p>${esc(msg)}</p></div>`;
   }
 
-  async function showBookDetail(bookId) {
-    // You could expand this into a modal — for now just add to cart
-    const r = await api('GET', `/books/${bookId}`);
-    if (!r.ok) return;
-    const book = r.data.data;
+  function showBookDetail(bookId) {
+    let book = catalogBooks.find(b => b.id === bookId);
+    if (!book) { toast('Could not load book details.', 'error'); return; }
+
+    const cover = bookCoverSvg(book, 110, 152);
+    const avail = book.available_copies > 0;
     const inCart = cart.some(c => c.id === book.id);
-    if (!inCart && book.available_copies > 0) {
-      toggleCart(book);
-    } else if (inCart) {
-      toast(`"${book.title}" is already in your list`);
-    } else {
-      toast(`"${book.title}" is currently unavailable`, 'warning');
-    }
+    const catColors = { Fiction:'#F2CECE', 'Non-fiction':'#D8D0F0', Reference:'#C9DDD4', Textbook:'#C7DDF4', General:'#F5D9C4' };
+    const catBg = catColors[book.category] || '#F0EBE1';
+
+    const cartAction = `<button class="btn-confirm ${inCart ? 'in-cart' : ''}"
+        onclick="toggleCart(${JSON.stringify(book).replace(/"/g,'&quot;')});closeBookPreviewModal()"
+        ${!avail && !inCart ? 'disabled' : ''}>
+        ${inCart ? '<i class="fa-solid fa-check"></i> Remove from List' : (avail ? '+ Add to List' : 'Unavailable')}
+      </button>`;
+
+    const ebookAction = book.owned
+      ? `<button class="btn-secondary" onclick="closeBookPreviewModal();openEbookReader('${book.id}')">Read ebook</button>`
+      : (book.price ? `<button class="btn-secondary" onclick="closeBookPreviewModal();purchaseCatalogEbook('${book.id}')">Buy ebook ₹${Number(book.price).toFixed(2)}</button>` : '');
+
+    document.getElementById('book-preview-title').textContent = book.title;
+    document.getElementById('book-preview-body').innerHTML = `
+      <div class="book-detail-grid">
+        <img src="${cover}" class="book-detail-cover" style="object-fit:cover" alt="">
+        <div>
+          <div class="book-detail-title">${esc(book.title)}</div>
+          <div class="book-detail-author">${esc(book.author)}</div>
+          <span class="category-tag" style="background:${catBg}">${esc(book.category)}</span>
+          <span class="copies-count" style="margin-left:8px;color:${avail ? 'var(--success)' : 'var(--danger)'}">
+            ${book.available_copies}/${book.total_copies} available
+          </span>
+        </div>
+      </div>
+      <div class="book-detail-desc" style="margin-top:18px">${esc(book.description || 'No description available for this title.')}</div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap">
+        <button class="btn-secondary" onclick="closeBookPreviewModal()">Close</button>
+        ${ebookAction}
+        ${cartAction}
+      </div>`;
+    document.getElementById('book-preview-modal').classList.add('open');
+  }
+
+  function closeBookPreviewModal() {
+    document.getElementById('book-preview-modal').classList.remove('open');
   }
 
   // ── Bootstrap ─────────────────────────────────────────────
@@ -3371,11 +3879,11 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
   // ══════════════════════════════════════════════════════
 
   const CAT_THEMES = {
-    'Fiction':     { cls:'theme-fiction',    icon:'🌙', desc:'Fiction',     anim:'mist'       },
-    'Non-fiction': { cls:'theme-nonfiction', icon:'🌿', desc:'Non-Fiction',  anim:'pollen'     },
-    'Reference':   { cls:'theme-reference',  icon:'🔮', desc:'Reference',    anim:'constellate'},
-    'Textbook':    { cls:'theme-textbook',   icon:'🔭', desc:'Textbook',     anim:'drift'      },
-    'General':     { cls:'theme-general',    icon:'✨', desc:'General',      anim:'breathe'    },
+    'Fiction':     { cls:'theme-fiction',    icon:'', desc:'Fiction',     anim:'mist'       },
+    'Non-fiction': { cls:'theme-nonfiction', icon:'', desc:'Non-Fiction',  anim:'pollen'     },
+    'Reference':   { cls:'theme-reference',  icon:'', desc:'Reference',    anim:'constellate'},
+    'Textbook':    { cls:'theme-textbook',   icon:'', desc:'Textbook',     anim:'drift'      },
+    'General':     { cls:'theme-general',    icon:'', desc:'General',      anim:'breathe'    },
   };
 
   let _animFrame = null;
@@ -3721,13 +4229,150 @@ body.theme-animating .summary-card { animation: cardReveal 300ms ease both; }
     startAnim(theme.anim);
   }
 
-  // ── Reset: theme only, no searchBooks() ───────────────
+  // ── Reset: clears the category filter, theme, and refreshes results ───
   function clearCategoryTheme() {
     const el = document.getElementById('catalog-category');
     if (el) el.value = '';
-    applyCategoryTheme(null);
+    searchBooks();
   }
 
+  // ── Create Fine ────────────────────────────────────────────────────────────
+  let fineTargetMember = null;
+
+  async function searchFineMembers() {
+    const q = document.getElementById('fine-member-search').value.trim();
+    const res = document.getElementById('fine-member-results');
+    if (q.length < 2) {
+      res.innerHTML = '<div style="color:var(--ink-light);font-size:13px;padding:8px">Enter at least 2 characters.</div>';
+      return;
+    }
+
+    res.innerHTML = '<div style="color:var(--ink-light);font-size:13px;padding:8px">Searching…</div>';
+
+    const r = await api('GET', `/circulation/search/member?q=${encodeURIComponent(q)}`);
+    if (!r.ok) {
+      res.innerHTML = `<div class="error-msg">${r.data?.error || 'Search failed'}</div>`;
+      return;
+    }
+
+    const members = r.data.data;
+    if (!members.length) {
+      res.innerHTML = '<div style="color:var(--ink-light);font-size:13px;padding:8px">No members found.</div>';
+      return;
+    }
+
+    res.innerHTML = members.map(m => `
+      <div onclick="selectFineMember(${JSON.stringify(m).replace(/"/g,'&quot;')})"
+        style="padding:10px 14px;border-radius:8px;cursor:pointer;border:1px solid var(--border);margin-bottom:6px;background:var(--surface);transition:background var(--dur-fast)"
+        onmouseover="this.style.background='var(--surface-2)'"
+        onmouseout="this.style.background='var(--surface)'">
+        <div style="font-weight:500;font-size:13px">${esc(m.full_name)}</div>
+        <div style="font-size:11px;color:var(--ink-light)">
+          ${m.member_code} · ${m.email} ·
+          <span style="color:${m.status==='Active'?'var(--success)':'var(--danger)'}">${m.status}</span>
+          ${m.current_fines > 0
+            ? `· <span style="color:var(--danger);font-weight:500">₹${m.current_fines.toFixed(2)} outstanding</span>`
+            : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function selectFineMember(m) {
+    fineTargetMember = m;
+
+    // Clear search results and input
+    document.getElementById('fine-member-results').innerHTML = '';
+    document.getElementById('fine-member-search').value = m.full_name;
+
+    // Show selected member info
+    const infoEl = document.getElementById('fine-selected-member-info');
+    infoEl.innerHTML = `
+      <i class="fa-solid fa-check"></i>
+      <strong>${esc(m.full_name)}</strong> (${m.member_code})
+      — Status: <span style="color:${m.status==='Active'?'var(--success)':'var(--danger)'}">${m.status}</span>
+      ${m.current_fines > 0
+        ? `· Outstanding: <strong style="color:var(--danger)">₹${m.current_fines.toFixed(2)}</strong>`
+        : ''}`;
+
+    // Fetch their active transactions
+    const r = await api('GET', `/circulation/members/${m.id}/transactions`);
+    if (!r.ok) {
+      toast('Could not load transactions for this member.', 'danger');
+      return;
+    }
+
+    const txns = r.data.data.transactions;
+    const select = document.getElementById('fine-txn-select');
+    select.innerHTML = '<option value="">-- Select a transaction --</option>';
+
+    if (!txns.length) {
+      select.innerHTML += '<option value="" disabled>No active transactions found</option>';
+    } else {
+      txns.forEach(t => {
+        const overdue = t.days_overdue > 0 ? ` · ${t.days_overdue}d overdue` : '';
+        const due = new Date(t.due_date).toLocaleDateString('en-IN', {
+          day: 'numeric', month: 'short'
+        });
+        select.innerHTML += `<option value="${t.id}">
+          ${t.txn_code} — ${esc(t.book.title)} (${t.copy.barcode}) · Due ${due}${overdue}
+        </option>`;
+      });
+    }
+
+    // Show the transaction + reason + amount section
+    document.getElementById('fine-txn-section').style.display = 'block';
+    document.getElementById('fine-create-error').style.display = 'none';
+    document.getElementById('fine-amount').value = '';
+  }
+
+  async function submitCreateFine() {
+    const txnId  = document.getElementById('fine-txn-select').value;
+    const reason = document.getElementById('fine-reason').value;
+    const amount = parseFloat(document.getElementById('fine-amount').value);
+    const errEl  = document.getElementById('fine-create-error');
+
+    errEl.style.display = 'none';
+
+    if (!txnId) {
+      errEl.textContent = 'Please select a transaction.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (!amount || amount <= 0 || isNaN(amount)) {
+      errEl.textContent = 'Please enter a valid amount greater than ₹0.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('create-fine-btn');
+    btn.disabled = true;
+    btn.textContent = 'Creating…';
+
+    const r = await api('POST', '/circulation/fines', {
+      transaction_id: txnId,
+      reason,
+      amount,
+    });
+
+    btn.disabled = false;
+    btn.textContent = 'Create Fine';
+
+    if (!r.ok) {
+      errEl.textContent = r.data?.error || 'Failed to create fine.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const f = r.data.data;
+    toast(
+      `Fine ${f.fine_code} created — ₹${Number(f.amount).toFixed(2)} (${f.reason}) for ${f.member_name}`,
+      'success'
+    );
+
+    // Reset panel and close the popup
+    closeCircModal();
+  }
 
 </script>
 </body>
