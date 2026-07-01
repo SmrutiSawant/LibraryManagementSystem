@@ -34,14 +34,6 @@ def member_required():
 # ── Razorpay signature verification ──────────────────────────────────────────
 
 def verify_razorpay_signature(webhook_body, webhook_signature):
-    """
-    Verifies the webhook came from Razorpay and not a third party.
-    Razorpay signs the raw request body with your webhook secret
-    using HMAC-SHA256.
-
-    Set RAZORPAY_WEBHOOK_SECRET in .env once you create a webhook
-    in the Razorpay dashboard.
-    """
     import os
     webhook_secret = os.getenv("RAZORPAY_WEBHOOK_SECRET", "")
     if not webhook_secret:

@@ -143,3 +143,14 @@ def me():
 
     except Exception as e:
         return error_response("Invalid or expired token.", 401)
+
+@auth_bp.get("/test-email")
+def test_email():
+    from app.services.email_service import _send
+    _send(
+        subject    = "Library Email Test",
+        recipients = ["smrutisawant47@gmail.com"],
+        body_text  = "Email is working correctly from Central Library.",
+    )
+    return jsonify({"success": True, "message": "Test email sent."})
+

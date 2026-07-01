@@ -388,3 +388,166 @@ def list_transactions():
         })
 
     return success_response(result)
+
+# ── POST /api/circulation/fines — Librarian creates manual fine ───────────────
+
+@circulation_bp.post("/fines")
+def create_manual_fine():
+    """
+    Librarian creates a manual fine for a specific transaction.
+    Body: { transaction_id, reason, amount }
+    """
+    identity, err = librarian_required()
+    if err:
+        return err
+
+    body = request.get_json()
+
+    required = ["transaction_id", "reason", "amount"]
+    missing  = [f for f in required if not body.get(f)]
+    if missing:
+        return error_response(
+            f"Missing required fields: {', '.join(missing)}", 400
+        )
+
+    reason = body["reason"]
+    if reason not in ("Damage", "Lost", "Overdue"):
+        return error_response(
+            "Invalid reason. Must be Damage, Lost or Overdue.", 400
+        )
+
+    try:
+        amount = float(body["amount"])
+        if amount <= 0:
+            return error_response("Amount must be greater than 0.", 400)
+    except ValueError:
+        return error_response("Invalid amount.", 400)
+
+    from app.models.transaction import Transaction
+    from app.models.member import Member
+    from app.models.fine import Fine
+    from app.extensions import db
+    from datetime import date
+
+    txn = Transaction.query.get(body["transaction_id"])
+    if not txn:
+        return error_response("Transaction not found.", 404)
+
+    if txn.status == "Completed":
+        return error_response(
+            "Cannot raise a fine on a completed transaction.", 400
+        )
+
+    # Check for duplicate fine with same reason on same transaction
+    existing = Fine.query.filter_by(
+        transaction_id = txn.id,
+        reason         = reason
+    ).first()
+    if existing:
+        return error_response(
+            f"A {reason} fine already exists for this transaction "
+            f"({existing.fine_code}).", 409
+        )
+
+    member = Member.query.get(txn.member_id)
+    if not member:
+        return error_response("Member not found.", 404)
+
+    # Create fine
+    fine = Fine(
+        member_id      = member.id,
+        transaction_id = txn.id,
+        reason         = reason,
+        amount         = amount,
+        calculated_on  = date.today(),
+        status         = "Pending",
+    )
+    db.session.add(fine)
+
+    # Update member balance
+    member.current_fines = float(member.current_fines or 0) + amount
+
+    # Auto-suspend if over 500
+    if member.current_fines > 500:
+        member.status = "Suspended"
+
+    db.session.commit()
+
+    # Send overdue email if reason is Overdue
+    try:
+        if reason == "Overdue":
+            from app.services.email_service import send_overdue_email
+            days = txn.days_overdue()
+            send_overdue_email(member, fine, days)
+    except Exception:
+        pass
+
+    return success_response({
+        "fine_code"   : fine.fine_code,
+        "member_code" : member.member_code,
+        "member_name" : member.full_name,
+        "reason"      : fine.reason,
+        "amount"      : float(fine.amount),
+        "status"      : fine.status,
+        "txn_code"    : txn.txn_code,
+    }, 201)
+
+
+# ── GET /api/circulation/members/<member_id>/transactions ─────────────────────
+
+@circulation_bp.get("/members/<member_id>/transactions")
+def member_active_transactions(member_id):
+    """
+    Returns Active/Overdue transactions for a member.
+    Used by the manual fine creation panel.
+    """
+    identity, err = librarian_required()
+    if err:
+        return err
+
+    from app.models.transaction import Transaction
+    from app.models.member import Member
+    from app.models.book_copy import BookCopy
+    from app.models.book import Book
+
+    member = Member.query.get(member_id)
+    if not member:
+        return error_response("Member not found.", 404)
+
+    txns = Transaction.query.filter(
+        Transaction.member_id == member_id,
+        Transaction.status.in_(["Active", "Overdue"])
+    ).order_by(Transaction.checked_out_at.desc()).all()
+
+    result = []
+    for txn in txns:
+        copy = BookCopy.query.get(txn.book_copy_id)
+        book = Book.query.get(copy.book_id) if copy else None
+        result.append({
+            "id"           : txn.id,
+            "txn_code"     : txn.txn_code,
+            "status"       : txn.status,
+            "due_date"     : txn.due_date.isoformat(),
+            "days_overdue" : txn.days_overdue(),
+            "book": {
+                "title"    : book.title     if book else None,
+                "author"   : book.author    if book else None,
+                "book_code": book.book_code if book else None,
+            },
+            "copy": {
+                "barcode"  : copy.barcode   if copy else None,
+                "copy_code": copy.copy_code if copy else None,
+            }
+        })
+
+    return success_response({
+        "member": {
+            "id"          : member.id,
+            "member_code" : member.member_code,
+            "full_name"   : member.full_name,
+            "email"       : member.email,
+            "current_fines": float(member.current_fines),
+            "status"      : member.status,
+        },
+        "transactions": result
+    })
