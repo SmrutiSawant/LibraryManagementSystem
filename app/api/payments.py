@@ -32,13 +32,10 @@ def member_required():
 
 
 # ── Razorpay signature verification ──────────────────────────────────────────
-
 def verify_razorpay_signature(webhook_body, webhook_signature):
     import os
     webhook_secret = os.getenv("RAZORPAY_WEBHOOK_SECRET", "")
     if not webhook_secret:
-        # In development without a secret, skip verification
-        # NEVER skip in production
         return True
 
     expected = hmac.new(
@@ -48,8 +45,6 @@ def verify_razorpay_signature(webhook_body, webhook_signature):
     ).hexdigest()
 
     return hmac.compare_digest(expected, webhook_signature)
-
-
 # ── GET /api/payments/fines/<fine_id> — get fine details for payment ─────────
 
 @payments_bp.get("/fines/<fine_id>")

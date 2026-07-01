@@ -204,6 +204,7 @@ def my_fines():
     fines_list = []
     for fine in fines:
         fines_list.append({
+            "id"           : fine.id,
             "fine_code"    : fine.fine_code,
             "amount"       : float(fine.amount),
             "reason"       : fine.reason,
