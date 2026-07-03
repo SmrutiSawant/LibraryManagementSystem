@@ -3,6 +3,7 @@ import hashlib
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import verify_jwt_in_request, get_jwt, get_jwt_identity
 from app.extensions import db
+from app.models.book import Book
 from app.models.fine import Fine
 from app.models.member import Member
 from app.models.payment import Payment
@@ -29,6 +30,17 @@ def member_required():
         return get_jwt_identity(), None
     except Exception:
         return None, error_response("Missing or invalid token.", 401)
+
+
+def ebook_price(book):
+    category_prices = {
+        "Fiction": 149.00,
+        "Non-fiction": 199.00,
+        "Reference": 249.00,
+        "Textbook": 299.00,
+        "General": 129.00,
+    }
+    return category_prices.get(book.category, 159.00)
 
 
 # ── Razorpay signature verification ──────────────────────────────────────────
@@ -84,31 +96,81 @@ def get_fine(fine_id):
 @payments_bp.post("/create-order")
 def create_order():
     """
-    Member initiates payment for a fine.
+    Member initiates payment for a fine or ebook purchase.
     Creates a Razorpay order and returns order_id to the frontend.
     Frontend uses order_id to open the Razorpay checkout modal.
 
-    Body: { fine_id }
+    Body: { fine_id } or { book_id }
     """
     identity, err = member_required()
     if err:
         return err
 
-    body = request.get_json()
-    if not body.get("fine_id"):
-        return error_response("Missing required field: fine_id.", 400)
+    body = request.get_json() or {}
 
-    fine = Fine.query.get(body["fine_id"])
-    if not fine:
-        return error_response("Fine not found.", 404)
+    fine = None
+    book = None
+    order_amount = None
+    receipt = None
+    notes = {"member_id": identity}
+    response_payload = {}
 
-    if fine.member_id != identity:
-        return error_response("Access denied.", 403)
+    if body.get("fine_id"):
+        fine = Fine.query.get(body["fine_id"])
+        if not fine:
+            return error_response("Fine not found.", 404)
 
-    if fine.status != "Pending":
-        return error_response(
-            f"Fine is already {fine.status} and cannot be paid.", 400
-        )
+        if fine.member_id != identity:
+            return error_response("Access denied.", 403)
+
+        if fine.status != "Pending":
+            return error_response(
+                f"Fine is already {fine.status} and cannot be paid.", 400
+            )
+
+        order_amount = float(fine.amount)
+        receipt = fine.fine_code
+        notes.update({
+            "payment_type": "fine",
+            "fine_id": fine.id,
+            "fine_code": fine.fine_code,
+        })
+        response_payload = {
+            "payment_type": "fine",
+            "fine_id": fine.id,
+            "fine_code": fine.fine_code,
+        }
+
+    elif body.get("book_id"):
+        from app.models.ebook_purchase import EbookPurchase
+
+        book = Book.query.get(body["book_id"])
+        if not book:
+            return error_response("Book not found.", 404)
+
+        existing = EbookPurchase.query.filter_by(
+            member_id=identity,
+            book_id=book.id,
+            status="Success",
+        ).first()
+        if existing:
+            return error_response("You already own this ebook.", 400)
+
+        order_amount = ebook_price(book)
+        receipt = f"EBOOK-{book.book_code or book.id[:8]}"
+        notes.update({
+            "payment_type": "ebook",
+            "book_id": book.id,
+            "book_code": book.book_code,
+        })
+        response_payload = {
+            "payment_type": "ebook",
+            "book_id": book.id,
+            "book_code": book.book_code,
+        }
+
+    else:
+        return error_response("Missing required field: fine_id or book_id.", 400)
 
     # ── Create Razorpay order ─────────────────────────────────────────────────
     try:
@@ -124,14 +186,10 @@ def create_order():
 
         # Razorpay amount is in paise (1 INR = 100 paise)
         order_data = {
-            "amount"  : int(float(fine.amount) * 100),
+            "amount"  : int(order_amount * 100),
             "currency": "INR",
-            "receipt" : fine.fine_code,
-            "notes"   : {
-                "fine_id"    : fine.id,
-                "fine_code"  : fine.fine_code,
-                "member_id"  : fine.member_id,
-            }
+            "receipt" : receipt,
+            "notes"   : notes,
         }
 
         order = client.order.create(data=order_data)
@@ -140,9 +198,8 @@ def create_order():
             "order_id"       : order["id"],
             "amount"         : order["amount"],
             "currency"       : order["currency"],
-            "fine_id"        : fine.id,
-            "fine_code"      : fine.fine_code,
             "razorpay_key_id": os.getenv("RAZORPAY_KEY_ID"),
+            **response_payload,
         })
 
     except Exception as e:
