@@ -141,3 +141,4 @@ def get_current_member(identity):
     if not member:
         raise AuthError("Member account not found.")
     return member
+    

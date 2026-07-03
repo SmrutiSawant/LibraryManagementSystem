@@ -24,7 +24,6 @@ def register():
     """
     body = request.get_json()
 
-    # ── Required field validation ─────────────────────────────────────────────
     required = ["full_name", "email", "password"]
     missing  = [f for f in required if not body.get(f)]
     if missing:
@@ -38,7 +37,6 @@ def register():
     phone     = body.get("phone", "").strip() or None
     address   = body.get("address", "").strip() or None
 
-    # ── Basic field checks ────────────────────────────────────────────────────
     if len(full_name) < 2:
         return error_response("Full name must be at least 2 characters.", 400)
 
@@ -48,7 +46,6 @@ def register():
     if len(password) < 8:
         return error_response("Password must be at least 8 characters.", 400)
 
-    # ── Call service ──────────────────────────────────────────────────────────
     try:
         member = register_member(
             full_name = full_name,
@@ -80,7 +77,6 @@ def login_route():
     """
     body = request.get_json()
 
-    # ── Required field validation ─────────────────────────────────────────────
     required = ["email", "password"]
     missing  = [f for f in required if not body.get(f)]
     if missing:
@@ -88,7 +84,6 @@ def login_route():
             f"Missing required fields: {', '.join(missing)}", 400
         )
 
-    # ── Call service ──────────────────────────────────────────────────────────
     try:
         result = login(
             email    = body["email"],
@@ -129,12 +124,13 @@ def me():
         elif role == "member":
             member = get_current_member(identity)
             return success_response({
-                "role"         : "member",
-                "id"           : member.id,
-                "member_code"  : member.member_code,
-                "full_name"    : member.full_name,
-                "email"        : member.email,
-                "status"       : member.status,
+                "role"           : "member",
+                "id"             : member.id,
+                "member_code"    : member.member_code,
+                "full_name"      : member.full_name,
+                "email"          : member.email,
+                "status"         : member.status,
+                "phone"          : member.phone,
                 "books_borrowed" : member.books_borrowed,
                 "current_fines"  : float(member.current_fines),
             })
@@ -143,6 +139,59 @@ def me():
 
     except Exception as e:
         return error_response("Invalid or expired token.", 401)
+
+
+# ── PATCH /api/auth/me ─────────────────────────────────────────────────────────
+
+@auth_bp.patch("/me")
+def update_me():
+    """
+    Update the current logged-in user's own profile.
+    Body: { full_name (opt), phone (opt) }
+    - Members can update full_name and phone.
+    - Librarians can update full_name only (no phone field on Staff).
+    Omit a field to leave it unchanged; send phone: null to clear it.
+    """
+    from flask_jwt_extended import verify_jwt_in_request, get_jwt, get_jwt_identity
+    from app.services.auth_service import update_profile
+
+    try:
+        verify_jwt_in_request()
+        claims   = get_jwt()
+        identity = get_jwt_identity()
+        role     = claims.get("role")
+    except Exception:
+        return error_response("Invalid or expired token.", 401)
+
+    body = request.get_json(silent=True) or {}
+
+    full_name = body.get("full_name")
+    if full_name is not None:
+        full_name = full_name.strip()
+        if len(full_name) < 2:
+            return error_response("Full name must be at least 2 characters.", 400)
+
+    phone_provided = "phone" in body
+    phone = body.get("phone")
+    if phone_provided and phone is not None:
+        phone = phone.strip() or None
+
+    if full_name is None and not phone_provided:
+        return error_response("Nothing to update.", 400)
+
+    try:
+        updated = update_profile(
+            identity       = identity,
+            role           = role,
+            full_name      = full_name,
+            phone          = phone,
+            phone_provided = phone_provided,
+        )
+        return success_response(updated, 200)
+
+    except AuthError as e:
+        return error_response(str(e), 400)
+
 
 @auth_bp.get("/test-email")
 def test_email():
@@ -153,4 +202,3 @@ def test_email():
         body_text  = "Email is working correctly from Central Library.",
     )
     return jsonify({"success": True, "message": "Test email sent."})
-
