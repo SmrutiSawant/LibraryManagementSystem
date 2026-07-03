@@ -181,6 +181,8 @@ def add_book():
         isbn        = isbn,
         category    = body["category"],
         description = body.get("description", "").strip() or None,
+        total_copies     = 2,
+        available_copies = 2,
     )
     db.session.add(book)
     db.session.commit()
@@ -243,7 +245,7 @@ def add_copy(book_id):
 
     # Update book copy counts
     book.total_copies     += 1
-    book.available_copies += 1
+    book.available_copies +=1
 
     db.session.commit()
 
