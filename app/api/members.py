@@ -221,12 +221,10 @@ def my_fines():
 
 
 # ── PUT /api/members/profile ──────────────────────────────────────────────────
-
 @members_bp.put("/profile")
 def update_profile():
     """
-    Member updates their own phone/address.
-    Email and full_name are not editable post-registration.
+    Member updates their own email, phone, or address.
     """
     identity, err = member_required()
     if err:
@@ -238,8 +236,29 @@ def update_profile():
 
     body = request.get_json()
 
+    # ── Email update — check uniqueness ──────────────────────────────────────
+    if "email" in body and body["email"]:
+        new_email = body["email"].strip().lower()
+        if new_email != member.email:
+            # Check not already taken by another member or staff
+            from app.models.staff import Staff
+            if Member.query.filter(
+                Member.email == new_email,
+                Member.id != member.id
+            ).first():
+                return error_response(
+                    "This email is already registered to another account.", 409
+                )
+            if Staff.query.filter_by(email=new_email).first():
+                return error_response(
+                    "This email is already in use.", 409
+                )
+            member.email = new_email
+
+    # ── Phone + address ───────────────────────────────────────────────────────
     if "phone" in body:
         member.phone = body["phone"].strip() or None
+
     if "address" in body:
         member.address = body["address"].strip() or None
 
@@ -251,8 +270,8 @@ def update_profile():
         "email"      : member.email,
         "phone"      : member.phone,
         "address"    : member.address,
+        "status"     : member.status,
     })
-
 
 # ── GET /api/members — Librarian only ────────────────────────────────────────
 
