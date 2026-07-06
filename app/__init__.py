@@ -47,7 +47,12 @@ def create_app():
     # Serve frontend
     @app.route("/")
     def home():
-        return send_from_directory(app.static_folder, "index.html")
+        from flask import make_response
+        resp = make_response(send_from_directory(app.static_folder, "index.html"))
+        resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        resp.headers["Pragma"] = "no-cache"
+        resp.headers["Expires"] = "0"
+        return resp
 
     # Scheduler
     from app.jobs.overdue_cron import register_jobs

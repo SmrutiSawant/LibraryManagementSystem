@@ -1,55 +1,19 @@
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import verify_jwt_in_request, get_jwt, get_jwt_identity
+from flask import Blueprint, request
 from app.extensions import db
 from app.models.member import Member
 from app.models.transaction import Transaction
 from app.models.fine import Fine
 from app.models.book_copy import BookCopy
 from app.models.book import Book
+from app.models.ebook_purchase import EbookPurchase
+from app.utils import (
+    error_response,
+    success_response,
+    member_required,
+    librarian_required,
+)
 
 members_bp = Blueprint("members", __name__)
-
-
-# ── Helpers ───────────────────────────────────────────────────────────────────
-
-def error_response(message, status_code):
-    return jsonify({"success": False, "error": message}), status_code
-
-
-def success_response(data, status_code=200):
-    return jsonify({"success": True, "data": data}), status_code
-
-
-def member_required():
-    """
-    Verifies JWT belongs to a member.
-    Returns (identity, None) on success.
-    Returns (None, error_response) on failure.
-    """
-    try:
-        verify_jwt_in_request()
-        claims = get_jwt()
-        if claims.get("role") != "member":
-            return None, error_response("Member access required.", 403)
-        return get_jwt_identity(), None
-    except Exception:
-        return None, error_response("Missing or invalid token.", 401)
-
-
-def librarian_required():
-    """
-    Verifies JWT belongs to a librarian.
-    Returns (identity, None) on success.
-    Returns (None, error_response) on failure.
-    """
-    try:
-        verify_jwt_in_request()
-        claims = get_jwt()
-        if claims.get("role") != "librarian":
-            return None, error_response("Librarian access required.", 403)
-        return get_jwt_identity(), None
-    except Exception:
-        return None, error_response("Missing or invalid token.", 401)
 
 
 # ── GET /api/members/dashboard ────────────────────────────────────────────────
@@ -135,7 +99,8 @@ def dashboard():
 @members_bp.get("/history")
 def history():
     """
-    Member's full borrowing history — all Completed transactions.
+    Member's full activity history — completed borrow transactions
+    AND ebook purchases, merged and sorted newest-first.
     """
     identity, err = member_required()
     if err:
@@ -145,6 +110,7 @@ def history():
     if not member:
         return error_response("Member not found.", 404)
 
+    # ── Borrow transactions (Completed) ──────────────────────────
     completed_txns = Transaction.query.filter_by(
         member_id = member.id,
         status    = "Completed"
@@ -155,22 +121,23 @@ def history():
         copy = BookCopy.query.get(txn.book_copy_id)
         book = Book.query.get(copy.book_id) if copy else None
 
-        # Check if a fine was raised for this transaction
         fine = Fine.query.filter_by(
             transaction_id = txn.id,
             reason         = "Overdue"
         ).first()
 
         history_list.append({
+            "type"          : "borrow",
             "txn_code"      : txn.txn_code,
+            "date"          : txn.returned_at.isoformat() if txn.returned_at else txn.checked_out_at.isoformat(),
             "checked_out_at": txn.checked_out_at.isoformat(),
             "due_date"      : txn.due_date.isoformat(),
-            "returned_at"   : txn.returned_at.isoformat()
-                              if txn.returned_at else None,
+            "returned_at"   : txn.returned_at.isoformat() if txn.returned_at else None,
             "book": {
                 "title"    : book.title     if book else None,
                 "author"   : book.author    if book else None,
                 "book_code": book.book_code if book else None,
+                "category" : book.category  if book else None,
             },
             "fine": {
                 "fine_code": fine.fine_code,
@@ -178,6 +145,30 @@ def history():
                 "status"   : fine.status,
             } if fine else None,
         })
+
+    # ── Ebook purchases ───────────────────────────────────────────
+    purchases = EbookPurchase.query.filter_by(
+        member_id = member.id,
+        status    = "Success"
+    ).order_by(EbookPurchase.purchased_at.desc()).limit(50).all()
+
+    for p in purchases:
+        book = p.book
+        history_list.append({
+            "type"         : "ebook_purchase",
+            "purchase_code": p.purchase_code,
+            "date"         : p.purchased_at.isoformat(),
+            "purchased_at" : p.purchased_at.isoformat(),
+            "amount"       : float(p.amount),
+            "book": {
+                "title"   : book.title    if book else None,
+                "author"  : book.author   if book else None,
+                "category": book.category if book else None,
+            },
+        })
+
+    # Sort combined list newest-first
+    history_list.sort(key=lambda x: x["date"], reverse=True)
 
     return success_response(history_list)
 

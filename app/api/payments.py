@@ -1,35 +1,18 @@
 import hmac
 import hashlib
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import verify_jwt_in_request, get_jwt, get_jwt_identity
+from flask import Blueprint, request
 from app.extensions import db
 from app.models.book import Book
 from app.models.fine import Fine
 from app.models.member import Member
 from app.models.payment import Payment
+from app.utils import (
+    error_response,
+    success_response,
+    member_required,
+)
 
 payments_bp = Blueprint("payments", __name__)
-
-
-# ── Helpers ───────────────────────────────────────────────────────────────────
-
-def error_response(message, status_code):
-    return jsonify({"success": False, "error": message}), status_code
-
-
-def success_response(data, status_code=200):
-    return jsonify({"success": True, "data": data}), status_code
-
-
-def member_required():
-    try:
-        verify_jwt_in_request()
-        claims = get_jwt()
-        if claims.get("role") != "member":
-            return None, error_response("Member access required.", 403)
-        return get_jwt_identity(), None
-    except Exception:
-        return None, error_response("Missing or invalid token.", 401)
 
 
 def ebook_price(book):

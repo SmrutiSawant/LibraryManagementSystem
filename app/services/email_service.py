@@ -1,9 +1,19 @@
 from flask import current_app
 from flask_mail import Message
 from app.extensions import mail
+import threading
 
 
 # ── Helper ────────────────────────────────────────────────────────────────────
+
+def _send_async(app, msg):
+    with app.app_context():
+        try:
+            mail.send(msg)
+            print(f"[EMAIL] Sent '{msg.subject}' → {msg.recipients}")
+        except Exception as e:
+            print(f"[EMAIL] Failed to send '{msg.subject}' → {msg.recipients}: {e}")
+
 
 def _send(subject, recipients, body_text, body_html=None):
     """
@@ -20,10 +30,11 @@ def _send(subject, recipients, body_text, body_html=None):
             body       = body_text,
             html       = body_html,
         )
-        mail.send(msg)
-        print(f"[EMAIL] Sent '{subject}' → {recipients}")
+        app = current_app._get_current_object()
+        thread = threading.Thread(target=_send_async, args=(app, msg))
+        thread.start()
     except Exception as e:
-        print(f"[EMAIL] Failed to send '{subject}' → {recipients}: {e}")
+        print(f"[EMAIL] Failed to start async mail thread: {e}")
 
 
 # ── 1. Checkout confirmation ──────────────────────────────────────────────────

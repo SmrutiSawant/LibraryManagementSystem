@@ -1,17 +1,8 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from app.services.auth_service import register_member, login, AuthError
+from app.utils import error_response, success_response
 
 auth_bp = Blueprint("auth", __name__)
-
-
-# ── Helpers ───────────────────────────────────────────────────────────────────
-
-def error_response(message, status_code):
-    return jsonify({"success": False, "error": message}), status_code
-
-
-def success_response(data, status_code=200):
-    return jsonify({"success": True, "data": data}), status_code
 
 
 # ── POST /api/auth/register ───────────────────────────────────────────────────

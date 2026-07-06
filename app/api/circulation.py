@@ -1,5 +1,4 @@
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import verify_jwt_in_request, get_jwt, get_jwt_identity
+from flask import Blueprint, request
 from app.services.circulation_service import (
     search_by_barcode,
     search_member,
@@ -8,48 +7,14 @@ from app.services.circulation_service import (
     CirculationError,
 )
 from app.extensions import db
+from app.utils import (
+    error_response,
+    success_response,
+    librarian_required,
+    member_required,
+)
 
 circulation_bp = Blueprint("circulation", __name__)
-
-
-# ── Helpers ───────────────────────────────────────────────────────────────────
-
-def error_response(message, status_code):
-    return jsonify({"success": False, "error": message}), status_code
-
-
-def success_response(data, status_code=200):
-    return jsonify({"success": True, "data": data}), status_code
-
-
-def librarian_required():
-    """
-    Returns (identity, None) on success.
-    Returns (None, error_response) on failure.
-    """
-    try:
-        verify_jwt_in_request()
-        claims = get_jwt()
-        if claims.get("role") != "librarian":
-            return None, error_response(
-                "Librarian access required.", 403
-            )
-        return get_jwt_identity(), None  
-    except Exception:
-        return None, error_response(
-            "Missing or invalid token.", 401
-        )
-
-
-def member_required():
-    try:
-        verify_jwt_in_request()
-        claims = get_jwt()
-        if claims.get("role") != "member":
-            return None, error_response("Member access required.", 403)
-        return get_jwt_identity(), None
-    except Exception:
-        return None, error_response("Missing or invalid token.", 401)
 
 
 def reservation_payload(reservation):
@@ -350,13 +315,9 @@ def list_transactions():
     status = request.args.get("status", "").strip()
     limit  = min(int(request.args.get("limit", 50)), 100)
 
-    query = Transaction.query.order_by(
-        Transaction.checked_out_at.desc()
-    )
-
+    query = Transaction.query.order_by(Transaction.checked_out_at.desc())
     if status:
         query = query.filter(Transaction.status == status)
-
     transactions = query.limit(limit).all()
 
     result = []

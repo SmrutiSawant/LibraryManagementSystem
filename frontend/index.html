@@ -23,6 +23,7 @@
             --surface-2: #F5F3EF;
             --border: #E8E4DC;
             --border-deep: #D0CAC0;
+            --table-row-alt: #FBFAF8;
             --accent: #2B5F8A;
             --accent-h: #1A4266;
             --accent-pale: #EAF1F8;
@@ -57,6 +58,107 @@
             --dur-fast: 140ms;
             --dur-med: 300ms;
         }
+
+        /* ── Dark Mode ── */
+        body.dark-mode {
+            --ink: #F5F5F5;
+            --ink-mid: #D4D4D4;
+            --ink-light: #A3A3A3;
+            --paper: #0A0A0A;
+            --surface: #141414;
+            --surface-2: #1F1F1F;
+            --border: #2A2A2A;
+            --border-deep: #3D3D3D;
+            --table-row-alt: var(--surface-2);
+            --accent: #F59E0B;
+            --accent-h: #FCD34D;
+            --accent-pale: #3B2A00;
+            --success: #34D399;
+            --success-bg: #052E20;
+            --danger: #F87171;
+            --danger-bg: #3B0A0A;
+            --warning: #FBBF24;
+            --warning-bg: #2D1A00;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, .6);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, .7);
+            --shadow-lg: 0 8px 28px rgba(0, 0, 0, .8);
+        }
+
+        body.dark-mode #auth-screen {
+            background: linear-gradient(145deg, #000000 0%, #0A0A0A 55%, #141414 100%);
+        }
+
+        body.dark-mode .banner-clear {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ── Category Theme Overrides in Dark Mode ── */
+        body.dark-mode.theme-fiction {
+            --accent: #F87171 !important;
+            --accent-h: #FCA5A5 !important;
+            --accent-pale: #7F1D1D !important;
+            --paper: #1A1010 !important;
+            --surface: #2D1A1A !important;
+            --surface-2: #3F2525 !important;
+            --border: #4D3333 !important;
+            --border-deep: #6B4747 !important;
+            --ink: #FEF2F2 !important;
+            --ink-mid: #FEE2E2 !important;
+            --ink-light: #F87171 !important;
+        }
+        body.dark-mode.theme-nonfiction {
+            --accent: #34D399 !important;
+            --accent-h: #6EE7B7 !important;
+            --accent-pale: #064E3B !important;
+            --paper: #0B1612 !important;
+            --surface: #142820 !important;
+            --surface-2: #1E3A2F !important;
+            --border: #2B5242 !important;
+            --border-deep: #3B725B !important;
+            --ink: #ECFDF5 !important;
+            --ink-mid: #D1FAE5 !important;
+            --ink-light: #6EE7B7 !important;
+        }
+        body.dark-mode.theme-reference {
+            --accent: #A78BFA !important;
+            --accent-h: #C4B5FD !important;
+            --accent-pale: #4C1D95 !important;
+            --paper: #120E1C !important;
+            --surface: #201A31 !important;
+            --surface-2: #2E2547 !important;
+            --border: #3F3361 !important;
+            --border-deep: #584787 !important;
+            --ink: #F5F3FF !important;
+            --ink-mid: #EDE9FE !important;
+            --ink-light: #C4B5FD !important;
+        }
+        body.dark-mode.theme-textbook {
+            --accent: #38BDF8 !important;
+            --accent-h: #7DD3FC !important;
+            --accent-pale: #0C2233 !important;
+            --paper: #050508 !important;
+            --surface: #0E0E14 !important;
+            --surface-2: #18181F !important;
+            --border: #232330 !important;
+            --border-deep: #33334A !important;
+            --ink: #F0F0FF !important;
+            --ink-mid: #DCDCE8 !important;
+            --ink-light: #9494B8 !important;
+        }
+        body.dark-mode.theme-general {
+            --accent: #F59E0B !important;
+            --accent-h: #FCD34D !important;
+            --accent-pale: #3B2A00 !important;
+            --paper: #0A0A0A !important;
+            --surface: #141414 !important;
+            --surface-2: #1F1F1F !important;
+            --border: #2A2A2A !important;
+            --border-deep: #3D3D3D !important;
+            --ink: #F5F5F5 !important;
+            --ink-mid: #D4D4D4 !important;
+            --ink-light: #A3A3A3 !important;
+        }
+
 
         /* ── Reset ── */
         html {
@@ -556,17 +658,20 @@
             font-family: inherit;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             text-align: left;
             width: 100%;
-            min-height: 38px;
+            min-height: 40px;
         }
 
         .nav-link i {
-            width: 16px;
+            width: 20px;
             text-align: center;
             flex-shrink: 0;
-            font-size: 14px;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .nav-link:hover {
@@ -590,11 +695,18 @@
             flex-shrink: 0;
         }
 
-        .header-cart-btn {
+        .top-right-actions {
             position: fixed;
             top: 14px;
             right: 20px;
             z-index: 60;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .header-cart-btn {
+            position: relative;
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -634,6 +746,106 @@
             padding: 0 4px;
             flex-shrink: 0;
             border: 2px solid var(--surface);
+        }
+
+        /* ── Notifications Center ── */
+        .notification-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 320px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            box-shadow: var(--shadow-lg);
+            display: none;
+            flex-direction: column;
+            z-index: 110;
+            animation: modalIn var(--dur-fast) var(--ease) both;
+        }
+        .notification-dropdown.open {
+            display: flex;
+        }
+        .notification-header {
+            padding: 12px var(--sp-4);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface-2);
+        }
+        .notification-header h4 {
+            font-size: var(--text-sm);
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .notification-header button {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: var(--text-xs);
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .notification-header button:hover {
+            text-decoration: underline;
+        }
+        .notification-list {
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .notification-item {
+            padding: var(--sp-3) var(--sp-4);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            transition: background var(--dur-fast);
+        }
+        .notification-item:hover {
+            background: var(--surface-2);
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .notification-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .notification-title {
+            font-size: var(--text-xs);
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.3;
+        }
+        .notification-time {
+            font-size: 11px;
+            color: var(--ink-light);
+            margin-top: 4px;
+        }
+        .notification-empty {
+            padding: 24px;
+            text-align: center;
+            color: var(--ink-light);
+            font-size: var(--text-sm);
+        }
+        @keyframes bellRing {
+            0%, 100% { transform: rotate(0); }
+            20%, 60% { transform: rotate(15deg); }
+            40%, 80% { transform: rotate(-15deg); }
+        }
+        .ring-bell {
+            animation: bellRing 500ms ease;
         }
 
         .user-chip {
@@ -902,8 +1114,8 @@
         /* ── Book Grid ── */
         .books-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-            gap: var(--sp-3);
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: var(--sp-4);
         }
 
         .book-card {
@@ -924,7 +1136,7 @@
         }
 
         .book-cover {
-            height: 160px;
+            height: 200px;
             flex-shrink: 0;
             display: flex;
             align-items: flex-start;
@@ -934,6 +1146,20 @@
             overflow: hidden;
             background-size: cover;
             background-position: center;
+            transition: transform var(--dur-slow) var(--ease);
+        }
+
+        .book-card:hover .book-cover {
+            transform: scale(1.04);
+        }
+
+        @keyframes cartBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.18); }
+        }
+
+        .bounce-cart {
+            animation: cartBounce 350ms var(--ease);
         }
 
         .availability-dot {
@@ -952,7 +1178,7 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            padding: var(--sp-2) var(--sp-3) var(--sp-3);
+            padding: var(--sp-3);
         }
 
         .book-title {
@@ -992,21 +1218,57 @@
         }
 
         .category-tag {
-            font-size:var(--text-xs);
+            font-size: var(--text-xs);
             font-weight: 600;
-            padding: 2px 7px;
+            padding: 2px 8px;
             border-radius: 20px;
-            background: var(--surface-2);
-            color: var(--ink-mid);
             text-transform: uppercase;
             letter-spacing: .3px;
             white-space: nowrap;
             flex-shrink: 0;
+            display: inline-block;
         }
+
+        /* Category Tag Color Classes (Light Mode) */
+        .category-tag.tag-fiction { background: #FCE8E6; color: #C53030; }
+        .category-tag.tag-nonfiction { background: #E0F2FE; color: #0369A1; }
+        .category-tag.tag-reference { background: #DCFCE7; color: #15803D; }
+        .category-tag.tag-textbook { background: #EEF2F6; color: #4B5563; }
+        .category-tag.tag-general { background: #FEF3C7; color: #B45309; }
+
+        /* Copy Condition Colors (Light Mode) */
+        .category-tag.tag-good { background: #E8F5E9; color: #2E7D32; }
+        .category-tag.tag-fair { background: #FFF3E0; color: #E65100; }
+        .category-tag.tag-poor { background: #FDE2E2; color: #9B1C1C; }
+
+        /* Category Tag Color Classes (Dark Mode Overrides) */
+        body.dark-mode .category-tag.tag-fiction { background: #3B0A0A; color: #FCA5A5; }
+        body.dark-mode .category-tag.tag-nonfiction { background: #052E20; color: #6EE7B7; }
+        body.dark-mode .category-tag.tag-reference { background: #1C1233; color: #C4B5FD; }
+        body.dark-mode .category-tag.tag-textbook { background: #1A1A1A; color: #D4D4D4; }
+        body.dark-mode .category-tag.tag-general { background: #2D1A00; color: #FCD34D; }
+
+        /* Copy Condition Colors (Dark Mode Overrides) */
+        body.dark-mode .category-tag.tag-good { background: #052E20; color: #6EE7B7; }
+        body.dark-mode .category-tag.tag-fair { background: #2D1A00; color: #FCD34D; }
+        body.dark-mode .category-tag.tag-poor { background: #3B0A0A; color: #FCA5A5; }
 
         .copies-count {
             font-size: var(--text-xs);
             color: var(--ink-light);
+        }
+
+        /* Dark mode visibility refinements for high readability */
+        body.dark-mode .book-author {
+            color: var(--ink-mid);
+        }
+
+        body.dark-mode .copies-count {
+            color: var(--ink-mid);
+        }
+
+        body.dark-mode .filter-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394A3B8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
         }
 
         .btn-add-cart {
@@ -1040,7 +1302,10 @@
         }
 
         .btn-add-cart:disabled {
-            opacity: .55;
+            background: var(--surface-2);
+            border-color: var(--border);
+            color: var(--ink-light);
+            opacity: .6;
             cursor: not-allowed;
             transform: none;
         }
@@ -1061,6 +1326,7 @@
             border-radius: var(--r-md);
             padding: var(--sp-3);
             transition: transform var(--dur-med) var(--ease), box-shadow var(--dur-med) var(--ease);
+            cursor: pointer;
         }
 
         .ebook-card:hover {
@@ -1652,7 +1918,7 @@
         .data-table td {
             padding: 9px var(--sp-3);
             color: var(--ink);
-            border-bottom: 1px solid #F0ECE4;
+            border-bottom: 1px solid var(--border);
         }
 
         .data-table tr:last-child td {
@@ -1660,7 +1926,7 @@
         }
 
         .data-table tbody tr:nth-child(even) td {
-            background: #FBFAF8;
+            background: var(--table-row-alt);
         }
 
         .data-table tr:hover td {
@@ -1702,6 +1968,10 @@
             background: var(--warning-bg);
             color: var(--warning);
         }
+        .status-purchased {
+            background: #F0EBF8;
+            color: #6C5CE7;
+        }
         .status-paid {
             background: var(--success-bg);
             color: var(--success);
@@ -1734,8 +2004,8 @@
         /* ── Borrowed Grid ── */
         .borrowed-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: var(--sp-3);
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--sp-4);
             margin-bottom: var(--sp-4);
         }
 
@@ -1754,11 +2024,12 @@
         }
 
         .borrowed-cover {
-            width: 42px;
-            height: 58px;
-            border-radius: 4px;
+            width: 82px;
+            height: 112px;
+            border-radius: var(--r-sm);
             flex-shrink: 0;
             object-fit: cover;
+            box-shadow: var(--shadow-sm);
         }
 
         .borrowed-info {
@@ -2021,6 +2292,7 @@
         .circ-action-card p {
             font-size: var(--text-sm);
             color: var(--ink-light);
+            min-height: 40px;
         }
 
         .admin-controls {
@@ -2095,12 +2367,18 @@
         }
 
         .reader-toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            background: var(--paper);
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: var(--sp-3);
-            margin-bottom: var(--sp-3);
+            margin-bottom: var(--sp-4);
             flex-wrap: wrap;
+            padding: var(--sp-3) 0;
+            border-bottom: 1.5px solid var(--border);
         }
 
         .reader-book {
@@ -2109,6 +2387,108 @@
             border-radius: var(--r-md);
             box-shadow: var(--shadow-md);
             overflow: hidden;
+            font-size: var(--reader-fs, 16px) !important;
+        }
+
+        /* ── Ebook Reader Theme Customizer ── */
+        .reader-book.rt-cream {
+            background: #FAF6EE !important;
+            color: #2C251C !important;
+            border-color: #EADCB9 !important;
+        }
+        .reader-book.rt-cream .reader-cover {
+            background: #F3EBDD !important;
+            border-bottom-color: #E2D5C1 !important;
+            color: #2C251C !important;
+        }
+        .reader-book.rt-cream .reader-cover h2,
+        .reader-book.rt-cream .reader-cover p,
+        .reader-book.rt-cream .reader-cover div {
+            color: #2C251C !important;
+        }
+        .reader-book.rt-cream .reader-title-page {
+            background: #FAF6EE !important;
+            color: #2C251C !important;
+            border-bottom-color: #EADCB9 !important;
+        }
+        .reader-book.rt-cream .reader-title-page h2,
+        .reader-book.rt-cream .reader-title-page p {
+            color: #2C251C !important;
+        }
+
+        .reader-book.rt-sepia {
+            background: #F4ECD8 !important;
+            color: #433422 !important;
+            border-color: #d2be90 !important;
+        }
+        .reader-book.rt-sepia .reader-cover {
+            background: #EADCB9 !important;
+            border-bottom-color: #D6C296 !important;
+            color: #433422 !important;
+        }
+        .reader-book.rt-sepia .reader-cover h2,
+        .reader-book.rt-sepia .reader-cover p,
+        .reader-book.rt-sepia .reader-cover div {
+            color: #433422 !important;
+        }
+        .reader-book.rt-sepia .reader-title-page {
+            background: #F4ECD8 !important;
+            color: #433422 !important;
+            border-bottom-color: #d2be90 !important;
+        }
+        .reader-book.rt-sepia .reader-title-page h2,
+        .reader-book.rt-sepia .reader-title-page p {
+            color: #433422 !important;
+        }
+
+        .reader-book.rt-charcoal {
+            background: #1A1917 !important;
+            color: #D3CFC9 !important;
+            border-color: #383633 !important;
+        }
+        .reader-book.rt-charcoal .reader-cover {
+            background: #252422 !important;
+            border-bottom-color: #383633 !important;
+            color: #D3CFC9 !important;
+        }
+        .reader-book.rt-charcoal .reader-cover h2,
+        .reader-book.rt-charcoal .reader-cover p,
+        .reader-book.rt-charcoal .reader-cover div {
+            color: #D3CFC9 !important;
+        }
+        .reader-book.rt-charcoal .reader-title-page {
+            background: #1A1917 !important;
+            color: #D3CFC9 !important;
+            border-bottom-color: #383633 !important;
+        }
+        .reader-book.rt-charcoal .reader-title-page h2,
+        .reader-book.rt-charcoal .reader-title-page p {
+            color: #D3CFC9 !important;
+        }
+
+        .reader-book.rt-white {
+            background: #FFFFFF !important;
+            color: #1C1810 !important;
+            border-color: #E8E4DC !important;
+        }
+        .reader-book.rt-white .reader-cover {
+            background: #F5F3EF !important;
+            border-bottom-color: #E8E4DC !important;
+            color: #1C1810 !important;
+        }
+        .reader-book.rt-white .reader-cover h2,
+        .reader-book.rt-white .reader-cover p,
+        .reader-book.rt-white .reader-cover div {
+            color: #1C1810 !important;
+        }
+        .reader-book.rt-white .reader-title-page {
+            background: #FFFFFF !important;
+            color: #1C1810 !important;
+            border-bottom-color: #E8E4DC !important;
+        }
+        .reader-book.rt-white .reader-title-page h2,
+        .reader-book.rt-white .reader-title-page p {
+            color: #1C1810 !important;
         }
 
         .reader-cover {
@@ -2584,8 +2964,8 @@
             }
 
             .books-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: var(--sp-2);
+                grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+                gap: var(--sp-3);
             }
 
             .ebook-grid {
@@ -2640,7 +3020,8 @@
             }
 
             .books-grid {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
+                gap: var(--sp-3);
             }
 
             .summary-cards {
@@ -2751,6 +3132,11 @@
 
             <div class="sidebar-footer">
                 <span class="portal-badge sidebar-text" id="portal-badge" style="display:none"></span>
+                <div class="sidebar-privacy-row sidebar-text" style="font-size:10px;margin-bottom:8px;padding:0 8px;display:flex;gap:8px;justify-content:center;color:var(--ink-light)">
+                    <a href="#" onclick="openPrivacyModal(); return false;" style="color:var(--ink-light);text-decoration:none;transition:color var(--dur-fast)">Privacy Policy</a>
+                    <span style="color:var(--border)">|</span>
+                    <a href="#" onclick="openTermsModal(); return false;" style="color:var(--ink-light);text-decoration:none;transition:color var(--dur-fast)">Terms of Service</a>
+                </div>
                 <div class="sidebar-footer-row">
                     <div class="user-chip" onclick="openProfileModal()" title="View profile" role="button" tabindex="0">
                         <div class="user-avatar" id="user-avatar">?</div>
@@ -2766,10 +3152,30 @@
         </aside>
 
         <main class="main-area" role="main">
-            <button class="header-cart-btn" id="cart-btn" onclick="openCart()" style="display:none" aria-label="Open cart">
-                <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
-                <span class="cart-badge" id="cart-badge" style="display:none">0</span>
-            </button>
+            <div class="top-right-actions">
+                <button class="header-cart-btn" id="cart-btn" onclick="openCart()" style="display:none" aria-label="Open cart">
+                    <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                    <span class="cart-badge" id="cart-badge" style="display:none">0</span>
+                </button>
+                <div class="notification-bell-wrap" style="position:relative">
+                    <button class="header-cart-btn" onclick="toggleNotifications()" id="notification-btn" title="Notifications" aria-label="Notifications">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="cart-badge" id="notification-badge" style="display:none;background:var(--danger)">0</span>
+                    </button>
+                    <div class="notification-dropdown" id="notification-dropdown">
+                        <div class="notification-header">
+                            <h4>Notifications</h4>
+                            <button onclick="clearNotifications()">Clear All</button>
+                        </div>
+                        <div class="notification-list" id="notification-list">
+                            <div class="notification-empty">No notifications yet.</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="header-cart-btn" onclick="toggleDarkMode()" id="dark-mode-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
 
             <div id="category-theme-banner">
                 <i class="fa-solid fa-book-open" id="banner-icon" aria-hidden="true"></i>
@@ -2790,7 +3196,7 @@
                     <div class="search-bar" role="search">
                         <div class="search-input-wrap">
                             <span class="search-icon" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
-                            <input type="text" id="catalog-search" placeholder="Search by title or author…" onkeydown="if(event.key==='Enter')searchBooks()" aria-label="Search books" />
+                            <input type="text" id="catalog-search" placeholder="Search by title or author…" oninput="searchBooks()" onkeydown="if(event.key==='Enter')searchBooks()" aria-label="Search books" />
                         </div>
                         <select class="filter-select" id="catalog-category" onchange="searchBooks()" aria-label="Filter by category">
                             <option value="">All Categories</option>
@@ -2800,6 +3206,17 @@
                             <option value="Textbook">Textbook</option>
                             <option value="General">General</option>
                         </select>
+                        <select class="filter-select" id="catalog-sort" onchange="searchBooks()" aria-label="Sort books">
+                            <option value="title_asc">Title (A-Z)</option>
+                            <option value="title_desc">Title (Z-A)</option>
+                            <option value="author_asc">Author (A-Z)</option>
+                            <option value="avail_desc">Available Copies</option>
+                            <option value="price_asc">Ebook Price (Low-High)</option>
+                        </select>
+                        <label class="checkbox-wrap" style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);font-weight:500;color:var(--ink-mid);cursor:pointer;user-select:none;min-height:40px">
+                            <input type="checkbox" id="catalog-available-only" onchange="searchBooks()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)" />
+                            <span>Available Only</span>
+                        </label>
                         <button class="btn-search" onclick="searchBooks()">Search</button>
                     </div>
 
@@ -2901,8 +3318,8 @@
             <div class="page" id="page-history">
                 <div class="page-content">
                     <div class="page-header">
-                        <h2>Borrowing History</h2>
-                        <p>All your past checkouts and returns</p>
+                        <h2>History</h2>
+                        <p>All your past checkouts, returns and purchases</p>
                     </div>
                     <div id="history-wrap">
                         <div class="loading"><div class="spinner"></div>Loading…</div>
@@ -3035,6 +3452,23 @@
                             <h3>Create Fine</h3>
                             <p>Charge a member for damage, loss, or an overdue book</p>
                         </button>
+                    </div>
+
+                    <!-- Live Activity Log -->
+                    <div class="table-card" style="margin-top:24px" id="circ-live-activity-log">
+                        <div class="table-card-header">
+                            <h3><i class="fa-solid fa-clock-rotate-left"></i> Live Activity Log</h3>
+                            <span style="font-size:var(--text-xs);color:var(--ink-light)">This session</span>
+                        </div>
+                        <div style="padding:16px;text-align:center;color:var(--ink-light);font-size:var(--text-sm)" id="circ-empty-activity">
+                            No checkout or return transactions processed in this session yet.
+                        </div>
+                        <table class="data-table" id="circ-activity-table" style="display:none;width:100%;font-size:var(--text-xs)">
+                            <thead>
+                                <tr><th>Time</th><th>Action</th><th>Details</th></tr>
+                            </thead>
+                            <tbody id="circ-activity-rows"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -3303,7 +3737,19 @@
             </div>
         </div>
     </div>
-
+    <!-- ─── General Info Modal (Privacy & Terms) ──────────────────── -->
+    <div class="modal-overlay" id="info-modal">
+        <div class="modal" style="max-width:560px;max-height:85vh;display:flex;flex-direction:column;" role="dialog" aria-modal="true" aria-labelledby="info-modal-title">
+            <div class="modal-header" style="flex-shrink:0;">
+                <h3 id="info-modal-title">Information</h3>
+                <button class="btn-close" onclick="closeInfoModal()" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </div>
+            <div class="modal-body" id="info-modal-body" style="line-height:1.6;font-size:var(--text-sm);color:var(--ink-mid);overflow-y:auto;padding:var(--sp-4);"></div>
+            <div class="modal-footer" style="flex-shrink:0;">
+                <button class="btn-secondary" onclick="closeInfoModal()">Close</button>
+            </div>
+        </div>
+    </div>
     <!-- ─── Toast Container ──────────────────────────────────────── -->
     <div id="toast-container" role="status" aria-live="polite"></div>
 
@@ -3320,9 +3766,12 @@
         let selectedMember = null;
         let selectedCopy = null;
         let returnCopyId = null;
+        let returnCopyDetails = null;
+        let circSessionLog = [];
         let ebookCatalog = [];
         let catalogBooks = [];
         let activeReaderBookId = null;
+        let isReaderPreviewMode = false;
         let purchasingEbookId = null;
         let memberSearchDebounce, barcodeSearchDebounce, returnBarcodeDebounce;
 
@@ -3438,7 +3887,8 @@
             token = r.data.data.token;
             localStorage.setItem('lib_token', token);
             userRole = r.data.data.role;
-            userInfo = r.data.data.profile;
+            userInfo = r.data.data;
+            addNotification(`Welcome back, ${userInfo.full_name}!`, 'info');
             initApp();
         }
 
@@ -3469,11 +3919,113 @@
                 errEl.style.display = '';
                 return;
             }
+            addNotification(`Account successfully registered: ${name}`, 'success');
             sucEl.textContent = `Account created! Member code: ${r.data.data.member_code}. Please sign in.`;
             sucEl.style.display = '';
             switchAuthTab('login');
             document.getElementById('login-email').value = email;
         }
+
+        // ── Notifications Logic ──
+        let userNotifications = [];
+        let unreadNotificationsCount = 0;
+
+        function addNotification(title, type = 'info') {
+            const notif = {
+                id: Date.now() + Math.random().toString(36).substr(2, 5),
+                title: title,
+                type: type, // 'success', 'warning', 'danger', 'info'
+                time: new Date()
+            };
+            userNotifications.unshift(notif);
+            unreadNotificationsCount++;
+            
+            updateNotificationsUI();
+            
+            // Bell icon ring animation
+            const btn = document.querySelector('#notification-btn i');
+            if (btn) {
+                btn.classList.add('ring-bell');
+                setTimeout(() => btn.classList.remove('ring-bell'), 500);
+            }
+        }
+
+        function updateNotificationsUI() {
+            const badge = document.getElementById('notification-badge');
+            if (badge) {
+                if (unreadNotificationsCount > 0) {
+                    badge.textContent = unreadNotificationsCount;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+
+            const list = document.getElementById('notification-list');
+            if (list) {
+                if (userNotifications.length === 0) {
+                    list.innerHTML = '<div class="notification-empty">No notifications yet.</div>';
+                } else {
+                    const iconClasses = {
+                        success: { bg: 'var(--success-bg)', color: 'var(--success)', icon: 'fa-check' },
+                        warning: { bg: 'var(--warning-bg)', color: 'var(--warning)', icon: 'fa-exclamation' },
+                        danger: { bg: 'var(--danger-bg)', color: 'var(--danger)', icon: 'fa-xmark' },
+                        info: { bg: 'var(--accent-pale)', color: 'var(--accent)', icon: 'fa-info' }
+                    };
+
+                    list.innerHTML = userNotifications.map(n => {
+                        const style = iconClasses[n.type] || iconClasses.info;
+                        return `
+                        <div class="notification-item">
+                            <div class="notification-icon" style="background:${style.bg};color:${style.color}">
+                                <i class="fa-solid ${style.icon}"></i>
+                            </div>
+                            <div class="notification-info">
+                                <div class="notification-title">${esc(n.title)}</div>
+                                <div class="notification-time">${timeAgo(n.time)}</div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                }
+            }
+        }
+
+        function timeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 5) return 'Just now';
+            if (seconds < 60) return `${seconds}s ago`;
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes}m ago`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours}h ago`;
+            return date.toLocaleDateString();
+        }
+
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notification-dropdown');
+            if (dropdown) {
+                const open = dropdown.classList.toggle('open');
+                if (open) {
+                    unreadNotificationsCount = 0;
+                    updateNotificationsUI();
+                }
+            }
+        }
+
+        function clearNotifications() {
+            userNotifications = [];
+            unreadNotificationsCount = 0;
+            updateNotificationsUI();
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (e) => {
+            const wrap = document.querySelector('.notification-bell-wrap');
+            if (wrap && !wrap.contains(e.target)) {
+                const dropdown = document.getElementById('notification-dropdown');
+                if (dropdown) dropdown.classList.remove('open');
+            }
+        });
 
         function doLogout() {
             localStorage.removeItem('lib_token');
@@ -3513,6 +4065,7 @@
 
             updateCartBadge();
             setupNav();
+            updateDarkModeToggleBtn();
         }
 
         // ── Profile Modal ───────────────────────────────────────────
@@ -3655,7 +4208,7 @@
                     btn.className = 'nav-link';
                     btn.dataset.page = p.id;
                     btn.title = p.text;
-                    btn.innerHTML = `<i class="${p.icon}" aria-hidden="true"></i><span class="sidebar-text">${p.text}</span>`;
+                    btn.innerHTML = `<i class="${p.icon} fa-fw" aria-hidden="true"></i><span class="sidebar-text">${p.text}</span>`;
                     btn.onclick = () => showPage(p.id);
                     links.appendChild(btn);
                 });
@@ -3675,7 +4228,7 @@
                     btn.className = 'nav-link';
                     btn.dataset.page = p.id;
                     btn.title = p.text;
-                    btn.innerHTML = `<i class="${p.icon}" aria-hidden="true"></i><span class="sidebar-text">${p.text}</span>`;
+                    btn.innerHTML = `<i class="${p.icon} fa-fw" aria-hidden="true"></i><span class="sidebar-text">${p.text}</span>`;
                     btn.onclick = () => showPage(p.id);
                     links.appendChild(btn);
                 });
@@ -3698,6 +4251,31 @@
             } catch (e) {}
         })();
 
+        // ── Dark Mode ──────────────────────────────────────────────
+        function toggleDarkMode() {
+            const body = document.body;
+            const dark = body.classList.toggle('dark-mode');
+            try { localStorage.setItem('dark_mode', dark ? '1' : '0'); } catch (e) {}
+            updateDarkModeToggleBtn();
+        }
+
+        function updateDarkModeToggleBtn() {
+            const btn = document.getElementById('dark-mode-toggle');
+            if (!btn) return;
+            const isDark = document.body.classList.contains('dark-mode');
+            btn.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+            btn.title = isDark ? 'Light mode' : 'Dark mode';
+        }
+
+        (function restoreDarkMode() {
+            try {
+                if (localStorage.getItem('dark_mode') === '1') {
+                    document.body.classList.add('dark-mode');
+                }
+                setTimeout(updateDarkModeToggleBtn, 50);
+            } catch (e) {}
+        })();
+
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('sidebar-overlay').classList.toggle('open');
@@ -3709,6 +4287,14 @@
         }
 
         function showPage(id) {
+            if (activeReaderBookId && id !== 'ebook-reader') {
+                if (!isReaderPreviewMode) {
+                    saveEbookProgress(activeReaderBookId);
+                }
+                activeReaderBookId = null;
+                isReaderPreviewMode = false;
+            }
+
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(b => b.classList.toggle('active', b.dataset.page === id));
             const page = document.getElementById(`page-${id}`);
@@ -3758,17 +4344,37 @@
         function renderFilteredCatalog() {
             const q = document.getElementById('catalog-search').value.trim();
             const cat = document.getElementById('catalog-category').value;
+            const sortBy = document.getElementById('catalog-sort').value;
+            const availableOnly = document.getElementById('catalog-available-only').checked;
             applyCategoryTheme(cat);
             const wrap = document.getElementById('books-grid-wrap');
 
-            const books = fullCatalogCache.filter(book => {
+            let books = fullCatalogCache.filter(book => {
                 const term = q.toLowerCase();
                 const matchesSearch = !term ||
                     (book.title || '').toLowerCase().includes(term) ||
                     (book.author || '').toLowerCase().includes(term);
                 const matchesCategory = !cat || book.category === cat;
-                return matchesSearch && matchesCategory;
+                const matchesAvailable = !availableOnly || book.available_copies > 0;
+                return matchesSearch && matchesCategory && matchesAvailable;
             });
+
+            // Sorting logic
+            books.sort((a, b) => {
+                if (sortBy === 'title_asc') {
+                    return (a.title || '').localeCompare(b.title || '');
+                } else if (sortBy === 'title_desc') {
+                    return (b.title || '').localeCompare(a.title || '');
+                } else if (sortBy === 'author_asc') {
+                    return (a.author || '').localeCompare(b.author || '');
+                } else if (sortBy === 'avail_desc') {
+                    return b.available_copies - a.available_copies;
+                } else if (sortBy === 'price_asc') {
+                    return (a.price || 0) - (b.price || 0);
+                }
+                return 0;
+            });
+
             if (!books.length) {
                 wrap.innerHTML =
                     '<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-magnifying-glass"></i></div><h3>No books found</h3><p>Try a different search term or category.</p></div>';
@@ -3784,13 +4390,21 @@
             const avail = book.available_copies > 0;
             const inCart = cart.some(c => c.id === book.id);
             const dotColor = avail ? 'var(--success)' : 'var(--danger)';
-            const catColors = { Fiction: '#F2CECE', 'Non-fiction': '#D8D0F0', Reference: '#C9DDD4', Textbook: '#C7DDF4',
-                General: '#F5D9C4' };
-            const catBg = catColors[book.category] || '#F0EBE1';
+            const hasProgress = userInfo && localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`);
+            const progressVal = hasProgress ? parseFloat(localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`)) : 0;
+            const progressPercent = Math.min(100, Math.round(progressVal * 100));
+            const progressHtml = hasProgress && progressPercent > 0 ? `
+            <div style="margin-top:6px;display:flex;align-items:center;gap:8px;font-size:var(--text-xs);color:var(--ink-light)">
+                <div style="flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+                    <div style="width:${progressPercent}%;height:100%;background:var(--success)"></div>
+                </div>
+                <span>${progressPercent}% read</span>
+            </div>` : '';
+            const ebookLabel = hasProgress && progressPercent > 0 ? 'Resume ebook' : 'Read ebook';
 
             const ebookAction = book.owned ?
-                `<button class="btn-add-cart in-cart" onclick="event.stopPropagation();openEbookReader('${book.id}')">Read ebook</button>` :
-                `<button class="btn-add-cart" onclick="event.stopPropagation();purchaseCatalogEbook('${book.id}')">Buy ebook ₹${Number(book.price).toFixed(2)}</button>`;
+                `<button class="btn-add-cart in-cart" onclick="event.stopPropagation();openEbookReader('${book.id}')">${ebookLabel}</button>` :
+                `<div style="display:flex;gap:6px"><button class="btn-add-cart" style="flex:1" onclick="event.stopPropagation();purchaseCatalogEbook('${book.id}')">Buy ebook</button><button class="btn-add-cart secondary" style="flex:1;background:var(--surface-2);color:var(--ink-mid);border:1px solid var(--border)" onclick="event.stopPropagation();previewEbook('${book.id}')">Preview</button></div>`;
 
             return `<div class="book-card" onclick="showBookDetail('${book.id}')" role="button" tabindex="0">
             <div class="book-cover" style="background-image:url('${cover}');background-size:cover;background-position:center;">
@@ -3800,9 +4414,10 @@
               <div class="book-title">${esc(book.title)}</div>
               <div class="book-author">${esc(book.author)}</div>
               <div class="book-meta">
-                <span class="category-tag" style="background:${catBg}">${esc(book.category)}</span>
+                <span class="category-tag ${getCategoryClass(book.category)}">${esc(book.category)}</span>
                 <span class="copies-count">${book.available_copies}/${book.total_copies} avail.</span>
               </div>
+              ${progressHtml}
               <div class="book-actions">
                 <button class="btn-add-cart ${inCart ? 'in-cart' : ''}"
                   onclick="event.stopPropagation();toggleCart(${JSON.stringify(book).replace(/"/g, '&quot;')})"
@@ -3846,6 +4461,12 @@
             if (badge) {
                 badge.textContent = count;
                 badge.style.display = count > 0 ? '' : 'none';
+            }
+
+            const btn = document.getElementById('cart-btn');
+            if (btn) {
+                btn.classList.add('bounce-cart');
+                setTimeout(() => btn.classList.remove('bounce-cart'), 350);
             }
         }
 
@@ -3942,6 +4563,7 @@
             cart = [];
             updateCartBadge();
             searchBooks();
+            addNotification(`Successfully requested reservation for ${created.length} book(s).`, 'success');
             toast(`${created.length} borrow request${created.length === 1 ? '' : 's'} sent to librarian.`, 'success');
         }
 
@@ -3970,7 +4592,7 @@
                         `Due ${due.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}`;
                     const b = txn.book;
                     return `<div class="borrowed-card">
-                <img class="borrowed-cover" src="${bookCoverSvg(b, 48, 66)}" alt="Cover of ${esc(b.title)}">
+                <img class="borrowed-cover" src="${bookCoverSvg(b, 82, 112)}" alt="Cover of ${esc(b.title)}">
                 <div class="borrowed-info">
                   <div class="borrowed-title">${esc(b.title)}</div>
                   <div class="borrowed-author">${esc(b.author || '')}</div>
@@ -3999,19 +4621,34 @@
                 return;
             }
 
-            wrap.innerHTML = `<div class="ebook-grid">${books.map(book => `
-            <article class="ebook-card">
-              <img class="ebook-thumb" src="${bookCoverSvg(book, 88, 122)}" alt="Cover of ${esc(book.title)}">
-              <div class="ebook-body">
-                <div class="category-tag">${esc(book.category)}</div>
-                <div class="ebook-title">${esc(book.title)}</div>
-                <div class="ebook-author">${esc(book.author)}</div>
-                <p class="ebook-desc">Purchased on ${fmtDate(book.purchase?.purchased_at)}.</p>
-                <div class="ebook-actions">
-                  <button class="btn-ebook success" onclick="openEbookReader('${book.id}')">Read</button>
-                </div>
-              </div>
-            </article>`).join('')}</div>`;
+            wrap.innerHTML = `<div class="ebook-grid">${books.map(book => {
+                const hasProgress = userInfo && localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`);
+                const progressVal = hasProgress ? parseFloat(localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`)) : 0;
+                const progressPercent = Math.min(100, Math.round(progressVal * 100));
+                const progressHtml = hasProgress && progressPercent > 0 ? `
+                <div style="margin-bottom:10px;display:flex;align-items:center;gap:8px;font-size:var(--text-xs);color:var(--ink-light)">
+                    <div style="flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+                        <div style="width:${progressPercent}%;height:100%;background:var(--success)"></div>
+                    </div>
+                    <span>${progressPercent}% read</span>
+                </div>` : '';
+                const ebookLabel = hasProgress && progressPercent > 0 ? 'Resume' : 'Read';
+
+                return `
+                <article class="ebook-card">
+                  <img class="ebook-thumb" src="${bookCoverSvg(book, 88, 122)}" alt="Cover of ${esc(book.title)}">
+                  <div class="ebook-body">
+                    <div class="category-tag">${esc(book.category)}</div>
+                    <div class="ebook-title">${esc(book.title)}</div>
+                    <div class="ebook-author">${esc(book.author)}</div>
+                    <p class="ebook-desc">Purchased on ${fmtDate(book.purchase?.purchased_at)}.</p>
+                    ${progressHtml}
+                    <div class="ebook-actions">
+                      <button class="btn-ebook success" onclick="openEbookReader('${book.id}')">${ebookLabel}</button>
+                    </div>
+                  </div>
+                </article>`;
+            }).join('')}</div>`;
         }
 
         // ── Member: Ebooks ───────────────────────────────────────
@@ -4057,11 +4694,24 @@
         function renderEbookCard(book) {
             const cover = bookCoverSvg(book, 82, 112);
             const isBusy = purchasingEbookId === book.id;
-            const action = book.owned ?
-                `<button class="btn-ebook success" onclick="openEbookReader('${book.id}')">Read</button>` :
-                `<button class="btn-ebook primary" onclick="purchaseEbook('${book.id}')" ${isBusy ? 'disabled' : ''}>${isBusy ? 'Buying…' : `Buy ₹${Number(book.price).toFixed(2)}`}</button>`;
 
-            return `<article class="ebook-card">
+            const hasProgress = userInfo && localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`);
+            const progressVal = hasProgress ? parseFloat(localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`)) : 0;
+            const progressPercent = Math.min(100, Math.round(progressVal * 100));
+            const progressHtml = hasProgress && progressPercent > 0 ? `
+            <div style="margin-bottom:10px;display:flex;align-items:center;gap:8px;font-size:var(--text-xs);color:var(--ink-light)">
+                <div style="flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+                    <div style="width:${progressPercent}%;height:100%;background:var(--success)"></div>
+                </div>
+                <span>${progressPercent}% read</span>
+            </div>` : '';
+            const ebookLabel = hasProgress && progressPercent > 0 ? 'Resume' : 'Read';
+
+            const action = book.owned ?
+                `<button class="btn-ebook success" onclick="event.stopPropagation();openEbookReader('${book.id}')">${ebookLabel}</button>` :
+                `<button class="btn-ebook primary" onclick="event.stopPropagation();purchaseEbook('${book.id}')" ${isBusy ? 'disabled' : ''}>${isBusy ? 'Buying…' : `Buy ₹${Number(book.price).toFixed(2)}`}</button>`;
+
+            return `<article class="ebook-card" onclick="showBookDetail('${book.id}')" role="button" tabindex="0">
             <img class="ebook-thumb" src="${cover}" alt="Cover of ${esc(book.title)}">
             <div class="ebook-body">
               <div class="category-tag">${esc(book.category)}</div>
@@ -4069,6 +4719,7 @@
               <div class="ebook-author">${esc(book.author)}</div>
               <p class="ebook-desc">${esc(book.description || 'A digital edition available for instant member access.')}</p>
               <span class="ebook-price">${book.reading_minutes} min read</span>
+              ${progressHtml}
               <div class="ebook-actions">
                 ${action}
               </div>
@@ -4123,6 +4774,7 @@
                         if (onCancel) onCancel();
                         return;
                     }
+                    addNotification(`Purchased "${title}" ebook successfully.`, 'success');
                     toast(`Purchased "${title}". You can read it now.`, 'success');
                     if (onDone) onDone(r.data.data);
                 },
@@ -4144,6 +4796,13 @@
 
         function openEbookReader(bookId) {
             activeReaderBookId = bookId;
+            isReaderPreviewMode = false;
+            showPage('ebook-reader');
+        }
+
+        function previewEbook(bookId) {
+            activeReaderBookId = bookId;
+            isReaderPreviewMode = true;
             showPage('ebook-reader');
         }
 
@@ -4154,31 +4813,90 @@
                 return;
             }
 
-            wrap.innerHTML = '<div class="loading"><div class="spinner"></div>Opening reader…</div>';
-            const r = await api('GET', `/ebooks/reader/${bookId}`);
-            if (!r.ok) {
-                wrap.innerHTML =
-                    `<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-lock"></i></div><h3>Reader locked</h3><p>${esc(r.data.error)}</p><button class="btn-search" onclick="showPage('catalog')" style="margin-top:14px">Back to catalog</button></div>`;
-                return;
+            let book = null;
+            let chapters = [];
+            let isPreview = isReaderPreviewMode;
+
+            if (isPreview) {
+                book = (catalogBooks || []).find(b => b.id === bookId);
+                if (!book) {
+                    const rCatalog = await api('GET', '/ebooks/catalog');
+                    if (rCatalog.ok) {
+                        catalogBooks = rCatalog.data.data;
+                        book = catalogBooks.find(b => b.id === bookId);
+                    }
+                }
+                if (!book) {
+                    wrap.innerHTML = errorHTML('Preview could not be loaded.');
+                    return;
+                }
+                chapters = book.sample || [];
+            } else {
+                wrap.innerHTML = '<div class="loading"><div class="spinner"></div>Opening reader…</div>';
+                const r = await api('GET', `/ebooks/reader/${bookId}`);
+                if (!r.ok) {
+                    wrap.innerHTML =
+                        `<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-lock"></i></div><h3>Reader locked</h3><p>${esc(r.data.error)}</p><button class="btn-search" onclick="showPage('catalog')" style="margin-top:14px">Back to catalog</button></div>`;
+                    return;
+                }
+                book = r.data.data;
+                chapters = book.chapters || [];
             }
 
-            const book = r.data.data;
-            let readingBody = (book.chapters || []).map(chapter => `
+            let readingBody = chapters.map(chapter => `
             <section>
               <h3>${esc(chapter.heading)}</h3>
               <p>${esc(chapter.body)}</p>
             </section>`).join('');
 
-            if (book.full_text_available) {
+            if (!isPreview && book.full_text_available) {
                 readingBody = '<div class="loading"><div class="spinner"></div>Loading full text…</div>';
             }
 
+            const currentTheme = localStorage.getItem('reader_theme') || 'white';
+            const currentFontSize = localStorage.getItem('reader_font_size') || '16';
+
+            const backBtnText = isPreview ? 'Back to catalog' : 'Back to purchased';
+            const backBtnPage = isPreview ? 'catalog' : 'purchased';
+
+            const previewNotice = isPreview ? `
+            <div style="background:var(--warning-bg);color:var(--warning);border:1px solid var(--border);border-radius:var(--r-sm);padding:var(--sp-3) var(--sp-4);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+                <div style="font-size:var(--text-sm)">
+                    <strong>Preview Mode</strong>: You are reading a free sample of this ebook.
+                </div>
+                <button class="btn-sm primary" onclick="purchaseCatalogEbook('${book.id}')">Buy Full Ebook ₹${Number(book.price).toFixed(2)}</button>
+            </div>` : '';
+
             wrap.innerHTML = `<div class="reader-shell">
+            ${previewNotice}
             <div class="reader-toolbar">
-              <button class="btn-ebook ghost" onclick="showPage('purchased')"><i class="fa-solid fa-arrow-left"></i> Back to purchased</button>
-              <span class="category-tag">${esc(book.purchase?.purchase_code || 'Owned')}</span>
+              <button class="btn-ebook ghost" onclick="showPage('${backBtnPage}')"><i class="fa-solid fa-arrow-left"></i> ${backBtnText}</button>
+              
+              <div class="reader-controls" style="display:flex;align-items:center;gap:12px">
+                <!-- Explicit Bookmark Button -->
+                ${!isPreview ? `
+                <button class="btn-ebook ghost" onclick="toggleExplicitBookmark()" id="reader-bookmark-btn" title="Save Bookmark" style="display:flex;align-items:center;gap:6px;border:1.5px solid var(--border);border-radius:var(--r-sm);height:32px;padding:4px 10px;font-size:var(--text-xs);font-weight:500;cursor:pointer;background:var(--surface)">
+                    <i class="fa-regular fa-bookmark" id="reader-bookmark-icon" style="font-size:12px"></i> <span>Bookmark</span>
+                </button>` : ''}
+
+                <!-- Font Size Adjuster -->
+                <div class="font-size-adjust" style="display:flex;align-items:center;border:1.5px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:var(--surface)">
+                  <button class="btn-ebook ghost" onclick="changeReaderFontSize(-2)" style="border:none;min-height:32px;padding:4px 12px;font-size:12px;font-weight:700" title="Decrease font size">A-</button>
+                  <button class="btn-ebook ghost" onclick="changeReaderFontSize(2)" style="border:none;min-height:32px;padding:4px 12px;font-size:15px;font-weight:700" title="Increase font size">A+</button>
+                </div>
+
+                <!-- Ebook Theme Buttons -->
+                <div class="reader-themes" style="display:flex;gap:8px">
+                  <button onclick="setReaderTheme('white')" style="width:26px;height:26px;border-radius:50%;border:2px solid ${currentTheme === 'white' ? 'var(--accent)' : '#ccc'};background:#fff;cursor:pointer" title="White Theme" aria-label="White Theme"></button>
+                  <button onclick="setReaderTheme('cream')" style="width:26px;height:26px;border-radius:50%;border:2px solid ${currentTheme === 'cream' ? 'var(--accent)' : '#ebdcb9'};background:#FAF6EE;cursor:pointer" title="Cream Theme" aria-label="Cream Theme"></button>
+                  <button onclick="setReaderTheme('sepia')" style="width:26px;height:26px;border-radius:50%;border:2px solid ${currentTheme === 'sepia' ? 'var(--accent)' : '#d2be90'};background:#F4ECD8;cursor:pointer" title="Sepia Theme" aria-label="Sepia Theme"></button>
+                  <button onclick="setReaderTheme('charcoal')" style="width:26px;height:26px;border-radius:50%;border:2px solid ${currentTheme === 'charcoal' ? 'var(--accent)' : '#383633'};background:#1A1917;cursor:pointer" title="Charcoal Theme" aria-label="Charcoal Theme"></button>
+                </div>
+              </div>
+
+              <span class="category-tag">${isPreview ? 'Preview' : (esc(book.purchase?.purchase_code || 'Owned'))}</span>
             </div>
-            <article class="reader-book">
+            <article class="reader-book rt-${currentTheme}" id="reader-book-container" style="--reader-fs: ${currentFontSize}px">
               <header class="reader-cover">
                 <img src="${bookCoverSvg(book, 120, 160)}" alt="Cover of ${esc(book.title)}">
                 <div>
@@ -4187,7 +4905,7 @@
                   <p>${esc(book.author)}</p>
                   <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
                     <span class="category-tag">${esc(book.book_code)}</span>
-                    <span class="category-tag">Purchased</span>
+                    <span class="category-tag">${isPreview ? 'Free Sample' : 'Purchased'}</span>
                     <span class="category-tag">${book.reading_minutes} min read</span>
                   </div>
                 </div>
@@ -4203,17 +4921,22 @@
             </article>
           </div>`;
 
-            if (book.full_text_available) {
-                loadFullText(bookId, book.full_text_source);
+            if (!isPreview && book.full_text_available) {
+                await loadFullText(bookId, book.full_text_source, bookId);
+            } else if (!isPreview) {
+                // No full text – content is already rendered, restore now
+                restoreEbookProgress(bookId);
             }
         }
 
-        async function loadFullText(bookId, sourceLabel) {
+        async function loadFullText(bookId, sourceLabel, restoreBookId) {
             const content = document.getElementById('reader-content');
             const r = await api('GET', `/ebooks/reader/${bookId}/text`);
             if (!r.ok) {
                 const body = r.data?.error || 'Could not load the full text right now.';
                 content.innerHTML = `<section><h3>Reader Note</h3><p>${esc(body)}</p></section>`;
+                // Still attempt restore even on error (page height may differ)
+                if (restoreBookId) restoreEbookProgress(restoreBookId);
                 return;
             }
 
@@ -4228,6 +4951,108 @@
               Full text from ${esc(sourceLabel || 'Project Gutenberg')}.
             </p>
             <div class="reader-full-text">${paragraphs.map(p => `<p>${esc(p)}</p>`).join('')}</div>`;
+
+            // Restore bookmark AFTER content is fully in the DOM so scrollHeight is correct
+            if (restoreBookId) restoreEbookProgress(restoreBookId);
+        }
+
+        // ── Ebook Reader Helper Functions ─────────────────────────
+        function saveEbookProgress(bookId) {
+            if (!userInfo || !bookId) return;
+            const doc = document.documentElement;
+            const scrollHeight = doc.scrollHeight - window.innerHeight;
+            if (scrollHeight > 0) {
+                const ratio = window.scrollY / scrollHeight;
+                localStorage.setItem(`lib_bookmark_${userInfo.id}_${bookId}`, ratio);
+            }
+        }
+
+        function restoreEbookProgress(bookId) {
+            if (!userInfo || !bookId) return;
+            const saved = localStorage.getItem(`lib_bookmark_${userInfo.id}_${bookId}`);
+            if (saved !== null) {
+                const ratio = parseFloat(saved);
+                if (!isNaN(ratio) && ratio > 0) {
+                    const icon = document.getElementById('reader-bookmark-icon');
+                    if (icon) {
+                        icon.className = 'fa-solid fa-bookmark';
+                        icon.style.color = 'var(--success)';
+                    }
+
+                    const doScroll = (behavior) => {
+                        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+                        if (scrollHeight > 0) {
+                            window.scrollTo({ top: ratio * scrollHeight, behavior });
+                            return true;
+                        }
+                        return false;
+                    };
+
+                    // Fire immediately via rAF (content is already in DOM when this is called)
+                    requestAnimationFrame(() => {
+                        if (!doScroll('instant')) {
+                            // Safety retry if layout hasn't settled yet
+                            setTimeout(() => doScroll('smooth'), 100);
+                            setTimeout(() => doScroll('instant'), 400);
+                        }
+                    });
+
+                    setTimeout(() => toast('Resumed from your last reading position', 'success'), 200);
+                }
+            }
+        }
+
+        function toggleExplicitBookmark() {
+            if (!activeReaderBookId || !userInfo) return;
+            const key = `lib_bookmark_${userInfo.id}_${activeReaderBookId}`;
+            const exists = localStorage.getItem(key) !== null;
+
+            const icon = document.getElementById('reader-bookmark-icon');
+            if (exists) {
+                localStorage.removeItem(key);
+                toast('Bookmark removed', 'warning');
+                if (icon) {
+                    icon.className = 'fa-regular fa-bookmark';
+                    icon.style.color = '';
+                }
+            } else {
+                saveEbookProgress(activeReaderBookId);
+                toast('Reading position bookmarked!', 'success');
+                if (icon) {
+                    icon.className = 'fa-solid fa-bookmark';
+                    icon.style.color = 'var(--success)';
+                }
+            }
+        }
+
+        function changeReaderFontSize(delta) {
+            const container = document.getElementById('reader-book-container');
+            if (!container) return;
+            let currentSize = parseInt(localStorage.getItem('reader_font_size')) || 16;
+            currentSize = Math.max(12, Math.min(32, currentSize + delta));
+            localStorage.setItem('reader_font_size', currentSize);
+            container.style.setProperty('--reader-fs', `${currentSize}px`);
+        }
+
+        function setReaderTheme(theme) {
+            const container = document.getElementById('reader-book-container');
+            if (!container) return;
+            
+            // Remove previous theme classes
+            ['white', 'cream', 'sepia', 'charcoal'].forEach(t => {
+                container.classList.remove(`rt-${t}`);
+            });
+            
+            container.classList.add(`rt-${theme}`);
+            localStorage.setItem('reader_theme', theme);
+            
+            // Update active state border colors on theme buttons
+            const themeBtns = document.querySelectorAll('.reader-themes button');
+            const borders = { white: '#ccc', cream: '#ebdcb9', sepia: '#d2be90', charcoal: '#383633' };
+            themeBtns.forEach((btn, idx) => {
+                const btnTheme = ['white', 'cream', 'sepia', 'charcoal'][idx];
+                btn.style.borderColor = btnTheme === theme ? 'var(--accent)' : borders[btnTheme];
+            });
         }
 
         // ── Member: Fines ─────────────────────────────────────────
@@ -4290,6 +5115,7 @@
                 },
                 theme: { color: '#2B5F8A' },
                 handler: function() {
+                    addNotification(`Paid fine ${fineCode} (₹${amount.toFixed(2)}) successfully.`, 'success');
                     toast('Payment received! Updating your fine status…', 'success');
                     setTimeout(loadFines, 2000);
                 },
@@ -4317,23 +5143,56 @@
             const history = r.data.data;
             if (!history.length) {
                 wrap.innerHTML =
-                    '<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-book-open"></i></div><h3>No history yet</h3><p>Your borrowing history will appear here once you return your first book.</p></div>';
+                    '<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-clock-rotate-left"></i></div><h3>No history yet</h3><p>Your borrowing and purchase history will appear here.</p></div>';
                 return;
             }
 
-            let html =
-                `<div class="table-card"><div class="table-card-header"><h3>All Transactions</h3><span style="font-size:var(--text-xs);color:var(--ink-light)">${history.length} records</span></div>
-            <table class="data-table"><thead><tr><th>Book</th><th>Checked Out</th><th>Due</th><th>Returned</th><th>Fine</th></tr></thead><tbody>`;
-            html += history.map(h => `<tr>
-              <td>
-                <div style="font-weight:500">${esc(h.book?.title || '—')}</div>
-                <div style="font-size:var(--text-xs);color:var(--ink-light)">${esc(h.book?.author || '')}</div>
-              </td>
-              <td>${fmtDate(h.checked_out_at)}</td>
-              <td>${fmtDate(h.due_date)}</td>
-              <td>${h.returned_at ? fmtDate(h.returned_at) : '<em style="color:var(--ink-light)">—</em>'}</td>
-              <td>${h.fine ? `<span style="color:var(--danger);font-weight:600">₹${h.fine.amount.toFixed(2)}</span> <span class="status-pill status-${h.fine.status.toLowerCase()}">${h.fine.status}</span>` : '<span style="color:var(--ink-light)">—</span>'}</td>
-            </tr>`).join('');
+            const borrows   = history.filter(h => h.type === 'borrow').length;
+            const purchases = history.filter(h => h.type === 'ebook_purchase').length;
+
+            let html = `<div class="table-card">
+              <div class="table-card-header">
+                <h3>Activity History</h3>
+                <span style="font-size:var(--text-xs);color:var(--ink-light);display:flex;gap:12px">
+                  <span><i class="fa-solid fa-book fa-fw" style="color:var(--accent)"></i> ${borrows} borrow${borrows !== 1 ? 's' : ''}</span>
+                  <span><i class="fa-solid fa-book-open-reader fa-fw" style="color:var(--success)"></i> ${purchases} purchase${purchases !== 1 ? 's' : ''}</span>
+                </span>
+              </div>
+              <table class="data-table"><thead><tr>
+                <th>Type</th><th>Book</th><th>Date</th><th>Details</th><th>Amount / Fine</th>
+              </tr></thead><tbody>`;
+
+            html += history.map(h => {
+                if (h.type === 'ebook_purchase') {
+                    return `<tr>
+                      <td><span class="status-pill" style="background:var(--success-bg);color:var(--success);white-space:nowrap"><i class="fa-solid fa-book-open-reader fa-fw"></i> Ebook Purchased</span></td>
+                      <td>
+                        <div style="font-weight:500">${esc(h.book?.title || '—')}</div>
+                        <div style="font-size:var(--text-xs);color:var(--ink-light)">${esc(h.book?.author || '')}</div>
+                      </td>
+                      <td>${fmtDate(h.purchased_at)}</td>
+                      <td><span style="font-size:var(--text-xs);color:var(--ink-light);font-family:monospace">${esc(h.purchase_code || '—')}</span></td>
+                      <td><span style="color:var(--success);font-weight:600">₹${h.amount.toFixed(2)}</span></td>
+                    </tr>`;
+                } else {
+                    return `<tr>
+                      <td><span class="status-pill" style="background:var(--accent-pale);color:var(--accent);white-space:nowrap"><i class="fa-solid fa-book fa-fw"></i> Book Borrowed</span></td>
+                      <td>
+                        <div style="font-weight:500">${esc(h.book?.title || '—')}</div>
+                        <div style="font-size:var(--text-xs);color:var(--ink-light)">${esc(h.book?.author || '')}</div>
+                      </td>
+                      <td>
+                        <div>${fmtDate(h.checked_out_at)}</div>
+                        <div style="font-size:var(--text-xs);color:var(--ink-light)">Returned: ${h.returned_at ? fmtDate(h.returned_at) : '<em>—</em>'}</div>
+                      </td>
+                      <td><span style="font-size:var(--text-xs);color:var(--ink-light)">Due: ${fmtDate(h.due_date)}</span></td>
+                      <td>${h.fine
+                        ? `<span style="color:var(--danger);font-weight:600">₹${h.fine.amount.toFixed(2)}</span> <span class="status-pill status-${h.fine.status.toLowerCase()}">${h.fine.status}</span>`
+                        : '<span style="color:var(--ink-light)">—</span>'}</td>
+                    </tr>`;
+                }
+            }).join('');
+
             html += '</tbody></table></div>';
             wrap.innerHTML = html;
         }
@@ -4369,12 +5228,85 @@
             const totalMembers = members.length;
             const suspended = members.filter(m => m.status === 'Suspended').length;
 
+            // Calculate active vs overdue shares for the gauge
+            const totalOut = (active + overdue) || 1;
+            const activeShare = active / totalOut;
+            const overdueShare = overdue / totalOut;
+
+            // Calculate category frequencies from the transactions
+            const categories = {};
+            txns.forEach(t => {
+                const cat = t.book?.category || 'General';
+                categories[cat] = (categories[cat] || 0) + 1;
+            });
+            const catColors = { Fiction: 'var(--accent)', 'Non-fiction': '#8e44ad', Reference: '#27ae60', Textbook: '#d35400', General: '#f39c12' };
+            
+            const totalBorrows = txns.length || 1;
+            const categoryData = Object.keys(catColors).map(cat => {
+                const count = categories[cat] || 0;
+                return {
+                    category: cat,
+                    count: count,
+                    percentage: Math.round((count / totalBorrows) * 100),
+                    color: catColors[cat]
+                };
+            }).sort((a, b) => b.count - a.count);
+
             let html = `<div class="summary-cards">
             <div class="summary-card accent-sky clickable" onclick="goToTransactions('Active')" role="button" tabindex="0" aria-label="View active loans in Transactions"><div class="card-label">Active Loans</div><div class="card-value">${active}</div><div class="card-sub">Books currently out</div></div>
             <div class="summary-card accent-blush clickable" onclick="goToTransactions('Overdue')" role="button" tabindex="0" aria-label="View overdue transactions"><div class="card-label">Overdue</div><div class="card-value">${overdue}</div><div class="card-sub">Require attention</div></div>
             <div class="summary-card accent-sage clickable" onclick="goToMembers('')" role="button" tabindex="0" aria-label="View all members"><div class="card-label">Members</div><div class="card-value">${totalMembers}</div><div class="card-sub">${suspended} suspended</div></div>
             <div class="summary-card accent-peach clickable" onclick="goToTransactions('')" role="button" tabindex="0" aria-label="View all transactions"><div class="card-label">Total Transactions</div><div class="card-value">${txns.length}</div><div class="card-sub">Last 100 records</div></div>
           </div>`;
+
+          html += `<div class="dashboard-charts" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:var(--sp-3);margin-bottom:var(--sp-5)">
+                <!-- Loan Status Gauge -->
+                <div class="summary-card" style="display:flex;flex-direction:column;align-items:center;padding:var(--sp-4)">
+                    <div class="card-label" style="align-self:flex-start">Loan Distribution</div>
+                    <div style="position:relative;width:150px;height:150px;margin:15px 0">
+                        <svg width="150" height="150" viewBox="0 0 150 150">
+                            <!-- Background Circle -->
+                            <circle cx="75" cy="75" r="60" fill="none" stroke="var(--border)" stroke-width="12" />
+                            <!-- Active Circle -->
+                            <circle cx="75" cy="75" r="60" fill="none" stroke="var(--accent)" stroke-width="12" 
+                                    stroke-dasharray="${2 * Math.PI * 60}" 
+                                    stroke-dashoffset="${2 * Math.PI * 60 * (1 - activeShare)}" 
+                                    transform="rotate(-90 75 75)" stroke-linecap="round" />
+                            <!-- Overdue Circle -->
+                            <circle cx="75" cy="75" r="60" fill="none" stroke="var(--danger)" stroke-width="12" 
+                                    stroke-dasharray="${2 * Math.PI * 60}" 
+                                    stroke-dashoffset="${2 * Math.PI * 60 * (1 - overdueShare)}" 
+                                    transform="rotate(${360 * activeShare - 90} 75 75)" stroke-linecap="round" />
+                        </svg>
+                        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                            <span style="font-family:'Lora',serif;font-size:24px;font-weight:500;line-height:1">${active + overdue}</span>
+                            <span style="font-size:var(--text-xs);color:var(--ink-light);margin-top:2px">Out Loaned</span>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:20px;font-size:var(--text-xs);font-weight:500;margin-top:5px">
+                        <div style="display:flex;align-items:center;gap:6px"><span style="display:block;width:10px;height:10px;background:var(--accent);border-radius:2px"></span>Active: ${active} (${Math.round(activeShare * 100)}%)</div>
+                        <div style="display:flex;align-items:center;gap:6px"><span style="display:block;width:10px;height:10px;background:var(--danger);border-radius:2px"></span>Overdue: ${overdue} (${Math.round(overdueShare * 100)}%)</div>
+                    </div>
+                </div>
+
+                <!-- Book Category Breakdown -->
+                <div class="summary-card" style="display:flex;flex-direction:column;padding:var(--sp-4)">
+                    <div class="card-label">Popular Categories</div>
+                    <div style="display:flex;flex-direction:column;gap:12px;margin-top:15px;flex:1;justify-content:center">
+                        ${categoryData.map(c => `
+                            <div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;font-size:var(--text-xs);margin-bottom:4px;font-weight:500">
+                                    <span>${c.category}</span>
+                                    <span style="margin-left:auto;color:var(--ink-light)">${c.count} borrows</span>
+                                </div>
+                                <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+                                    <div style="width:${c.percentage}%;height:100%;background:${c.color};border-radius:4px;transition:width 500ms"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>`;
 
             const overdueList = txns.filter(t => t.status === 'Overdue').slice(0, 8);
             if (overdueList.length) {
@@ -4451,6 +5383,7 @@
                 toast(r.data.error || 'Could not approve request.', 'error');
                 return;
             }
+            addNotification(`Approved reservation request (Checkout: ${r.data.data.checkout.txn_code}).`, 'success');
             toast(`Request approved. Checkout created: ${r.data.data.checkout.txn_code}`, 'success');
             removeRequestRow(id);
         }
@@ -4506,6 +5439,7 @@
 
             if (!r.ok) { toast(r.data.error || 'Could not reject request.', 'error'); return; }
 
+            addNotification(`Rejected reservation request.`, 'warning');
             toast('Request rejected.', 'warning');
             closeRejectModal();
             removeRequestRow(id);
@@ -4706,6 +5640,7 @@
                 return;
             }
             closeAddMemberModal();
+            addNotification(`Registered member: ${name}`, 'success');
             toast(`${name} added as a new member`, 'success');
             loadAdminMembers();
         }
@@ -4735,7 +5670,7 @@
             let html =
                 `<div class="table-card"><div class="table-card-header"><h3>Book Catalog</h3><span style="font-size:var(--text-xs);color:var(--ink-light)">${books.length} titles</span></div>
             <table class="data-table"><thead><tr><th></th><th>Code</th><th>Title</th><th>Author</th><th>Category</th><th>Total Copies</th><th>Available</th></tr></thead><tbody>`;
-            html += books.map(b => `<tr>
+            html += books.map(b => `<tr onclick="showBookDetail('${b.id}')" role="button" tabindex="0" style="cursor:pointer">
               <td style="width:40px"><img src="${bookCoverSvg(b, 36, 50)}" class="table-cover" alt="Cover of ${esc(b.title)}"></td>
               <td style="font-family:monospace;font-size:var(--text-xs)">${b.book_code}</td>
               <td style="font-weight:500">${esc(b.title)}</td>
@@ -4788,6 +5723,7 @@
                 return;
             }
             closeAddBookModal();
+            addNotification(`Added book to catalog: "${title}"`, 'success');
             toast(`"${title}" added to catalog`, 'success');
             loadAdminBooks();
         }
@@ -4890,7 +5826,7 @@
             if (!r.ok) { res.innerHTML = `<div class="error-msg">${r.data.error}</div>`; selectedCopy = null;
                 updateCheckoutBtn(); return; }
             const d = r.data.data;
-            selectedCopy = d.copy;
+            selectedCopy = { ...d.copy, title: d.book.title };
             const avail = d.copy.status === 'Available';
             res.innerHTML =
                 `<div style="padding:10px;border-radius:8px;border:1px solid ${avail ? 'var(--success)' : 'var(--danger)'};background:${avail ? 'var(--success-bg)' : 'var(--danger-bg)'}">
@@ -4926,7 +5862,9 @@
             const r = await api('POST', '/circulation/checkout', { member_id: selectedMember.id, copy_id: selectedCopy.id });
             btn.textContent = 'Checkout';
             if (!r.ok) { toast(r.data.error || 'Checkout failed.', 'error'); btn.disabled = false; return; }
+            addNotification(`Checked out "${selectedCopy.title || 'Book'}" to ${selectedMember.full_name}.`, 'success');
             toast(`Book checked out to ${selectedMember.full_name}`, 'success');
+            addCircActivity('Checkout', `"${selectedCopy.title || 'Book'}" (${selectedCopy.barcode}) checked out to ${selectedMember.full_name} (${selectedMember.member_code})`);
             closeCircModal();
         }
 
@@ -4953,6 +5891,7 @@
             const d = r.data.data;
             const checkedOut = d.copy.status === 'Checked Out';
             returnCopyId = checkedOut ? d.copy.id : null;
+            returnCopyDetails = checkedOut ? { title: d.book.title, barcode: d.copy.barcode, member: d.current_transaction?.member?.full_name || 'unknown' } : null;
             document.getElementById('return-btn').disabled = !checkedOut;
 
             let html =
@@ -4963,7 +5902,7 @@
             if (d.current_transaction) {
                 const txn = d.current_transaction;
                 html += `<div style="font-size:var(--text-xs);margin-top:6px;color:var(--ink-mid)">
-                Borrowed by: <strong>${esc(txn.member_name || '—')}</strong><br>
+                Borrowed by: <strong>${esc(txn.member?.full_name || '—')}</strong><br>
                 Due: ${fmtDate(txn.due_date)}<br>
                 Days overdue: ${txn.days_overdue || 0}
               </div>`;
@@ -4986,7 +5925,17 @@
             const fine = d.fine_raised;
             if (fine) toast(`<i class="fa-solid fa-book"></i> Book returned. Fine raised: ₹${fine.amount}`, 'warning');
             else toast(`Book returned successfully`, 'success');
+
+            // Log activity
+            const fineStr = fine ? ` (Fine: ₹${fine.amount})` : '';
+            const details = returnCopyDetails ? 
+                `"${returnCopyDetails.title}" (${returnCopyDetails.barcode}) returned by ${returnCopyDetails.member}${fineStr}` : 
+                `Copy returned${fineStr}`;
+            addCircActivity('Return', details);
+            addNotification(details, fine ? 'warning' : 'success');
+
             returnCopyId = null;
+            returnCopyDetails = null;
             document.getElementById('return-barcode').value = '';
             document.getElementById('return-book-result').innerHTML = '';
             closeCircModal();
@@ -4998,6 +5947,11 @@
             return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
+        function getCategoryClass(category) {
+            const cat = String(category || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            return `tag-${cat}`;
+        }
+
         function fmtDate(iso) {
             if (!iso) return '—';
             return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -5007,16 +5961,22 @@
             return `<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><h3>Error loading data</h3><p>${esc(msg)}</p></div>`;
         }
 
-        function showBookDetail(bookId) {
-            let book = catalogBooks.find(b => b.id === bookId);
-            if (!book) { toast('Could not load book details.', 'error'); return; }
+        async function showBookDetail(bookId) {
+            document.getElementById('book-preview-title').textContent = 'Loading…';
+            document.getElementById('book-preview-body').innerHTML = '<div class="loading"><div class="spinner"></div>Loading book details…</div>';
+            document.getElementById('book-preview-modal').classList.add('open');
 
+            const r = await api('GET', `/books/${bookId}`);
+            if (!r.ok) {
+                document.getElementById('book-preview-title').textContent = 'Error';
+                document.getElementById('book-preview-body').innerHTML = errorHTML(r.data?.error || 'Could not load details.');
+                return;
+            }
+
+            const book = r.data.data;
             const cover = bookCoverSvg(book, 110, 152);
             const avail = book.available_copies > 0;
             const inCart = cart.some(c => c.id === book.id);
-            const catColors = { Fiction: '#F2CECE', 'Non-fiction': '#D8D0F0', Reference: '#C9DDD4', Textbook: '#C7DDF4',
-                General: '#F5D9C4' };
-            const catBg = catColors[book.category] || '#F0EBE1';
 
             const cartAction = `<button class="btn-confirm ${inCart ? 'in-cart' : ''}"
                 onclick="toggleCart(${JSON.stringify(book).replace(/"/g, '&quot;')});closeBookPreviewModal()"
@@ -5027,8 +5987,86 @@
             const ebookAction = book.owned ?
                 `<button class="btn-secondary" onclick="closeBookPreviewModal();openEbookReader('${book.id}')">Read ebook</button>` :
                 (book.price ?
-                    `<button class="btn-secondary" onclick="closeBookPreviewModal();purchaseCatalogEbook('${book.id}')">Buy ebook ₹${Number(book.price).toFixed(2)}</button>` :
+                    `<button class="btn-secondary" onclick="closeBookPreviewModal();purchaseCatalogEbook('${book.id}')">Buy ebook ₹${Number(book.price).toFixed(2)}</button><button class="btn-secondary outline" onclick="closeBookPreviewModal();previewEbook('${book.id}')">Preview ebook</button>` :
                     '');
+
+            // If the user is librarian, render copies list and add-copy form
+            let copiesHtml = '';
+            if (userRole === 'librarian') {
+                const copiesList = book.copies || [];
+                const copiesRows = copiesList.map(c => `
+                    <tr>
+                        <td style="font-family:monospace;font-size:var(--text-xs)">${esc(c.barcode)}</td>
+                        <td><span class="status-pill status-${c.status.toLowerCase().replace(' ', '-')}">${esc(c.status)}</span></td>
+                        <td><span class="category-tag">${esc(c.condition)}</span></td>
+                    </tr>
+                `).join('');
+
+                copiesHtml = `
+                <div style="border-top:1.5px solid var(--border);margin-top:16px;padding-top:14px">
+                    <h4 style="font-size:var(--text-sm);font-weight:700;color:var(--ink-mid);margin-bottom:8px">Physical Copies (${copiesList.length})</h4>
+                    ${copiesList.length ? `
+                    <div style="max-height:120px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:12px">
+                        <table class="data-table" style="width:100%;margin:0;font-size:var(--text-xs)">
+                            <thead>
+                                <tr><th>Barcode</th><th>Status</th><th>Condition</th></tr>
+                            </thead>
+                            <tbody>
+                                ${copiesRows}
+                            </tbody>
+                        </table>
+                    </div>` : '<p style="font-size:var(--text-xs);color:var(--ink-light);margin-bottom:12px">No physical copies added yet.</p>'}
+
+                    <!-- Add Copy Form -->
+                    <div style="background:var(--surface-2);padding:10px;border-radius:var(--r-sm);border:1px solid var(--border)">
+                        <div style="font-size:var(--text-xs);font-weight:700;color:var(--ink-light);margin-bottom:6px">ADD PHYSICAL COPY</div>
+                        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                            <input type="text" id="new-copy-barcode" placeholder="Barcode (e.g. CEN-00057)" style="flex:1;min-width:140px;height:32px;padding:4px 8px;font-size:var(--text-xs);border:1px solid var(--border);border-radius:var(--r-sm);outline:none" />
+                            <select id="new-copy-condition" style="height:32px;padding:4px;font-size:var(--text-xs);border:1px solid var(--border);border-radius:var(--r-sm);outline:none;background:var(--surface)">
+                                <option value="Good">Good</option>
+                                <option value="Fair">Fair</option>
+                                <option value="Poor">Poor</option>
+                            </select>
+                            <button class="btn-sm primary" onclick="submitAddBookCopy('${book.id}', this)" style="min-height:32px;padding:4px 12px;font-size:var(--text-xs)">Add</button>
+                        </div>
+                        <div id="add-copy-error" style="display:none;color:var(--danger);font-size:11px;margin-top:4px"></div>
+                    </div>
+                </div>`;
+            }
+
+            // Generate consistent rating and reviews based on book ID
+            const ratingScore = 4.0 + (book.id.charCodeAt(0) % 10) * 0.1;
+            const fullStars = Math.floor(ratingScore);
+            const halfStar = ratingScore - fullStars >= 0.5 ? 1 : 0;
+            const emptyStars = 5 - fullStars - halfStar;
+            const starString = '★'.repeat(fullStars) + (halfStar ? '½' : '') + '☆'.repeat(emptyStars);
+
+            const reviewsList = [
+                { user: "Smruti S.", text: "Absolutely loved the depth and reading flow. Highly recommended!", rating: 5 },
+                { user: "Raj P.", text: "Very well structured. An asset to the central library portal.", rating: 4 }
+            ];
+
+            const reviewsHtml = `
+            <div style="margin-top:16px;border-top:1.5px solid var(--border);padding-top:14px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <h4 style="font-size:var(--text-sm);font-weight:700;color:var(--ink-mid)">Member Reviews</h4>
+                    <span style="font-size:var(--text-xs);color:var(--warning);font-weight:700;display:flex;align-items:center;gap:4px">
+                        ${starString} <span style="color:var(--ink-light)">(${ratingScore.toFixed(1)})</span>
+                    </span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                    ${reviewsList.map(r => `
+                        <div style="background:var(--surface-2);padding:8px 10px;border-radius:var(--r-sm);border:1px solid var(--border);font-size:var(--text-xs)">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:3px;color:var(--ink-light)">
+                                <span style="font-weight:600;color:var(--ink-mid)">${esc(r.user)}</span>
+                                <span style="color:var(--warning)">${'★'.repeat(r.rating) + '☆'.repeat(5 - r.rating)}</span>
+                            </div>
+                            <div style="color:var(--ink-mid);line-height:1.4">${esc(r.text)}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            `;
 
             document.getElementById('book-preview-title').textContent = book.title;
             document.getElementById('book-preview-body').innerHTML = `
@@ -5037,24 +6075,143 @@
               <div>
                 <div class="book-detail-title">${esc(book.title)}</div>
                 <div class="book-detail-author">${esc(book.author)}</div>
-                <span class="category-tag" style="background:${catBg}">${esc(book.category)}</span>
+                <span class="category-tag ${getCategoryClass(book.category)}">${esc(book.category)}</span>
                 <span class="copies-count" style="margin-left:6px;color:${avail ? 'var(--success)' : 'var(--danger)'}">
                   ${book.available_copies}/${book.total_copies} available
                 </span>
               </div>
             </div>
             <div class="book-detail-desc" style="margin-top:14px">${esc(book.description || 'No description available for this title.')}</div>
+            ${reviewsHtml}
+            ${copiesHtml}
             <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap">
               <button class="btn-secondary" onclick="closeBookPreviewModal()">Close</button>
               ${ebookAction}
               ${cartAction}
             </div>`;
-            document.getElementById('book-preview-modal').classList.add('open');
         }
 
         function closeBookPreviewModal() {
             document.getElementById('book-preview-modal').classList.remove('open');
         }
+
+        function openInfoModal(title, html) {
+            document.getElementById('info-modal-title').textContent = title;
+            document.getElementById('info-modal-body').innerHTML = html;
+            document.getElementById('info-modal').classList.add('open');
+        }
+
+        function closeInfoModal() {
+            document.getElementById('info-modal').classList.remove('open');
+        }
+
+        function openPrivacyModal() {
+            const html = `
+                <p style="margin-bottom:12px"><strong>Scribe Central Library</strong> values your privacy. We are committed to transparency in how we collect and protect your data.</p>
+                <h4 style="margin-top:16px;margin-bottom:6px;color:var(--accent);font-weight:600">1. Data We Collect</h4>
+                <p style="margin-bottom:12px">We collect registration information (name, email, optional phone number) and account usage records (book borrowings, returns, ebook purchases, and reading progress) to facilitate regular library services.</p>
+                <h4 style="margin-top:16px;margin-bottom:6px;color:var(--accent);font-weight:600">2. Storage & Security</h4>
+                <p style="margin-bottom:12px">All library records are stored securely in our central PostgreSQL database. Local storage is used on your device solely to save user preferences, dark mode styling, and ebook bookmark positions.</p>
+                <h4 style="margin-top:16px;margin-bottom:6px;color:var(--accent);font-weight:600">3. Third Parties</h4>
+                <p style="margin-bottom:12px">Scribe does not sell, lease, or share your reading activity, transaction logs, or personal information with external advertisers or third-party service providers.</p>
+            `;
+            openInfoModal('Privacy Policy', html);
+        }
+
+        function openTermsModal() {
+            const html = `
+                <p style="margin-bottom:12px">Please read these rules and terms governing membership at <strong>Scribe Central Library</strong>.</p>
+                <h4 style="margin-top:16px;margin-bottom:6px;color:var(--accent);font-weight:600">1. Borrowing Rules</h4>
+                <p style="margin-bottom:12px">Members may checkout physical books depending on active loan limits. Checked out books must be returned on or before their due dates.</p>
+                <h4 style="margin-top:16px;margin-bottom:6px;color:var(--accent);font-weight:600">2. Fines Policy</h4>
+                <p style="margin-bottom:12px">Overdue materials accrue daily fines at the standard rate. Members with outstanding balances or suspensions will not be permitted new borrowings until accounts are settled.</p>
+                <h4 style="margin-top:16px;margin-bottom:6px;color:var(--accent);font-weight:600">3. Ebooks & Purchases</h4>
+                <p style="margin-bottom:12px">Ebook purchases are final, credited to the member's account, and linked directly to their profile. Project Gutenberg digital downloads are subject to the terms of the Project Gutenberg license.</p>
+            `;
+            openInfoModal('Terms of Service', html);
+        }
+
+        async function submitAddBookCopy(bookId, btn) {
+            const barcode = document.getElementById('new-copy-barcode').value.trim();
+            const condition = document.getElementById('new-copy-condition').value;
+            const errEl = document.getElementById('add-copy-error');
+            if (errEl) errEl.style.display = 'none';
+
+            if (!barcode) {
+                if (errEl) {
+                    errEl.textContent = 'Barcode is required.';
+                    errEl.style.display = 'block';
+                }
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Adding…';
+            }
+
+            const r = await api('POST', `/books/${bookId}/copies`, { barcode, condition });
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = 'Add';
+            }
+
+            if (!r.ok) {
+                if (errEl) {
+                    errEl.textContent = r.data?.error || 'Failed to add copy.';
+                    errEl.style.display = 'block';
+                }
+                return;
+            }
+
+            addNotification(`Added physical copy: ${barcode} to catalog.`, 'success');
+            toast(`Physical copy ${barcode} added successfully!`, 'success');
+            showBookDetail(bookId);
+            if (document.getElementById('page-admin-books').classList.contains('active')) {
+                loadAdminBooks();
+            }
+        }
+
+        // ── Circulation Desk Session Log ──────────────────────────
+        function addCircActivity(action, details) {
+            const time = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            circSessionLog.unshift({ time, action, details });
+            if (circSessionLog.length > 5) circSessionLog.pop();
+            renderCircActivityTable();
+        }
+
+        function renderCircActivityTable() {
+            const emptyEl = document.getElementById('circ-empty-activity');
+            const tableEl = document.getElementById('circ-activity-table');
+            const tbodyEl = document.getElementById('circ-activity-rows');
+            if (!tbodyEl) return;
+
+            if (circSessionLog.length === 0) {
+                if (emptyEl) emptyEl.style.display = 'block';
+                if (tableEl) tableEl.style.display = 'none';
+            } else {
+                if (emptyEl) emptyEl.style.display = 'none';
+                if (tableEl) tableEl.style.display = 'table';
+                tbodyEl.innerHTML = circSessionLog.map(log => `
+                    <tr>
+                        <td style="font-weight:600;color:var(--ink-light);width:80px">${log.time}</td>
+                        <td style="width:120px"><span class="status-pill status-${log.action.toLowerCase() === 'checkout' ? 'active' : 'completed'}">${log.action}</span></td>
+                        <td>${esc(log.details)}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // ── Scroll Listener for Ebook Progress ────────────────────
+        let saveProgressTimeout = null;
+        window.addEventListener('scroll', () => {
+            if (activeReaderBookId && userInfo && !isReaderPreviewMode) {
+                clearTimeout(saveProgressTimeout);
+                saveProgressTimeout = setTimeout(() => {
+                    saveEbookProgress(activeReaderBookId);
+                }, 300);
+            }
+        });
 
         // ── Bootstrap ─────────────────────────────────────────────
         if (token) {
@@ -5203,7 +6360,8 @@
                         ctx.fill();
                         ctx.beginPath();
                         ctx.arc(p.x + p.r * 0.42, p.y - p.r * 0.08, p.r * 0.88, 0, Math.PI * 2);
-                        ctx.fillStyle = 'rgba(250,250,247,0.97)';
+                        const isDark = document.body.classList.contains('dark-mode');
+                        ctx.fillStyle = isDark ? 'rgba(22, 21, 18, 0.97)' : 'rgba(250,250,247,0.97)';
                         ctx.fill();
                         ctx.restore();
 
@@ -5530,6 +6688,7 @@
             }
 
             const f = r.data.data;
+            addNotification(`Fine ${f.fine_code} raised for ${f.member_name} — ₹${Number(f.amount).toFixed(2)}.`, 'warning');
             toast(
                 `Fine ${f.fine_code} created — ₹${Number(f.amount).toFixed(2)} (${f.reason}) for ${f.member_name}`,
                 'success'
@@ -5650,3 +6809,4 @@
     </script>
 </body>
 </html>
+
