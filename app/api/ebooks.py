@@ -126,52 +126,8 @@ def build_sample(book):
 
 
 def build_reader_content(book):
-    desc = book.description or "A selected digital title on the library shelf."
-    return [
-        {
-            "heading": f"Introduction to {book.title}",
-            "body": (
-                f"{book.title} is a landmark work in the {book.category.lower()} category, written by the acclaimed author {book.author}. "
-                f"This digital edition provides members with full access to the core ideas and structure of the work. "
-                f"Overview: {desc}"
-            ),
-        },
-        {
-            "heading": "Author Background & Historical Context",
-            "body": (
-                f"The author, {book.author}, has contributed significantly to modern literature and thought. "
-                f"In writing {book.title}, {book.author} addresses key historical and cultural themes of their era, "
-                f"shaping how readers engage with topics in {book.category.lower()} and inspiring subsequent generations of thinkers."
-            ),
-        },
-        {
-            "heading": "Key Themes & Conceptual Framework",
-            "body": (
-                f"At the heart of {book.title} are several fundamental themes. "
-                "These include the tension between individual choices and larger systemic structures, "
-                "the evolution of knowledge over time, and the practical application of these insights in daily life. "
-                f"Through this work, {book.author} challenges readers to reconsider established norms and explore new perspectives."
-            ),
-        },
-        {
-            "heading": "Chapter-by-Chapter Core Analysis",
-            "body": (
-                f"The text of {book.title} is structured to systematically guide the reader through its core arguments. "
-                "Beginning with foundational definitions and historical precedents, the work builds toward "
-                "more complex synthesis, illustrating how theoretical models translate to practical realities. "
-                "Each section reinforces the central thesis while providing valuable case studies and narrative examples."
-            ),
-        },
-        {
-            "heading": "Critical Reception & Legacy",
-            "body": (
-                f"Since its publication, {book.title} has garnered widespread acclaim and study. "
-                f"It remains a staple of academic curricula and general reading lists alike. "
-                f"By maintaining this digital edition, the library ensures that {book.author}'s insights "
-                "remain accessible, encouraging continuing discussion, research, and intellectual growth."
-            ),
-        },
-    ]
+    from app.api.book_data import get_book_content
+    return get_book_content(book.isbn, book.title, book.author, book.category, book.description)
 
 
 @ebooks_bp.get("/catalog")
