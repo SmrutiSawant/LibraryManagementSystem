@@ -3440,6 +3440,12 @@
                         <h2>Purchased Books</h2>
                         <p>Your ebooks are available to read anytime.</p>
                     </div>
+                    <div class="search-bar" role="search" style="margin-bottom: var(--sp-4)">
+                        <div class="search-input-wrap">
+                            <span class="search-icon" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            <input type="text" id="purchased-search" placeholder="Search purchased books by title or author…" oninput="renderPurchasedBooks()" aria-label="Search purchased books" />
+                        </div>
+                    </div>
                     <div id="purchased-wrap">
                         <div class="loading"><div class="spinner"></div>Loading purchased books…</div>
                     </div>
@@ -3956,6 +3962,7 @@
         let circSessionLog = [];
         let ebookCatalog = [];
         let catalogBooks = [];
+        let purchasedBooks = [];
         let activeReaderBookId = null;
         let isReaderPreviewMode = false;
         let purchasingEbookId = null;
@@ -4801,17 +4808,41 @@
             const wrap = document.getElementById('purchased-wrap');
             wrap.innerHTML = '<div class="loading"><div class="spinner"></div>Loading purchased books…</div>';
 
+            const searchInput = document.getElementById('purchased-search');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+
             const r = await api('GET', '/ebooks/library');
             if (!r.ok) { wrap.innerHTML = errorHTML(r.data.error); return; }
 
-            const books = r.data.data;
-            if (!books.length) {
+            purchasedBooks = r.data.data || [];
+            renderPurchasedBooks();
+        }
+
+        function renderPurchasedBooks() {
+            const wrap = document.getElementById('purchased-wrap');
+            if (!wrap) return;
+
+            if (!purchasedBooks.length) {
                 wrap.innerHTML =
                     '<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-book-open-reader"></i></div><h3>No purchased ebooks</h3><p>Buy an ebook from the Catalog and it will appear here.</p></div>';
                 return;
             }
 
-            wrap.innerHTML = `<div class="ebook-grid">${books.map(book => {
+            const query = (document.getElementById('purchased-search')?.value || '').toLowerCase().trim();
+            const filtered = purchasedBooks.filter(book => 
+                (book.title || '').toLowerCase().includes(query) || 
+                (book.author || '').toLowerCase().includes(query)
+            );
+
+            if (!filtered.length) {
+                wrap.innerHTML =
+                    `<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-magnifying-glass"></i></div><h3>No matching purchased books</h3><p>No results found for "${esc(query)}". Try another search.</p></div>`;
+                return;
+            }
+
+            wrap.innerHTML = `<div class="ebook-grid">${filtered.map(book => {
                 const hasProgress = userInfo && localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`);
                 const progressVal = hasProgress ? parseFloat(localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`)) : 0;
                 const progressPercent = Math.min(100, Math.round(progressVal * 100));
