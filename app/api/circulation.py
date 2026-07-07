@@ -341,6 +341,7 @@ def list_transactions():
             "book": {
                 "title"    : book.title,
                 "book_code": book.book_code,
+                "category" : book.category,
             } if book else None,
             "copy": {
                 "barcode"  : copy.barcode,
