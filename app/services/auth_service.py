@@ -141,4 +141,54 @@ def get_current_member(identity):
     if not member:
         raise AuthError("Member account not found.")
     return member
+
+
+def update_profile(identity, role, full_name=None, phone=None, phone_provided=False):
+    """
+    Updates the full_name and/or phone of a Staff or Member.
+    """
+    if role == "librarian":
+        staff = Staff.query.get(identity)
+        if not staff:
+            raise AuthError("Librarian profile not found.")
+
+        if full_name is not None:
+            staff.full_name = full_name
+        if phone_provided:
+            staff.phone = phone
+
+        db.session.commit()
+        return {
+            "role"      : "librarian",
+            "id"        : staff.id,
+            "full_name" : staff.full_name,
+            "email"     : staff.email,
+            "phone"     : staff.phone,
+        }
+
+    elif role == "member":
+        member = Member.query.get(identity)
+        if not member:
+            raise AuthError("Member profile not found.")
+
+        if full_name is not None:
+            member.full_name = full_name
+        if phone_provided:
+            member.phone = phone
+
+        db.session.commit()
+        return {
+            "role"           : "member",
+            "id"             : member.id,
+            "member_code"    : member.member_code,
+            "full_name"      : member.full_name,
+            "email"          : member.email,
+            "status"         : member.status,
+            "phone"          : member.phone,
+            "books_borrowed" : member.books_borrowed,
+            "current_fines"  : float(member.current_fines),
+        }
+
+    raise AuthError("Invalid role.")
+
     
