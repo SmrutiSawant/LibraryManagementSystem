@@ -17,7 +17,7 @@
         :root {
             --ink: #1C1810;
             --ink-mid: #3D3529;
-            --ink-light: #574C3F;
+            --ink-light: #4D4235;
             --paper: #FAFAF7;
             --surface: #FFFFFF;
             --surface-2: #F5F3EF;
@@ -63,7 +63,7 @@
         body.dark-mode {
             --ink: #F5F5F5;
             --ink-mid: #D4D4D4;
-            --ink-light: #A3A3A3;
+            --ink-light: #C2C2C2;
             --paper: #0A0A0A;
             --surface: #141414;
             --surface-2: #1F1F1F;
@@ -104,7 +104,7 @@
             --border-deep: #6B4747 !important;
             --ink: #FEF2F2 !important;
             --ink-mid: #FEE2E2 !important;
-            --ink-light: #F87171 !important;
+            --ink-light: #FFA8A8 !important;
         }
         body.dark-mode.theme-nonfiction {
             --accent: #34D399 !important;
@@ -117,7 +117,7 @@
             --border-deep: #3B725B !important;
             --ink: #ECFDF5 !important;
             --ink-mid: #D1FAE5 !important;
-            --ink-light: #6EE7B7 !important;
+            --ink-light: #A7F3D0 !important;
         }
         body.dark-mode.theme-reference {
             --accent: #A78BFA !important;
@@ -130,7 +130,7 @@
             --border-deep: #584787 !important;
             --ink: #F5F3FF !important;
             --ink-mid: #EDE9FE !important;
-            --ink-light: #C4B5FD !important;
+            --ink-light: #DDD6FE !important;
         }
         body.dark-mode.theme-textbook {
             --accent: #38BDF8 !important;
@@ -143,7 +143,7 @@
             --border-deep: #33334A !important;
             --ink: #F0F0FF !important;
             --ink-mid: #DCDCE8 !important;
-            --ink-light: #9494B8 !important;
+            --ink-light: #CBD5E1 !important;
         }
         body.dark-mode.theme-general {
             --accent: #F59E0B !important;
@@ -156,7 +156,7 @@
             --border-deep: #3D3D3D !important;
             --ink: #F5F5F5 !important;
             --ink-mid: #D4D4D4 !important;
-            --ink-light: #A3A3A3 !important;
+            --ink-light: #C2C2C2 !important;
         }
 
 
@@ -187,7 +187,7 @@
         h2,
         h3,
         h4 {
-            font-family: 'Lora', Georgia, serif;
+            font-family: 'Inter', system-ui, sans-serif;
             line-height: 1.25;
             color: var(--ink);
         }
@@ -550,7 +550,6 @@
         }
 
         .sidebar-logo {
-            font-family: 'Lora', serif;
             font-size: var(--text-md);
             color: var(--ink);
             font-weight: 600;
@@ -1185,7 +1184,6 @@
         }
 
         .book-title {
-            font-family: 'Lora', serif;
             font-size: var(--text-sm);
             font-weight: 500;
             line-height: 1.3;
@@ -1644,7 +1642,6 @@
         }
 
         .cart-item-title {
-            font-family: 'Lora', serif;
             font-size: var(--text-sm);
             font-weight: 500;
             line-height: 1.3;
@@ -1851,7 +1848,6 @@
         }
 
         .summary-card .card-value {
-            font-family: 'Lora', serif;
             font-size: 28px;
             font-weight: 500;
             line-height: 1;
@@ -2041,7 +2037,6 @@
         }
 
         .borrowed-title {
-            font-family: 'Lora', serif;
             font-size: var(--text-base);
             font-weight: 500;
             margin-bottom: 1px;
@@ -2079,7 +2074,6 @@
         }
 
         .fine-amount {
-            font-family: 'Lora', serif;
             font-size: 20px;
             font-weight: 500;
             color: var(--danger);
@@ -2343,7 +2337,6 @@
         }
 
         .checkout-title {
-            font-family: 'Lora', serif;
             font-size: var(--text-sm);
             font-weight: 500;
         }
@@ -2623,6 +2616,71 @@
             color: var(--r-color, var(--ink)) !important;
         }
 
+        /* ── Keyboard Shortcut Legend Overlay ── */
+        .reader-legend-card {
+            position: fixed;
+            bottom: var(--sp-4);
+            right: var(--sp-4);
+            width: 280px;
+            background: var(--r-bg, var(--surface)) !important;
+            color: var(--r-color, var(--ink)) !important;
+            border: 1.5px solid var(--r-border, var(--border)) !important;
+            border-radius: var(--r-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            padding: var(--sp-3);
+            font-size: var(--text-xs);
+            transition: background 300ms, color 300ms, border-color 300ms;
+        }
+        .legend-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--sp-3);
+            padding-bottom: var(--sp-2);
+            border-bottom: 1.5px solid var(--r-border, var(--border)) !important;
+        }
+        .legend-header h4 {
+            margin: 0;
+            font-size: var(--text-sm);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            color: var(--r-color, var(--ink)) !important;
+        }
+        .legend-close-btn {
+            background: none;
+            border: none;
+            color: var(--r-muted, var(--ink-light));
+            font-size: 16px;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+        }
+        .legend-close-btn:hover {
+            color: var(--r-color, var(--ink));
+        }
+        .legend-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .legend-row:last-child {
+            margin-bottom: 0;
+        }
+        .legend-row kbd {
+            background: var(--r-hover, var(--surface-2)) !important;
+            color: var(--r-color, var(--ink)) !important;
+            border: 1px solid var(--r-border, var(--border)) !important;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: monospace;
+            font-size: 10px;
+            font-weight: 700;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+        }
+
         /* ── Cover header ── */
         .reader-cover {
             display: grid;
@@ -2663,7 +2721,6 @@
             margin-bottom: var(--sp-5);
         }
         .reader-title-page h2 {
-            font-family: 'Lora', serif;
             font-size: 28px;
             line-height: 1.2;
             margin-bottom: var(--sp-1);
@@ -2794,7 +2851,6 @@
         }
 
         .book-detail-title {
-            font-family: 'Lora', serif;
             font-size: 18px;
             font-weight: 600;
             line-height: 1.3;
@@ -2914,7 +2970,7 @@
             --border-deep: #D9BFB0 !important;
             --ink: #2A1810 !important;
             --ink-mid: #5C3D30 !important;
-            --ink-light: #8B6050 !important;
+            --ink-light: #6D4333 !important;
         }
         body.theme-nonfiction {
             --accent: #2E6B4F !important;
@@ -2927,7 +2983,7 @@
             --border-deep: #AECAB8 !important;
             --ink: #0E2219 !important;
             --ink-mid: #2E4F3A !important;
-            --ink-light: #557060 !important;
+            --ink-light: #3D5445 !important;
         }
         body.theme-reference {
             --accent: #4A3580 !important;
@@ -2940,7 +2996,7 @@
             --border-deep: #BEB4DC !important;
             --ink: #160E2E !important;
             --ink-mid: #3A2C60 !important;
-            --ink-light: #6A5A90 !important;
+            --ink-light: #4E3E73 !important;
         }
         body.theme-textbook {
             --accent: #1A5E9A !important;
@@ -2953,7 +3009,7 @@
             --border-deep: #A8C5E0 !important;
             --ink: #071828 !important;
             --ink-mid: #1A3A58 !important;
-            --ink-light: #4A6A88 !important;
+            --ink-light: #2F4D6B !important;
         }
         body.theme-general {
             --accent: #2B5F8A !important;
@@ -2966,7 +3022,7 @@
             --border-deep: #D0CAC0 !important;
             --ink: #1C1810 !important;
             --ink-mid: #4A4035 !important;
-            --ink-light: #7A6E62 !important;
+            --ink-light: #5A4E42 !important;
         }
 
         #theme-canvas {
@@ -3657,7 +3713,11 @@
                         </div>
                         <table class="data-table" id="circ-activity-table" style="display:none;width:100%;font-size:var(--text-xs)">
                             <thead>
-                                <tr><th>Time</th><th>Action</th><th>Details</th></tr>
+                                <tr>
+                                    <th style="width: 25%; min-width: 140px;">Time</th>
+                                    <th style="width: 25%; min-width: 120px;">Action</th>
+                                    <th style="width: 50%;">Details</th>
+                                </tr>
                             </thead>
                             <tbody id="circ-activity-rows"></tbody>
                         </table>
@@ -3749,9 +3809,20 @@
     <!-- ─── Cart Sidebar ─────────────────────────────────────────── -->
     <div class="overlay" id="cart-overlay" onclick="closeCart()"></div>
     <aside class="cart-sidebar" id="cart-sidebar" role="dialog" aria-modal="true" aria-label="Reading list">
-        <div class="cart-header">
-            <h3><i class="fa-solid fa-book" aria-hidden="true"></i> Reading List</h3>
-            <button class="btn-close" onclick="closeCart()" aria-label="Close cart"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+        <div class="cart-header" style="flex-direction:column;align-items:stretch;gap:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+                <h3 style="display:flex;align-items:center;gap:8px"><i class="fa-solid fa-book" aria-hidden="true"></i> Reading List</h3>
+                <button class="btn-close" onclick="closeCart()" aria-label="Close cart" style="margin-left:auto"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </div>
+            <div id="cart-limit-container" style="margin-top:4px">
+                <div style="display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--ink-light);margin-bottom:4px">
+                    <span>Borrowing Slots</span>
+                    <span id="cart-limit-text">0 / 5 slots</span>
+                </div>
+                <div style="width:100%;height:6px;background:var(--border);border-radius:3px;overflow:hidden">
+                    <div id="cart-limit-bar" style="width:0%;height:100%;background:var(--accent);transition:width var(--dur-fast) var(--ease)"></div>
+                </div>
+            </div>
         </div>
         <div class="cart-items" id="cart-items-list"></div>
         <div class="cart-footer">
@@ -4285,11 +4356,11 @@
 
             document.getElementById('profile-modal-body').innerHTML = `
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-              <div style="width:48px;height:48px;border-radius:50%;background:var(--accent-pale);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-size:18px;font-weight:600;flex-shrink:0">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--accent-pale);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;flex-shrink:0">
                 ${esc(initials)}
               </div>
               <div>
-                <div style="font-family:'Lora',serif;font-size:var(--text-lg);font-weight:500">${esc(userInfo.full_name || 'Unnamed')}</div>
+                <div style="font-size:var(--text-lg);font-weight:500">${esc(userInfo.full_name || 'Unnamed')}</div>
                 ${userInfo.member_code ? `<div style="font-size:var(--text-xs);color:var(--ink-light);font-family:monospace">${esc(userInfo.member_code)}</div>` : ''}
               </div>
               <span class="portal-badge" style="margin-left:auto">${esc(roleLabel)}</span>
@@ -4587,21 +4658,20 @@
             const avail = book.available_copies > 0;
             const inCart = cart.some(c => c.id === book.id);
             const dotColor = avail ? 'var(--success)' : 'var(--danger)';
-            const hasProgress = userInfo && localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`);
-            const progressVal = hasProgress ? parseFloat(localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`)) : 0;
-            const progressPercent = Math.min(100, Math.round(progressVal * 100));
-            const progressHtml = hasProgress && progressPercent > 0 ? `
+            const progressPercent = getBookProgressPercent(book.id);
+            const hasProgress = progressPercent > 0;
+            const progressHtml = hasProgress ? `
             <div style="margin-top:6px;display:flex;align-items:center;gap:8px;font-size:var(--text-xs);color:var(--ink-light)">
                 <div style="flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
                     <div style="width:${progressPercent}%;height:100%;background:var(--success)"></div>
                 </div>
                 <span>${progressPercent}% read</span>
             </div>` : '';
-            const ebookLabel = hasProgress && progressPercent > 0 ? 'Resume ebook' : 'Read ebook';
+            const ebookLabel = hasProgress ? 'Resume ebook' : 'Read ebook';
 
             const ebookAction = book.owned ?
                 `<button class="btn-add-cart in-cart" onclick="event.stopPropagation();openEbookReader('${book.id}')">${ebookLabel}</button>` :
-                `<div style="display:flex;gap:6px"><button class="btn-add-cart" style="flex:1" onclick="event.stopPropagation();purchaseCatalogEbook('${book.id}')">Buy ebook</button><button class="btn-add-cart secondary" style="flex:1;background:var(--surface-2);color:var(--ink-mid);border:1px solid var(--border)" onclick="event.stopPropagation();previewEbook('${book.id}')">Preview</button></div>`;
+                `<button class="btn-add-cart" onclick="event.stopPropagation();purchaseCatalogEbook('${book.id}')">Buy ebook</button>`;
 
             return `<div class="book-card" onclick="showBookDetail('${book.id}')" role="button" tabindex="0">
             <div class="book-cover" style="background-image:url('${cover}');background-size:cover;background-position:center;">
@@ -4619,7 +4689,7 @@
                 <button class="btn-add-cart ${inCart ? 'in-cart' : ''}"
                   onclick="event.stopPropagation();toggleCart(${JSON.stringify(book).replace(/"/g, '&quot;')})"
                   ${!avail && !inCart ? 'disabled' : ''}>
-                  ${inCart ? '<i class="fa-solid fa-check"></i> In List' : (avail ? '+ Add to List' : 'Unavailable')}
+                  ${inCart ? '<i class="fa-solid fa-check"></i> Remove Book' : (avail ? 'Borrow Book' : 'Unavailable')}
                 </button>
                 <div style="height:6px"></div>
                 ${ebookAction}
@@ -4679,8 +4749,39 @@
             document.getElementById('cart-sidebar').classList.remove('open');
         }
 
+        function updateCartLimitUI() {
+            const maxAllowed = userInfo ? (userInfo.max_books_allowed || 5) : 5;
+            const currentlyBorrowed = userInfo ? (userInfo.books_borrowed || 0) : 0;
+            const cartCount = cart.length;
+            const totalUsed = currentlyBorrowed + cartCount;
+
+            const limitText = document.getElementById('cart-limit-text');
+            const limitBar = document.getElementById('cart-limit-bar');
+
+            if (limitText && limitBar) {
+                limitText.textContent = `${totalUsed} / ${maxAllowed} slots used`;
+                const percentage = Math.min(100, Math.round((totalUsed / maxAllowed) * 100));
+                limitBar.style.width = `${percentage}%`;
+
+                if (totalUsed >= maxAllowed) {
+                    limitBar.style.background = 'var(--danger)';
+                    limitText.style.color = 'var(--danger)';
+                    limitText.style.fontWeight = '600';
+                } else if (totalUsed === maxAllowed - 1) {
+                    limitBar.style.background = '#e67e22'; // warning orange
+                    limitText.style.color = '#e67e22';
+                    limitText.style.fontWeight = '500';
+                } else {
+                    limitBar.style.background = 'var(--accent)';
+                    limitText.style.color = 'var(--ink-light)';
+                    limitText.style.fontWeight = 'normal';
+                }
+            }
+        }
+
         function renderCartSidebar() {
             const list = document.getElementById('cart-items-list');
+            updateCartLimitUI();
             if (!cart.length) {
                 list.innerHTML =
                     '<div class="empty-state" style="padding:32px 16px"><div class="empty-icon"><i class="fa-regular fa-envelope-open"></i></div><h3>Your list is empty</h3><p>Browse the catalog and add books to your reservation list.</p></div>';
@@ -4843,17 +4944,16 @@
             }
 
             wrap.innerHTML = `<div class="ebook-grid">${filtered.map(book => {
-                const hasProgress = userInfo && localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`);
-                const progressVal = hasProgress ? parseFloat(localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`)) : 0;
-                const progressPercent = Math.min(100, Math.round(progressVal * 100));
-                const progressHtml = hasProgress && progressPercent > 0 ? `
+                const progressPercent = getBookProgressPercent(book.id);
+                const hasProgress = progressPercent > 0;
+                const progressHtml = hasProgress ? `
                 <div style="margin-bottom:10px;display:flex;align-items:center;gap:8px;font-size:var(--text-xs);color:var(--ink-light)">
                     <div style="flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
                         <div style="width:${progressPercent}%;height:100%;background:var(--success)"></div>
                     </div>
                     <span>${progressPercent}% read</span>
                 </div>` : '';
-                const ebookLabel = hasProgress && progressPercent > 0 ? 'Resume' : 'Read';
+                const ebookLabel = hasProgress ? 'Resume' : 'Read';
 
                 return `
                 <article class="ebook-card">
@@ -4916,17 +5016,16 @@
             const cover = bookCoverSvg(book, 82, 112);
             const isBusy = purchasingEbookId === book.id;
 
-            const hasProgress = userInfo && localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`);
-            const progressVal = hasProgress ? parseFloat(localStorage.getItem(`lib_bookmark_${userInfo.id}_${book.id}`)) : 0;
-            const progressPercent = Math.min(100, Math.round(progressVal * 100));
-            const progressHtml = hasProgress && progressPercent > 0 ? `
+            const progressPercent = getBookProgressPercent(book.id);
+            const hasProgress = progressPercent > 0;
+            const progressHtml = hasProgress ? `
             <div style="margin-bottom:10px;display:flex;align-items:center;gap:8px;font-size:var(--text-xs);color:var(--ink-light)">
                 <div style="flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
                     <div style="width:${progressPercent}%;height:100%;background:var(--success)"></div>
                 </div>
                 <span>${progressPercent}% read</span>
             </div>` : '';
-            const ebookLabel = hasProgress && progressPercent > 0 ? 'Resume' : 'Read';
+            const ebookLabel = hasProgress ? 'Resume' : 'Read';
 
             const action = book.owned ?
                 `<button class="btn-ebook success" onclick="event.stopPropagation();openEbookReader('${book.id}')">${ebookLabel}</button>` :
@@ -5170,6 +5269,9 @@
                   <button class="reader-icon-btn" id="reader-focus-btn" onclick="toggleReaderFocus()" title="Focus mode (F)">
                     <i class="fa-solid fa-expand"></i>
                   </button>` : ''}
+                  <button class="reader-icon-btn" id="reader-shortcuts-btn" onclick="toggleKeyboardLegend()" title="Keyboard shortcuts" style="margin-left:2px">
+                    <i class="fa-regular fa-keyboard"></i>
+                  </button>
                 </div>
               </div>
 
@@ -5200,6 +5302,22 @@
                   </div>
                   <div class="reader-content" id="reader-content">${readingBody}</div>
                 </article>
+              </div>
+
+              <!-- KEYBOARD LEGEND OVERLAY -->
+              <div id="reader-keyboard-legend" class="reader-legend-card" style="display:none">
+                <div class="legend-header">
+                  <h4><i class="fa-regular fa-keyboard" style="margin-right:8px"></i>Shortcuts</h4>
+                  <button onclick="toggleKeyboardLegend()" class="legend-close-btn">&times;</button>
+                </div>
+                <div class="legend-body">
+                  <div class="legend-row"><kbd>F</kbd> <span>Toggle Focus Mode</span></div>
+                  <div class="legend-row"><kbd>T</kbd> <span>Toggle Table of Contents</span></div>
+                  <div class="legend-row"><kbd>B</kbd> <span>Save/Remove Bookmark</span></div>
+                  <div class="legend-row"><kbd>+</kbd> or <kbd>=</kbd> <span>Increase Font Size</span></div>
+                  <div class="legend-row"><kbd>-</kbd> <span>Decrease Font Size</span></div>
+                  <div class="legend-row"><kbd>Esc</kbd> <span>Show Toolbar / Exit Focus</span></div>
+                </div>
               </div>
             </div>`;
 
@@ -5387,6 +5505,12 @@
             toast(isFocus ? 'Focus mode — press F or Esc to exit' : 'Focus mode off', 'success');
         }
 
+        function toggleKeyboardLegend() {
+            const legend = document.getElementById('reader-keyboard-legend');
+            if (!legend) return;
+            legend.style.display = legend.style.display === 'none' ? 'block' : 'none';
+        }
+
         function _applyReaderTypography(font, size, lh) {
             const container = document.getElementById('reader-book-container');
             if (!container) return;
@@ -5438,11 +5562,36 @@
                 }
             });
 
+            const scrollH = document.documentElement.scrollHeight - window.innerHeight;
+            const progressRatio = scrollH > 0 ? Math.max(0, Math.min(1, scrollY / scrollH)) : 0;
+
             localStorage.setItem(`lib_bookmark_${userInfo.id}_${bookId}`, JSON.stringify({
                 paragraphIndex: activeIndex,
                 scrollY: scrollY,
+                progress: progressRatio,
                 ts: Date.now()
             }));
+        }
+
+        function getBookProgressPercent(bookId) {
+            if (!userInfo || !bookId) return 0;
+            const raw = localStorage.getItem(`lib_bookmark_${userInfo.id}_${bookId}`);
+            if (!raw) return 0;
+            try {
+                const data = JSON.parse(raw);
+                if (data && typeof data === 'object') {
+                    if (data.progress !== undefined) {
+                        return Math.min(100, Math.round(data.progress * 100));
+                    }
+                    return 0;
+                }
+            } catch (e) {
+                const val = parseFloat(raw);
+                if (!isNaN(val)) {
+                    return Math.min(100, Math.round(val * 100));
+                }
+            }
+            return 0;
         }
 
         function restoreEbookProgress(bookId) {
@@ -5621,10 +5770,18 @@
             const { current_fines, fines } = r.data.data;
 
             let html = `<div class="summary-cards" style="max-width:400px;margin-bottom:20px">
-            <div class="summary-card accent-${current_fines > 0 ? 'blush' : 'sage'}">
-              <div class="card-label">Total Outstanding</div>
-              <div class="card-value">₹${current_fines.toFixed(2)}</div>
-              <div class="card-sub">${current_fines > 0 ? 'Pending payment' : 'All clear!'}</div>
+            <div class="summary-card accent-${current_fines > 0 ? 'blush' : 'sage'}" style="display:flex;flex-direction:column;justify-content:space-between">
+              <div>
+                <div class="card-label">Total Outstanding</div>
+                <div class="card-value">₹${current_fines.toFixed(2)}</div>
+                <div class="card-sub">${current_fines > 0 ? 'Pending payment' : 'All clear!'}</div>
+              </div>
+              ${current_fines > 0 ? `
+              <div style="margin-top:14px">
+                <button class="btn-confirm" style="width:100%;height:36px;font-size:var(--text-xs);padding:0" onclick="payAllFines(${current_fines})">
+                  <i class="fa-solid fa-credit-card" style="margin-right:6px"></i>Pay All Fines
+                </button>
+              </div>` : ''}
             </div>
           </div>`;
 
@@ -5670,10 +5827,72 @@
                     contact: userInfo ? userInfo.phone : '',
                 },
                 theme: { color: '#2B5F8A' },
-                handler: function() {
+                handler: async function(response) {
+                    toast('Verifying payment status…', 'success');
+                    const verifyRes = await api('POST', '/payments/verify', {
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                        fine_id: fineId
+                    });
+                    if (!verifyRes.ok) {
+                        toast(verifyRes.data?.error || 'Verification failed.', 'danger');
+                        return;
+                    }
                     addNotification(`Paid fine ${fineCode} (₹${amount.toFixed(2)}) successfully.`, 'success');
-                    toast('Payment received! Updating your fine status…', 'success');
-                    setTimeout(loadFines, 2000);
+                    toast('Payment received and verified!', 'success');
+                    loadFines();
+                },
+                modal: {
+                    ondismiss: function() {
+                        toast('Payment cancelled.', 'warning');
+                    },
+                },
+            });
+
+            rzp.on('payment.failed', function(response) {
+                toast(`Payment failed: ${response.error.description}`, 'danger');
+            });
+
+            rzp.open();
+        }
+
+        async function payAllFines(amount) {
+            const orderRes = await api('POST', '/payments/create-order', { pay_all_fines: true });
+            if (!orderRes.ok) {
+                toast(orderRes.data.error || 'Could not start payment.', 'danger');
+                return;
+            }
+            const { order_id, amount: amountPaise, currency, razorpay_key_id } = orderRes.data.data;
+
+            const rzp = new Razorpay({
+                key: razorpay_key_id,
+                order_id: order_id,
+                amount: amountPaise,
+                currency: currency,
+                name: 'Scribe Library',
+                description: `Consolidated fine payment — all outstanding fees`,
+                prefill: {
+                    name: userInfo ? userInfo.full_name : '',
+                    email: userInfo ? userInfo.email : '',
+                    contact: userInfo ? userInfo.phone : '',
+                },
+                theme: { color: '#2B5F8A' },
+                handler: async function(response) {
+                    toast('Verifying payment status…', 'success');
+                    const verifyRes = await api('POST', '/payments/verify', {
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                        pay_all_fines: true
+                    });
+                    if (!verifyRes.ok) {
+                        toast(verifyRes.data?.error || 'Verification failed.', 'danger');
+                        return;
+                    }
+                    addNotification(`Paid outstanding fines (₹${amount.toFixed(2)}) successfully.`, 'success');
+                    toast('Payment received and verified!', 'success');
+                    loadFines();
                 },
                 modal: {
                     ondismiss: function() {
@@ -6537,13 +6756,13 @@
             const cartAction = `<button class="btn-confirm ${inCart ? 'in-cart' : ''}"
                 onclick="toggleCart(${JSON.stringify(book).replace(/"/g, '&quot;')});closeBookPreviewModal()"
                 ${!avail && !inCart ? 'disabled' : ''}>
-                ${inCart ? '<i class="fa-solid fa-check"></i> Remove from List' : (avail ? '+ Add to List' : 'Unavailable')}
+                ${inCart ? '<i class="fa-solid fa-check"></i> Remove Book' : (avail ? 'Borrow Book' : 'Unavailable')}
               </button>`;
 
             const ebookAction = book.owned ?
                 `<button class="btn-secondary" onclick="closeBookPreviewModal();openEbookReader('${book.id}')">Read ebook</button>` :
                 (book.price ?
-                    `<button class="btn-secondary" onclick="closeBookPreviewModal();purchaseCatalogEbook('${book.id}')">Buy ebook ₹${Number(book.price).toFixed(2)}</button><button class="btn-secondary outline" onclick="closeBookPreviewModal();previewEbook('${book.id}')">Preview ebook</button>` :
+                    `<button class="btn-secondary" onclick="closeBookPreviewModal();purchaseCatalogEbook('${book.id}')">Buy ebook ₹${Number(book.price).toFixed(2)}</button>` :
                     '');
 
             // If the user is librarian, render copies list and add-copy form
@@ -6750,8 +6969,8 @@
                 if (tableEl) tableEl.style.display = 'table';
                 tbodyEl.innerHTML = circSessionLog.map(log => `
                     <tr>
-                        <td style="font-weight:600;color:var(--ink-light);width:80px">${log.time}</td>
-                        <td style="width:120px"><span class="status-pill status-${log.action.toLowerCase() === 'checkout' ? 'active' : 'completed'}">${log.action}</span></td>
+                        <td style="font-weight:600;color:var(--ink-light);white-space:nowrap">${log.time}</td>
+                        <td><span class="status-pill status-${log.action.toLowerCase() === 'checkout' ? 'active' : 'completed'}">${log.action}</span></td>
                         <td>${esc(log.details)}</td>
                     </tr>
                 `).join('');

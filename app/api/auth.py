@@ -124,6 +124,7 @@ def me():
                 "phone"          : member.phone,
                 "books_borrowed" : member.books_borrowed,
                 "current_fines"  : float(member.current_fines),
+                "max_books_allowed": member.max_books_allowed,
             })
 
         return error_response("Invalid token role.", 401)
