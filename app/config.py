@@ -7,10 +7,10 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-me")
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-jwt-secret-change-me")
 
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL",
-        "postgresql://library_user:pass@localhost:5432/library_db"
-    )
+    database_url = os.getenv("DATABASE_URL")
+    if database_url and database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+    SQLALCHEMY_DATABASE_URI = database_url or "postgresql://library_user:pass@localhost:5432/library_db"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Mail (fill in real values later when we build email_service.py)
