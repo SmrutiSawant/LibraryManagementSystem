@@ -2360,169 +2360,251 @@
             border: 1px solid var(--border);
         }
 
+        /* ── Reading Progress Bar (fixed top strip) ── */
+        #reader-progress-bar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), #F59E0B);
+            z-index: 9999;
+            transition: width 120ms linear;
+            border-radius: 0 2px 2px 0;
+        }
+        body.reader-active #reader-progress-bar { display: block; }
+
         /* ── Ebook Reader ── */
         .reader-shell {
-            max-width: 820px;
-            margin: 0 auto;
+            width: 100%;
+            padding-bottom: 80px;
         }
 
         .reader-toolbar {
             position: sticky;
             top: 0;
             z-index: 90;
-            background: var(--paper);
+            background: rgba(var(--paper-rgb, 250,250,247), 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: var(--sp-3);
+            gap: var(--sp-2);
             margin-bottom: var(--sp-4);
             flex-wrap: wrap;
-            padding: var(--sp-3) 0;
-            border-bottom: 1.5px solid var(--border);
+            padding: 10px var(--sp-3);
+            border-bottom: 1px solid var(--border);
+            transition: transform 300ms var(--ease), opacity 300ms var(--ease);
+            border-radius: 0 0 var(--r-md) var(--r-md);
+        }
+        .reader-toolbar.toolbar-hidden {
+            transform: translateY(-110%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .reader-toolbar-left { display: flex; align-items: center; gap: 8px; }
+        .reader-toolbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+        /* toolbar icon buttons */
+        .reader-icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            height: 32px;
+            padding: 0 10px;
+            border-radius: var(--r-sm);
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            color: var(--ink-mid);
+            font-size: var(--text-xs);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 150ms, border-color 150ms, color 150ms;
+            white-space: nowrap;
+        }
+        .reader-icon-btn:hover {
+            background: var(--surface-2);
+            border-color: var(--border-deep);
+            color: var(--ink);
+        }
+        .reader-icon-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
         }
 
+        /* theme swatches */
+        .reader-theme-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 150ms, border-color 150ms;
+            flex-shrink: 0;
+        }
+        .reader-theme-swatch:hover { transform: scale(1.15); }
+        .reader-theme-swatch.selected { border-color: var(--accent) !important; transform: scale(1.15); }
+
+        /* progress text badge */
+        .reader-progress-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--ink-light);
+            white-space: nowrap;
+            letter-spacing: 0.02em;
+        }
+
+        /* ── Reader layout with optional TOC sidebar ── */
+        .reader-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--sp-4);
+        }
+        .reader-layout.with-toc {
+            grid-template-columns: 220px 1fr;
+            align-items: start;
+        }
+
+        /* ── TOC sidebar ── */
+        .reader-toc {
+            position: sticky;
+            top: 70px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: var(--sp-3);
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            font-size: var(--text-xs);
+        }
+        .reader-toc h4 {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--ink-light);
+            margin-bottom: var(--sp-2);
+            padding-bottom: var(--sp-2);
+            border-bottom: 1px solid var(--border);
+        }
+        .reader-toc-item {
+            display: block;
+            padding: 5px var(--sp-2);
+            border-radius: var(--r-sm);
+            color: var(--ink-mid);
+            font-size: var(--text-xs);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 120ms, color 120ms;
+            line-height: 1.4;
+            border: none;
+            background: none;
+            text-align: left;
+            width: 100%;
+        }
+        .reader-toc-item:hover { background: var(--surface-2); color: var(--ink); }
+        .reader-toc-item.toc-active { background: var(--accent-pale); color: var(--accent); font-weight: 700; }
+
+        /* ── Reader book container ── */
         .reader-book {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--r-md);
             box-shadow: var(--shadow-md);
             overflow: hidden;
-            font-size: var(--reader-fs, 16px) !important;
+            font-size: var(--reader-fs, 17px) !important;
+            transition: background 300ms, color 300ms, border-color 300ms;
         }
 
-        /* ── Ebook Reader Theme Customizer ── */
-        .reader-book.rt-cream {
-            background: #FAF6EE !important;
-            color: #2C251C !important;
-            border-color: #EADCB9 !important;
-        }
-        .reader-book.rt-cream .reader-cover {
-            background: #F3EBDD !important;
-            border-bottom-color: #E2D5C1 !important;
-            color: #2C251C !important;
-        }
-        .reader-book.rt-cream .reader-cover h2,
-        .reader-book.rt-cream .reader-cover p,
-        .reader-book.rt-cream .reader-cover div {
-            color: #2C251C !important;
-        }
-        .reader-book.rt-cream .reader-title-page {
-            background: #FAF6EE !important;
-            color: #2C251C !important;
-            border-bottom-color: #EADCB9 !important;
-        }
-        .reader-book.rt-cream .reader-title-page h2,
-        .reader-book.rt-cream .reader-title-page p {
-            color: #2C251C !important;
-        }
+        /* ── Ebook Reader Themes ── */
+        .reader-book.rt-cream  { background:#FAF6EE!important; color:#2C251C!important; border-color:#EADCB9!important; }
+        .reader-book.rt-cream  .reader-cover { background:#F3EBDD!important; border-bottom-color:#E2D5C1!important; color:#2C251C!important; }
+        .reader-book.rt-cream  .reader-cover h2,
+        .reader-book.rt-cream  .reader-cover p,
+        .reader-book.rt-cream  .reader-cover div { color:#2C251C!important; }
+        .reader-book.rt-cream  .reader-title-page { background:#FAF6EE!important; color:#2C251C!important; border-bottom-color:#EADCB9!important; }
+        .reader-book.rt-cream  .reader-title-page h2,
+        .reader-book.rt-cream  .reader-title-page p { color:#2C251C!important; }
+        .reader-book.rt-cream  .reader-content p,
+        .reader-book.rt-cream  .reader-full-text p { color:#3a3020!important; }
 
-        .reader-book.rt-sepia {
-            background: #F4ECD8 !important;
-            color: #433422 !important;
-            border-color: #d2be90 !important;
-        }
-        .reader-book.rt-sepia .reader-cover {
-            background: #EADCB9 !important;
-            border-bottom-color: #D6C296 !important;
-            color: #433422 !important;
-        }
-        .reader-book.rt-sepia .reader-cover h2,
-        .reader-book.rt-sepia .reader-cover p,
-        .reader-book.rt-sepia .reader-cover div {
-            color: #433422 !important;
-        }
-        .reader-book.rt-sepia .reader-title-page {
-            background: #F4ECD8 !important;
-            color: #433422 !important;
-            border-bottom-color: #d2be90 !important;
-        }
-        .reader-book.rt-sepia .reader-title-page h2,
-        .reader-book.rt-sepia .reader-title-page p {
-            color: #433422 !important;
-        }
+        .reader-book.rt-sepia  { background:#F4ECD8!important; color:#433422!important; border-color:#d2be90!important; }
+        .reader-book.rt-sepia  .reader-cover { background:#EADCB9!important; border-bottom-color:#D6C296!important; color:#433422!important; }
+        .reader-book.rt-sepia  .reader-cover h2,
+        .reader-book.rt-sepia  .reader-cover p,
+        .reader-book.rt-sepia  .reader-cover div { color:#433422!important; }
+        .reader-book.rt-sepia  .reader-title-page { background:#F4ECD8!important; color:#433422!important; border-bottom-color:#d2be90!important; }
+        .reader-book.rt-sepia  .reader-title-page h2,
+        .reader-book.rt-sepia  .reader-title-page p { color:#433422!important; }
+        .reader-book.rt-sepia  .reader-content p,
+        .reader-book.rt-sepia  .reader-full-text p { color:#4a3828!important; }
 
-        .reader-book.rt-charcoal {
-            background: #1A1917 !important;
-            color: #D3CFC9 !important;
-            border-color: #383633 !important;
-        }
-        .reader-book.rt-charcoal .reader-cover {
-            background: #252422 !important;
-            border-bottom-color: #383633 !important;
-            color: #D3CFC9 !important;
-        }
+        .reader-book.rt-charcoal { background:#1A1917!important; color:#D3CFC9!important; border-color:#383633!important; }
+        .reader-book.rt-charcoal .reader-cover { background:#252422!important; border-bottom-color:#383633!important; color:#D3CFC9!important; }
         .reader-book.rt-charcoal .reader-cover h2,
         .reader-book.rt-charcoal .reader-cover p,
-        .reader-book.rt-charcoal .reader-cover div {
-            color: #D3CFC9 !important;
-        }
-        .reader-book.rt-charcoal .reader-title-page {
-            background: #1A1917 !important;
-            color: #D3CFC9 !important;
-            border-bottom-color: #383633 !important;
-        }
+        .reader-book.rt-charcoal .reader-cover div { color:#D3CFC9!important; }
+        .reader-book.rt-charcoal .reader-title-page { background:#1A1917!important; color:#D3CFC9!important; border-bottom-color:#383633!important; }
         .reader-book.rt-charcoal .reader-title-page h2,
-        .reader-book.rt-charcoal .reader-title-page p {
-            color: #D3CFC9 !important;
-        }
+        .reader-book.rt-charcoal .reader-title-page p { color:#D3CFC9!important; }
+        .reader-book.rt-charcoal .reader-content p,
+        .reader-book.rt-charcoal .reader-full-text p { color:#bfbbb4!important; }
 
-        .reader-book.rt-white {
-            background: #FFFFFF !important;
-            color: #1C1810 !important;
-            border-color: #E8E4DC !important;
-        }
-        .reader-book.rt-white .reader-cover {
-            background: #F5F3EF !important;
-            border-bottom-color: #E8E4DC !important;
-            color: #1C1810 !important;
-        }
+        .reader-book.rt-midnight { background:#0D1117!important; color:#C9D1D9!important; border-color:#21262D!important; }
+        .reader-book.rt-midnight .reader-cover { background:#161B22!important; border-bottom-color:#21262D!important; color:#C9D1D9!important; }
+        .reader-book.rt-midnight .reader-cover h2,
+        .reader-book.rt-midnight .reader-cover p,
+        .reader-book.rt-midnight .reader-cover div { color:#C9D1D9!important; }
+        .reader-book.rt-midnight .reader-title-page { background:#0D1117!important; color:#C9D1D9!important; border-bottom-color:#21262D!important; }
+        .reader-book.rt-midnight .reader-title-page h2,
+        .reader-book.rt-midnight .reader-title-page p { color:#C9D1D9!important; }
+        .reader-book.rt-midnight .reader-content p,
+        .reader-book.rt-midnight .reader-full-text p { color:#adb8c4!important; }
+
+        .reader-book.rt-white { background:#FFFFFF!important; color:#1C1810!important; border-color:#E8E4DC!important; }
+        .reader-book.rt-white .reader-cover { background:#F5F3EF!important; border-bottom-color:#E8E4DC!important; color:#1C1810!important; }
         .reader-book.rt-white .reader-cover h2,
         .reader-book.rt-white .reader-cover p,
-        .reader-book.rt-white .reader-cover div {
-            color: #1C1810 !important;
-        }
-        .reader-book.rt-white .reader-title-page {
-            background: #FFFFFF !important;
-            color: #1C1810 !important;
-            border-bottom-color: #E8E4DC !important;
-        }
+        .reader-book.rt-white .reader-cover div { color:#1C1810!important; }
+        .reader-book.rt-white .reader-title-page { background:#FFFFFF!important; color:#1C1810!important; border-bottom-color:#E8E4DC!important; }
         .reader-book.rt-white .reader-title-page h2,
-        .reader-book.rt-white .reader-title-page p {
-            color: #1C1810 !important;
-        }
+        .reader-book.rt-white .reader-title-page p { color:#1C1810!important; }
 
+        /* ── Cover header ── */
         .reader-cover {
             display: grid;
-            grid-template-columns: 100px minmax(0, 1fr);
+            grid-template-columns: 110px minmax(0, 1fr);
             gap: var(--sp-4);
             align-items: center;
-            padding: var(--sp-5);
+            padding: var(--sp-5) var(--sp-6);
             background: var(--surface-2);
             border-bottom: 1px solid var(--border);
         }
-
         .reader-cover img {
-            width: 100px;
-            height: 138px;
+            width: 110px;
+            height: 154px;
             border-radius: var(--r-sm);
             object-fit: cover;
             box-shadow: var(--shadow-md);
         }
 
+        /* ── Title splash page ── */
         .reader-title-page {
-            min-height: 400px;
+            min-height: 420px;
             display: grid;
             place-items: center;
-            padding: 32px var(--sp-5);
+            padding: 40px var(--sp-5);
             background: #FFFEF9;
             border-bottom: 1px solid var(--border);
         }
-
         .reader-title-page-inner {
-            width: min(100%, 320px);
+            width: min(100%, 300px);
             text-align: center;
         }
-
         .reader-title-page img {
             width: 180px;
             height: 250px;
@@ -2531,59 +2613,108 @@
             box-shadow: var(--shadow-lg);
             margin-bottom: var(--sp-5);
         }
-
         .reader-title-page h2 {
-            font-size: 26px;
+            font-family: 'Lora', serif;
+            font-size: 28px;
             line-height: 1.2;
             margin-bottom: var(--sp-1);
         }
+        .reader-title-page p { color: var(--ink-light); font-size: var(--text-sm); }
 
-        .reader-title-page p {
-            color: var(--ink-light);
-            font-size: var(--text-sm);
-        }
-
+        /* ── Reading content area ── */
         .reader-content {
-            padding: var(--sp-6) 32px;
-            font-family: 'Lora', serif;
+            padding: 32px 40px;
+            font-family: var(--reader-font, 'Lora'), serif;
+            scroll-padding-top: 80px;
         }
-
-        .reader-content section+section {
-            margin-top: var(--sp-6);
-        }
-
+        .reader-content section { margin-bottom: 48px; }
         .reader-content h3 {
-            font-size: 18px;
-            margin-bottom: var(--sp-2);
+            font-family: var(--reader-font, 'Lora'), serif;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: inherit;
+            line-height: 1.3;
         }
-
         .reader-content p {
-            font-size: 16px;
-            line-height: 1.9;
+            font-size: var(--reader-fs, 17px);
+            line-height: var(--reader-lh, 1.9);
             color: var(--ink-mid);
-            max-width: 68ch;
             text-align: justify;
             text-justify: inter-word;
             hyphens: auto;
+            margin-bottom: 1em;
         }
 
+        /* ── Full text from Gutenberg ── */
         .reader-full-text {
-            font-family: 'Lora', serif;
-            font-size: 16px;
-            line-height: 1.9;
+            font-family: var(--reader-font, 'Lora'), serif;
+            font-size: var(--reader-fs, 17px);
+            line-height: var(--reader-lh, 1.9);
             color: var(--ink-mid);
-            max-width: 68ch;
         }
-
         .reader-full-text p {
             text-align: justify;
             text-justify: inter-word;
             hyphens: auto;
+            margin-bottom: 1.4em;
+        }
+        .reader-full-text h3 {
+            font-family: var(--reader-font, 'Lora'), serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 2.5em 0 0.8em;
+            text-align: center;
+            letter-spacing: 0.04em;
+            color: inherit;
+        }
+        .reader-chapter-anchor {
+            display: block;
+            height: 0;
+            scroll-margin-top: 80px;
         }
 
-        .reader-full-text p+p {
-            margin-top: var(--sp-4);
+        /* ── Visual Bookmark Ribbon ── */
+        .reader-bookmark-ribbon {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 28px 0 24px;
+            position: relative;
         }
+        .reader-bookmark-ribbon::before {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent));
+            border-radius: 2px;
+        }
+        .reader-bookmark-ribbon::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            border-radius: 2px;
+        }
+        .reader-bookmark-ribbon-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            background: var(--accent);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            border-radius: 20px;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            user-select: none;
+        }
+
+
+
 
         .simple-note {
             display: inline-flex;
@@ -2989,10 +3120,16 @@
                 grid-template-columns: 1fr;
                 text-align: center;
             }
+            .reader-cover img { margin: 0 auto; }
 
             .reader-content {
                 padding: var(--sp-4) var(--sp-3);
             }
+
+            .reader-layout.with-toc {
+                grid-template-columns: 1fr;
+            }
+            .reader-toc { display: none; }
 
             .data-table th,
             .data-table td {
@@ -3294,12 +3431,13 @@
 
             <!-- EBOOK READER -->
             <div class="page" id="page-ebook-reader">
-                <div class="page-content">
+                <div class="page-content" style="padding:0">
                     <div id="ebook-reader-wrap">
                         <div class="loading"><div class="spinner"></div>Opening reader…</div>
                     </div>
                 </div>
             </div>
+
 
             <!-- FINES -->
             <div class="page" id="page-fines">
@@ -4287,6 +4425,10 @@
         }
 
         function showPage(id) {
+            // Clean up reader listeners when leaving reader page
+            if (id !== 'ebook-reader' && window._readerCleanup) {
+                window._readerCleanup();
+            }
             if (activeReaderBookId && id !== 'ebook-reader') {
                 if (!isReaderPreviewMode) {
                     saveEbookProgress(activeReaderBookId);
@@ -4813,6 +4955,12 @@
                 return;
             }
 
+            // Activate progress bar mode
+            document.body.classList.add('reader-active');
+            let readerScrollHandler = null;
+            let readerKeyHandler = null;
+            let readerAutoSaveTimer = null;
+
             let book = null;
             let chapters = [];
             let isPreview = isReaderPreviewMode;
@@ -4826,27 +4974,24 @@
                         book = catalogBooks.find(b => b.id === bookId);
                     }
                 }
-                if (!book) {
-                    wrap.innerHTML = errorHTML('Preview could not be loaded.');
-                    return;
-                }
+                if (!book) { wrap.innerHTML = errorHTML('Preview could not be loaded.'); return; }
                 chapters = book.sample || [];
             } else {
                 wrap.innerHTML = '<div class="loading"><div class="spinner"></div>Opening reader…</div>';
                 const r = await api('GET', `/ebooks/reader/${bookId}`);
                 if (!r.ok) {
-                    wrap.innerHTML =
-                        `<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-lock"></i></div><h3>Reader locked</h3><p>${esc(r.data.error)}</p><button class="btn-search" onclick="showPage('catalog')" style="margin-top:14px">Back to catalog</button></div>`;
+                    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-lock"></i></div><h3>Reader locked</h3><p>${esc(r.data.error)}</p><button class="btn-search" onclick="showPage('catalog')" style="margin-top:14px">Back to catalog</button></div>`;
                     return;
                 }
                 book = r.data.data;
                 chapters = book.chapters || [];
             }
 
-            let readingBody = chapters.map(chapter => `
+            let readingBody = chapters.map(ch => `
             <section>
-              <h3>${esc(chapter.heading)}</h3>
-              <p>${esc(chapter.body)}</p>
+              <span class="reader-chapter-anchor" id="ch-${esc(ch.heading.replace(/\s+/g,'_'))}"></span>
+              <h3>${esc(ch.heading)}</h3>
+              <p>${esc(ch.body)}</p>
             </section>`).join('');
 
             if (!isPreview && book.full_text_available) {
@@ -4854,77 +4999,199 @@
             }
 
             const currentTheme = localStorage.getItem('reader_theme') || 'white';
-            const currentFontSize = localStorage.getItem('reader_font_size') || '16';
+            const currentFontSize = parseInt(localStorage.getItem('reader_font_size')) || 17;
+            const currentFont = localStorage.getItem('reader_font') || 'Lora';
+            const currentLH = localStorage.getItem('reader_lh') || '1.9';
 
-            const backBtnText = isPreview ? 'Back to catalog' : 'Back to purchased';
             const backBtnPage = isPreview ? 'catalog' : 'purchased';
+            const backBtnText = isPreview ? 'Back to catalog' : 'Back to library';
 
-            const previewNotice = isPreview ? `
-            <div style="background:var(--warning-bg);color:var(--warning);border:1px solid var(--border);border-radius:var(--r-sm);padding:var(--sp-3) var(--sp-4);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-                <div style="font-size:var(--text-sm)">
-                    <strong>Preview Mode</strong>: You are reading a free sample of this ebook.
-                </div>
+            const THEMES = ['white','cream','sepia','charcoal','midnight'];
+            const THEME_COLORS = { white:'#FFFFFF', cream:'#FAF6EE', sepia:'#F4ECD8', charcoal:'#1A1917', midnight:'#0D1117' };
+            const THEME_LABELS = { white:'White', cream:'Cream', sepia:'Sepia', charcoal:'Charcoal', midnight:'Midnight' };
+
+            const previewBanner = isPreview ? `
+            <div style="background:var(--warning-bg);color:var(--warning);border:1px solid var(--border);border-radius:var(--r-sm);padding:var(--sp-3) var(--sp-4);margin:12px 0 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+                <div style="font-size:var(--text-sm)"><strong>Preview Mode</strong> — Free sample of this ebook.</div>
                 <button class="btn-sm primary" onclick="purchaseCatalogEbook('${book.id}')">Buy Full Ebook ₹${Number(book.price).toFixed(2)}</button>
             </div>` : '';
 
-            wrap.innerHTML = `<div class="reader-shell">
-            ${previewNotice}
-            <div class="reader-toolbar">
-              <button class="btn-ebook ghost" onclick="showPage('${backBtnPage}')"><i class="fa-solid fa-arrow-left"></i> ${backBtnText}</button>
-              
-              <div class="reader-controls" style="display:flex;align-items:center;gap:12px">
-                <!-- Explicit Bookmark Button -->
-                ${!isPreview ? `
-                <button class="btn-ebook ghost" onclick="toggleExplicitBookmark()" id="reader-bookmark-btn" title="Save Bookmark" style="display:flex;align-items:center;gap:6px;border:1.5px solid var(--border);border-radius:var(--r-sm);height:32px;padding:4px 10px;font-size:var(--text-xs);font-weight:500;cursor:pointer;background:var(--surface)">
-                    <i class="fa-regular fa-bookmark" id="reader-bookmark-icon" style="font-size:12px"></i> <span>Bookmark</span>
-                </button>` : ''}
+            // TOC from chapters (shown initially for non-full-text; rebuilt after full-text loads)
+            const tocHTML = chapters.length > 0 ? `
+            <nav class="reader-toc" id="reader-toc">
+                <h4><i class="fa-solid fa-list" style="margin-right:5px"></i>Contents</h4>
+                ${chapters.map(ch => `<button class="reader-toc-item" onclick="readerJumpToChapter('${esc(ch.heading.replace(/\s+/g,'_'))}')">${esc(ch.heading)}</button>`).join('')}
+            </nav>` : '';
 
-                <!-- Font Size Adjuster -->
-                <div class="font-size-adjust" style="display:flex;align-items:center;border:1.5px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:var(--surface)">
-                  <button class="btn-ebook ghost" onclick="changeReaderFontSize(-2)" style="border:none;min-height:32px;padding:4px 12px;font-size:12px;font-weight:700" title="Decrease font size">A-</button>
-                  <button class="btn-ebook ghost" onclick="changeReaderFontSize(2)" style="border:none;min-height:32px;padding:4px 12px;font-size:15px;font-weight:700" title="Increase font size">A+</button>
+            wrap.innerHTML = `
+            <div id="reader-progress-bar"></div>
+            <div class="reader-shell">
+              ${previewBanner}
+              <!-- TOOLBAR -->
+              <div class="reader-toolbar" id="reader-toolbar">
+                <div class="reader-toolbar-left">
+                  <button class="reader-icon-btn" onclick="showPage('${backBtnPage}');document.body.classList.remove('reader-active')">
+                    <i class="fa-solid fa-arrow-left"></i> ${backBtnText}
+                  </button>
+                  ${!isPreview ? `
+                  <button class="reader-icon-btn" id="reader-toc-btn" onclick="toggleReaderToc()" title="Table of Contents (T)">
+                    <i class="fa-solid fa-list"></i>
+                  </button>` : ''}
                 </div>
 
-                <!-- Ebook Theme Buttons -->
-                <div class="reader-themes" style="display:flex;gap:8px">
-                  <button onclick="setReaderTheme('white')" style="width:26px;height:26px;border-radius:50%;border:2px solid ${currentTheme === 'white' ? 'var(--accent)' : '#ccc'};background:#fff;cursor:pointer" title="White Theme" aria-label="White Theme"></button>
-                  <button onclick="setReaderTheme('cream')" style="width:26px;height:26px;border-radius:50%;border:2px solid ${currentTheme === 'cream' ? 'var(--accent)' : '#ebdcb9'};background:#FAF6EE;cursor:pointer" title="Cream Theme" aria-label="Cream Theme"></button>
-                  <button onclick="setReaderTheme('sepia')" style="width:26px;height:26px;border-radius:50%;border:2px solid ${currentTheme === 'sepia' ? 'var(--accent)' : '#d2be90'};background:#F4ECD8;cursor:pointer" title="Sepia Theme" aria-label="Sepia Theme"></button>
-                  <button onclick="setReaderTheme('charcoal')" style="width:26px;height:26px;border-radius:50%;border:2px solid ${currentTheme === 'charcoal' ? 'var(--accent)' : '#383633'};background:#1A1917;cursor:pointer" title="Charcoal Theme" aria-label="Charcoal Theme"></button>
-                </div>
-              </div>
+                <div class="reader-toolbar-right">
+                  <!-- Progress -->
+                  <span class="reader-progress-badge" id="reader-progress-text">0%</span>
 
-              <span class="category-tag">${isPreview ? 'Preview' : (esc(book.purchase?.purchase_code || 'Owned'))}</span>
-            </div>
-            <article class="reader-book rt-${currentTheme}" id="reader-book-container" style="--reader-fs: ${currentFontSize}px">
-              <header class="reader-cover">
-                <img src="${bookCoverSvg(book, 120, 160)}" alt="Cover of ${esc(book.title)}">
-                <div>
-                  <div class="hero-kicker">${esc(book.category)}</div>
-                  <h2>${esc(book.title)}</h2>
-                  <p>${esc(book.author)}</p>
-                  <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
-                    <span class="category-tag">${esc(book.book_code)}</span>
-                    <span class="category-tag">${isPreview ? 'Free Sample' : 'Purchased'}</span>
-                    <span class="category-tag">${book.reading_minutes} min read</span>
+                  ${!isPreview ? `
+                  <!-- Bookmark -->
+                  <button class="reader-icon-btn" onclick="toggleExplicitBookmark()" id="reader-bookmark-btn" title="Bookmark (B)">
+                    <i class="fa-regular fa-bookmark" id="reader-bookmark-icon"></i>
+                  </button>` : ''}
+
+                  <!-- Font family -->
+                  <select id="reader-font-select" title="Font Family"
+                    onchange="setReaderFont(this.value)"
+                    style="height:32px;border-radius:var(--r-sm);border:1.5px solid var(--border);background:var(--surface);color:var(--ink);font-size:var(--text-xs);padding:0 8px;cursor:pointer">
+                    <option value="Lora" ${currentFont==='Lora'?'selected':''}>Lora (Serif)</option>
+                    <option value="Inter" ${currentFont==='Inter'?'selected':''}>Inter (Sans)</option>
+                    <option value="Merriweather" ${currentFont==='Merriweather'?'selected':''}>Merriweather</option>
+                    <option value="'Courier New'" ${currentFont==="'Courier New'"?'selected':''}>Typewriter</option>
+                  </select>
+
+                  <!-- Font size -->
+                  <div style="display:flex;align-items:center;border:1.5px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:var(--surface)">
+                    <button class="reader-icon-btn" onclick="changeReaderFontSize(-1)"
+                      style="border:none;border-radius:0;font-size:11px;font-weight:800;padding:0 10px" title="Decrease font (-)">A−</button>
+                    <span id="reader-fs-badge" style="font-size:11px;font-weight:700;color:var(--ink-light);padding:0 4px;min-width:28px;text-align:center">${currentFontSize}</span>
+                    <button class="reader-icon-btn" onclick="changeReaderFontSize(1)"
+                      style="border:none;border-radius:0;font-size:14px;font-weight:800;padding:0 10px" title="Increase font (+)">A+</button>
                   </div>
-                </div>
-              </header>
-              <div class="reader-title-page">
-                <div class="reader-title-page-inner">
-                  <img src="${bookCoverSvg(book, 220, 300)}" alt="Cover of ${esc(book.title)}">
-                  <h2>${esc(book.title)}</h2>
-                  <p>by ${esc(book.author)}</p>
+
+                  <!-- Line spacing -->
+                  <div style="display:flex;align-items:center;border:1.5px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:var(--surface)">
+                    <button class="reader-icon-btn" onclick="setReaderLineHeight('1.65')" id="lh-compact"
+                      style="border:none;border-radius:0;padding:0 8px;font-size:10px" title="Compact spacing">≡</button>
+                    <button class="reader-icon-btn" onclick="setReaderLineHeight('1.9')" id="lh-normal"
+                      style="border:none;border-radius:0;padding:0 8px;font-size:12px" title="Normal spacing">≡</button>
+                    <button class="reader-icon-btn" onclick="setReaderLineHeight('2.15')" id="lh-relaxed"
+                      style="border:none;border-radius:0;padding:0 8px;font-size:14px" title="Relaxed spacing">≡</button>
+                  </div>
+
+                  <!-- Themes -->
+                  <div style="display:flex;gap:6px;align-items:center">
+                    ${THEMES.map(t => `<button class="reader-theme-swatch ${t===currentTheme?'selected':''}"
+                      onclick="setReaderTheme('${t}')"
+                      style="background:${THEME_COLORS[t]};border-color:${t===currentTheme?'var(--accent)':'rgba(0,0,0,0.15)'}"
+                      title="${THEME_LABELS[t]}"></button>`).join('')}
+                  </div>
+
+                  ${!isPreview ? `
+                  <!-- Focus mode -->
+                  <button class="reader-icon-btn" id="reader-focus-btn" onclick="toggleReaderFocus()" title="Focus mode (F)">
+                    <i class="fa-solid fa-expand"></i>
+                  </button>` : ''}
                 </div>
               </div>
-              <div class="reader-content" id="reader-content">${readingBody}</div>
-            </article>
-          </div>`;
+
+              <!-- READER LAYOUT -->
+              <div class="reader-layout" id="reader-layout">
+                ${tocHTML}
+                <article class="reader-book rt-${currentTheme}" id="reader-book-container"
+                  style="--reader-fs:${currentFontSize}px;--reader-font:'${currentFont.replace(/'/g,'')}',serif;--reader-lh:${currentLH}">
+                  <header class="reader-cover">
+                    <img src="${bookCoverSvg(book, 110, 154)}" alt="Cover of ${esc(book.title)}">
+                    <div>
+                      <div class="hero-kicker">${esc(book.category)}</div>
+                      <h2 style="font-family:'Lora',serif;font-size:clamp(16px,2.5vw,24px);line-height:1.2;margin-bottom:6px">${esc(book.title)}</h2>
+                      <p style="font-size:var(--text-sm);color:var(--ink-mid);margin-bottom:10px">${esc(book.author)}</p>
+                      <div style="display:flex;gap:6px;flex-wrap:wrap">
+                        <span class="category-tag">${esc(book.book_code)}</span>
+                        <span class="category-tag">${isPreview ? 'Free Sample' : 'Purchased'}</span>
+                        <span class="category-tag"><i class="fa-regular fa-clock" style="margin-right:3px"></i>${book.reading_minutes} min</span>
+                      </div>
+                    </div>
+                  </header>
+                  <div class="reader-title-page">
+                    <div class="reader-title-page-inner">
+                      <img src="${bookCoverSvg(book, 220, 300)}" alt="Cover of ${esc(book.title)}">
+                      <h2>${esc(book.title)}</h2>
+                      <p>by ${esc(book.author)}</p>
+                    </div>
+                  </div>
+                  <div class="reader-content" id="reader-content">${readingBody}</div>
+                </article>
+              </div>
+            </div>`;
+
+            // Apply initial typography
+            _applyReaderTypography(currentFont, currentFontSize, currentLH);
+            _updateLHButtons(currentLH);
+
+            // Set up scroll-based progress bar + toolbar auto-hide
+            let lastScrollY = 0;
+            readerScrollHandler = () => {
+                const scrollY = window.scrollY;
+                const scrollH = document.documentElement.scrollHeight - window.innerHeight;
+                const pct = scrollH > 0 ? Math.round((scrollY / scrollH) * 100) : 0;
+
+                // Update progress bar
+                const bar = document.getElementById('reader-progress-bar');
+                if (bar) bar.style.width = pct + '%';
+
+                // Update progress badge
+                const badge = document.getElementById('reader-progress-text');
+                if (badge) {
+                    const wordsLeft = Math.max(0, Math.round((book.reading_minutes || 30) * (1 - pct / 100)));
+                    badge.textContent = pct + '%' + (wordsLeft > 0 ? ` · ~${wordsLeft}m left` : ' · Done');
+                }
+
+                // Auto-hide toolbar on scroll down, show on scroll up
+                const toolbar = document.getElementById('reader-toolbar');
+                if (toolbar) {
+                    if (scrollY > lastScrollY + 8 && scrollY > 120) {
+                        toolbar.classList.add('toolbar-hidden');
+                    } else if (scrollY < lastScrollY - 5 || scrollY < 80) {
+                        toolbar.classList.remove('toolbar-hidden');
+                    }
+                }
+                lastScrollY = scrollY;
+
+                // Auto-save progress with new absolute format (debounced)
+                if (!isPreview && activeReaderBookId) {
+                    if (readerAutoSaveTimer) clearTimeout(readerAutoSaveTimer);
+                    readerAutoSaveTimer = setTimeout(() => saveEbookProgress(activeReaderBookId, window.scrollY), 2000);
+                }
+            };
+            window.addEventListener('scroll', readerScrollHandler, { passive: true });
+
+            // Keyboard shortcuts
+            readerKeyHandler = (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+                if (e.key === 'f' || e.key === 'F') { if (!isPreview) toggleReaderFocus(); }
+                if (e.key === 'b' || e.key === 'B') { if (!isPreview) toggleExplicitBookmark(); }
+                if (e.key === '+' || e.key === '=') changeReaderFontSize(1);
+                if (e.key === '-' || e.key === '_') changeReaderFontSize(-1);
+                if (e.key === 't' || e.key === 'T') { if (!isPreview) toggleReaderToc(); }
+                if (e.key === 'Escape') {
+                    const toolbar = document.getElementById('reader-toolbar');
+                    if (toolbar) toolbar.classList.remove('toolbar-hidden');
+                }
+            };
+            document.addEventListener('keydown', readerKeyHandler);
+
+            // Store cleanup refs on window so navigating away cleans up
+            window._readerCleanup = () => {
+                if (readerScrollHandler) window.removeEventListener('scroll', readerScrollHandler);
+                if (readerKeyHandler) document.removeEventListener('keydown', readerKeyHandler);
+                if (readerAutoSaveTimer) clearTimeout(readerAutoSaveTimer);
+                document.body.classList.remove('reader-active', 'reader-focus');
+                window._readerCleanup = null;
+            };
 
             if (!isPreview && book.full_text_available) {
                 await loadFullText(bookId, book.full_text_source, bookId);
             } else if (!isPreview) {
-                // No full text – content is already rendered, restore now
                 restoreEbookProgress(bookId);
             }
         }
@@ -4935,123 +5202,390 @@
             if (!r.ok) {
                 const body = r.data?.error || 'Could not load the full text right now.';
                 content.innerHTML = `<section><h3>Reader Note</h3><p>${esc(body)}</p></section>`;
-                // Still attempt restore even on error (page height may differ)
                 if (restoreBookId) restoreEbookProgress(restoreBookId);
                 return;
             }
 
-            const text = typeof r.data === 'string' ? r.data : '';
-            const paragraphs = text
-                .split(/\n\s*\n/)
-                .map(p => p.replace(/\s*\n\s*/g, ' ').trim())
-                .filter(p => p.length > 0);
+            const rawText = typeof r.data === 'string' ? r.data : '';
 
-            content.innerHTML = `
-            <p style="font-family:'Inter',sans-serif;font-size:var(--text-xs);color:var(--ink-light);margin-bottom:14px">
-              Full text from ${esc(sourceLabel || 'Project Gutenberg')}.
-            </p>
-            <div class="reader-full-text">${paragraphs.map(p => `<p>${esc(p)}</p>`).join('')}</div>`;
+            // Detect chapters in Gutenberg plain text
+            const CHAPTER_RE = /^(CHAPTER\s+[IVXLCDM0-9]+|Chapter\s+\d+|PART\s+[IVXLCDM0-9]+|BOOK\s+[IVXLCDM0-9]+|SECTION\s+\d+|Preface|Introduction|Epilogue|Appendix)[.:—\s]*(.*)$/im;
+            const lines = rawText.split('\n');
+            const sections = [];
+            let currentHeading = null;
+            let buffer = [];
 
-            // Restore bookmark AFTER content is fully in the DOM so scrollHeight is correct
+            for (const line of lines) {
+                const m = line.match(CHAPTER_RE);
+                if (m) {
+                    if (buffer.length > 0 || currentHeading) {
+                        sections.push({ heading: currentHeading, text: buffer.join('\n') });
+                    }
+                    currentHeading = (m[1] + (m[2] ? ' — ' + m[2].trim() : '')).trim();
+                    buffer = [];
+                } else {
+                    buffer.push(line);
+                }
+            }
+            if (buffer.length > 0 || currentHeading) {
+                sections.push({ heading: currentHeading, text: buffer.join('\n') });
+            }
+
+            // Build HTML with chapter anchors
+            let html = `<p style="font-family:'Inter',sans-serif;font-size:var(--text-xs);color:var(--ink-light);margin-bottom:20px;text-align:center">
+              Full text from <strong>${esc(sourceLabel || 'Project Gutenberg')}</strong>
+            </p><div class="reader-full-text">`;
+
+            const tocChapters = [];
+            for (const sec of sections) {
+                if (sec.heading) {
+                    const anchor = sec.heading.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+                    tocChapters.push({ heading: sec.heading, anchor });
+                    html += `<span class="reader-chapter-anchor" id="ch-${esc(anchor)}"></span>
+                    <h3>${esc(sec.heading)}</h3>`;
+                }
+                const paras = sec.text
+                    .split(/\n\s*\n/)
+                    .map(p => p.replace(/\s*\n\s*/g, ' ').trim())
+                    .filter(p => p.length > 10);
+                html += paras.map(p => `<p>${esc(p)}</p>`).join('');
+            }
+            html += '</div>';
+            content.innerHTML = html;
+
+            // Rebuild TOC if chapters detected
+            if (tocChapters.length > 1) {
+                const toc = document.getElementById('reader-toc');
+                const layout = document.getElementById('reader-layout');
+                if (layout) layout.classList.add('with-toc');
+                if (toc) {
+                    toc.innerHTML = `<h4><i class="fa-solid fa-list" style="margin-right:5px"></i>Contents (${tocChapters.length})</h4>` +
+                        tocChapters.map(c => `<button class="reader-toc-item" onclick="readerJumpToChapter('${esc(c.anchor)}')">${esc(c.heading)}</button>`).join('');
+                } else if (layout) {
+                    const nav = document.createElement('nav');
+                    nav.className = 'reader-toc';
+                    nav.id = 'reader-toc';
+                    nav.innerHTML = `<h4><i class="fa-solid fa-list" style="margin-right:5px"></i>Contents (${tocChapters.length})</h4>` +
+                        tocChapters.map(c => `<button class="reader-toc-item" onclick="readerJumpToChapter('${esc(c.anchor)}')">${esc(c.heading)}</button>`).join('');
+                    layout.insertBefore(nav, layout.firstChild);
+                }
+            }
+
+            // Restore reading position after DOM is settled
             if (restoreBookId) restoreEbookProgress(restoreBookId);
         }
 
-        // ── Ebook Reader Helper Functions ─────────────────────────
-        function saveEbookProgress(bookId) {
-            if (!userInfo || !bookId) return;
-            const doc = document.documentElement;
-            const scrollHeight = doc.scrollHeight - window.innerHeight;
-            if (scrollHeight > 0) {
-                const ratio = window.scrollY / scrollHeight;
-                localStorage.setItem(`lib_bookmark_${userInfo.id}_${bookId}`, ratio);
+        // ── Reader helper functions ───────────────────────────────
+        function readerJumpToChapter(anchor) {
+            const el = document.getElementById('ch-' + anchor);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Highlight active TOC item
+            document.querySelectorAll('.reader-toc-item').forEach(btn => {
+                btn.classList.toggle('toc-active', btn.textContent.trim() === anchor.replace(/_/g,' '));
+            });
+        }
+
+        function toggleReaderToc() {
+            const layout = document.getElementById('reader-layout');
+            const toc = document.getElementById('reader-toc');
+            if (!layout || !toc) return;
+            const open = layout.classList.toggle('with-toc');
+            const btn = document.getElementById('reader-toc-btn');
+            if (btn) btn.classList.toggle('active', open);
+        }
+
+        function toggleReaderFocus() {
+            const isFocus = document.body.classList.toggle('reader-focus');
+            const toolbar = document.getElementById('reader-toolbar');
+            if (toolbar) toolbar.classList.toggle('toolbar-hidden', isFocus);
+            const btn = document.getElementById('reader-focus-btn');
+            if (btn) {
+                btn.classList.toggle('active', isFocus);
+                btn.innerHTML = isFocus
+                    ? '<i class="fa-solid fa-compress"></i>'
+                    : '<i class="fa-solid fa-expand"></i>';
             }
+            toast(isFocus ? 'Focus mode — press F or Esc to exit' : 'Focus mode off', 'success');
+        }
+
+        function _applyReaderTypography(font, size, lh) {
+            const container = document.getElementById('reader-book-container');
+            if (!container) return;
+            container.style.setProperty('--reader-font', `'${font.replace(/'/g,'')}', serif`);
+            container.style.setProperty('--reader-fs', size + 'px');
+            container.style.setProperty('--reader-lh', lh);
+        }
+
+        function _updateLHButtons(lh) {
+            ['compact','normal','relaxed'].forEach(id => {
+                const btn = document.getElementById('lh-' + id);
+                if (btn) btn.classList.remove('active');
+            });
+            const map = { '1.65': 'compact', '1.9': 'normal', '2.15': 'relaxed' };
+            const active = document.getElementById('lh-' + (map[lh] || 'normal'));
+            if (active) active.classList.add('active');
+        }
+
+        function setReaderFont(font) {
+            localStorage.setItem('reader_font', font);
+            _applyReaderTypography(font, parseInt(localStorage.getItem('reader_font_size')) || 17, localStorage.getItem('reader_lh') || '1.9');
+        }
+
+        function setReaderLineHeight(lh) {
+            localStorage.setItem('reader_lh', lh);
+            _applyReaderTypography(localStorage.getItem('reader_font') || 'Lora', parseInt(localStorage.getItem('reader_font_size')) || 17, lh);
+            _updateLHButtons(lh);
+        }
+
+        function saveEbookProgress(bookId, forceScrollY) {
+            if (!userInfo || !bookId) return;
+            // Store absolute pixel position so position 0 (top) is also valid
+            const scrollY = (forceScrollY !== undefined) ? forceScrollY : window.scrollY;
+            localStorage.setItem(`lib_bookmark_${userInfo.id}_${bookId}`, JSON.stringify({ scrollY, ts: Date.now() }));
         }
 
         function restoreEbookProgress(bookId) {
             if (!userInfo || !bookId) return;
-            const saved = localStorage.getItem(`lib_bookmark_${userInfo.id}_${bookId}`);
-            if (saved !== null) {
-                const ratio = parseFloat(saved);
-                if (!isNaN(ratio) && ratio > 0) {
-                    const icon = document.getElementById('reader-bookmark-icon');
-                    if (icon) {
-                        icon.className = 'fa-solid fa-bookmark';
-                        icon.style.color = 'var(--success)';
+            const raw = localStorage.getItem(`lib_bookmark_${userInfo.id}_${bookId}`);
+            if (raw === null) return;
+
+            let scrollY = null;
+            try {
+                const parsed = JSON.parse(raw);
+                if (typeof parsed === 'object' && parsed !== null && 'scrollY' in parsed) {
+                    scrollY = parsed.scrollY;
+                } else {
+                    const ratio = parseFloat(raw);
+                    if (!isNaN(ratio)) {
+                        const sh = document.documentElement.scrollHeight - window.innerHeight;
+                        scrollY = Math.round(ratio * sh);
                     }
-
-                    const doScroll = (behavior) => {
-                        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-                        if (scrollHeight > 0) {
-                            window.scrollTo({ top: ratio * scrollHeight, behavior });
-                            return true;
-                        }
-                        return false;
-                    };
-
-                    // Fire immediately via rAF (content is already in DOM when this is called)
-                    requestAnimationFrame(() => {
-                        if (!doScroll('instant')) {
-                            // Safety retry if layout hasn't settled yet
-                            setTimeout(() => doScroll('smooth'), 100);
-                            setTimeout(() => doScroll('instant'), 400);
-                        }
-                    });
-
-                    setTimeout(() => toast('Resumed from your last reading position', 'success'), 200);
+                }
+            } catch {
+                const ratio = parseFloat(raw);
+                if (!isNaN(ratio)) {
+                    const sh = document.documentElement.scrollHeight - window.innerHeight;
+                    scrollY = Math.round(ratio * sh);
                 }
             }
+
+            if (scrollY === null || isNaN(scrollY)) return;
+
+            // Light up bookmark icon in toolbar
+            const icon = document.getElementById('reader-bookmark-icon');
+            if (icon) { icon.className = 'fa-solid fa-bookmark'; icon.style.color = 'var(--success)'; }
+
+            // Show toast immediately
+            if (scrollY > 0) {
+                setTimeout(() => toast('📌 Resuming from your last reading position…', 'success'), 100);
+            }
+
+            // Retry-based scroll: keep trying until the page is tall enough to reach the target position.
+            // Large Gutenberg books can take 1-3 seconds to fully lay out in the browser.
+            let attempts = 0;
+            const MAX_ATTEMPTS = 30;      // up to ~3 seconds total
+            const INTERVAL_MS  = 100;     // check every 100ms
+
+            const tryRestoreScroll = () => {
+                const sh = document.documentElement.scrollHeight - window.innerHeight;
+
+                if (sh >= scrollY || attempts >= MAX_ATTEMPTS) {
+                    // Page is tall enough — scroll and place the ribbon
+                    window.scrollTo({ top: scrollY, behavior: 'instant' });
+
+                    // Place ribbon after scroll so getBoundingClientRect is relative to scrolled viewport
+                    requestAnimationFrame(() => {
+                        _placeBookmarkRibbon(scrollY);
+                        // One more scroll in case ribbon insertion shifted layout
+                        setTimeout(() => window.scrollTo({ top: scrollY, behavior: 'instant' }), 80);
+                    });
+                    return;
+                }
+
+                // Page not tall enough yet — wait and retry
+                attempts++;
+                setTimeout(tryRestoreScroll, INTERVAL_MS);
+            };
+
+            // Start checking after a short initial delay (rAF + 50ms for innerHTML to start painting)
+            requestAnimationFrame(() => setTimeout(tryRestoreScroll, 50));
+        }
+
+        // Place a visual "You left off here" ribbon in the text at the given scrollY
+        function _placeBookmarkRibbon(scrollY) {
+            // Remove any existing ribbon
+            document.querySelectorAll('.reader-bookmark-ribbon').forEach(el => el.remove());
+
+            const content = document.getElementById('reader-content');
+            if (!content) return;
+
+            // Collect all text nodes (paragraphs and headings)
+            const nodes = Array.from(content.querySelectorAll('p, h3'));
+            if (!nodes.length) {
+                content.insertBefore(_buildRibbon(), content.firstChild);
+                return;
+            }
+
+            // After scrolling to `scrollY`, the paragraph that appears near the
+            // top of the viewport will have rect.top ≈ 0 (or small positive).
+            // We want the paragraph whose absolute top is closest to scrollY.
+            let best = nodes[0];
+            let bestDist = Infinity;
+            for (const el of nodes) {
+                const absTop = el.getBoundingClientRect().top + window.scrollY;
+                const dist = Math.abs(absTop - scrollY);
+                if (dist < bestDist) { bestDist = dist; best = el; }
+            }
+
+            best.parentNode.insertBefore(_buildRibbon(), best);
+        }
+
+        function _buildRibbon() {
+            const div = document.createElement('div');
+            div.className = 'reader-bookmark-ribbon';
+            div.id = 'reader-bookmark-ribbon';
+            div.innerHTML = `<span class="reader-bookmark-ribbon-label">
+                <i class="fa-solid fa-bookmark" style="font-size:10px"></i>&nbsp;You left off here
+            </span>`;
+            return div;
+        }
+
+        function toggleExplicitBookmark() {
+            if (!activeReaderBookId || !userInfo) return;
+            const key = `lib_bookmark_${userInfo.id}_${activeReaderBookId}`;
+            const icon = document.getElementById('reader-bookmark-icon');
+
+            // Always update to the current position (replace any previous bookmark)
+            const curScrollY = window.scrollY;
+            saveEbookProgress(activeReaderBookId, curScrollY);
+            _placeBookmarkRibbon(curScrollY);
+            toast('📌 Bookmark updated to current position', 'success');
+            if (icon) { icon.className = 'fa-solid fa-bookmark'; icon.style.color = 'var(--success)'; }
+        }
+            if (raw === null) return;
+
+            let scrollY = null;
+            try {
+                const parsed = JSON.parse(raw);
+                if (typeof parsed === 'object' && parsed !== null && 'scrollY' in parsed) {
+                    scrollY = parsed.scrollY;
+                } else {
+                    const ratio = parseFloat(raw);
+                    if (!isNaN(ratio)) {
+                        const sh = document.documentElement.scrollHeight - window.innerHeight;
+                        scrollY = Math.round(ratio * sh);
+                    }
+                }
+            } catch {
+                const ratio = parseFloat(raw);
+                if (!isNaN(ratio)) {
+                    const sh = document.documentElement.scrollHeight - window.innerHeight;
+                    scrollY = Math.round(ratio * sh);
+                }
+            }
+
+            if (scrollY === null || isNaN(scrollY)) return;
+
+            // Light up bookmark icon in toolbar
+            const icon = document.getElementById('reader-bookmark-icon');
+            if (icon) { icon.className = 'fa-solid fa-bookmark'; icon.style.color = 'var(--success)'; }
+
+            // Insert visual ribbon in the text at the bookmarked position
+            _placeBookmarkRibbon(scrollY);
+
+            // Scroll to position
+            const doScroll = (behavior) => window.scrollTo({ top: scrollY, behavior });
+            requestAnimationFrame(() => {
+                doScroll('instant');
+                setTimeout(() => doScroll('instant'), 150);
+                setTimeout(() => doScroll('smooth'), 350);
+            });
+            if (scrollY > 0) {
+                setTimeout(() => toast('📌 Resumed from your last reading position', 'success'), 250);
+            }
+        }
+
+        // Place a visual "You left off here" ribbon in the text at the given scrollY
+        function _placeBookmarkRibbon(scrollY) {
+            // Remove any existing ribbon first
+            document.querySelectorAll('.reader-bookmark-ribbon').forEach(el => el.remove());
+
+            const content = document.getElementById('reader-content');
+            if (!content) return;
+
+            // Find the paragraph closest to the bookmarked scroll position
+            const allParagraphs = content.querySelectorAll('p, h3, .reader-full-text p');
+            if (!allParagraphs.length) {
+                // No paragraphs yet (still loading) — insert at top of content
+                const ribbon = _buildRibbon();
+                content.insertBefore(ribbon, content.firstChild);
+                return;
+            }
+
+            // Find element whose top is closest to the saved scrollY
+            let best = allParagraphs[0];
+            let bestDist = Infinity;
+            for (const el of allParagraphs) {
+                const rect = el.getBoundingClientRect();
+                const absTop = rect.top + window.scrollY;
+                const dist = Math.abs(absTop - scrollY);
+                if (dist < bestDist) { bestDist = dist; best = el; }
+            }
+
+            const ribbon = _buildRibbon();
+            // Insert before the closest element
+            best.parentNode.insertBefore(ribbon, best);
+        }
+
+        function _buildRibbon() {
+            const div = document.createElement('div');
+            div.className = 'reader-bookmark-ribbon';
+            div.id = 'reader-bookmark-ribbon';
+            div.innerHTML = `<span class="reader-bookmark-ribbon-label">
+                <i class="fa-solid fa-bookmark" style="font-size:10px"></i> You left off here
+            </span>`;
+            return div;
         }
 
         function toggleExplicitBookmark() {
             if (!activeReaderBookId || !userInfo) return;
             const key = `lib_bookmark_${userInfo.id}_${activeReaderBookId}`;
             const exists = localStorage.getItem(key) !== null;
-
             const icon = document.getElementById('reader-bookmark-icon');
             if (exists) {
+                // Remove bookmark and ribbon
                 localStorage.removeItem(key);
+                document.querySelectorAll('.reader-bookmark-ribbon').forEach(el => el.remove());
                 toast('Bookmark removed', 'warning');
-                if (icon) {
-                    icon.className = 'fa-regular fa-bookmark';
-                    icon.style.color = '';
-                }
+                if (icon) { icon.className = 'fa-regular fa-bookmark'; icon.style.color = ''; }
             } else {
-                saveEbookProgress(activeReaderBookId);
-                toast('Reading position bookmarked!', 'success');
-                if (icon) {
-                    icon.className = 'fa-solid fa-bookmark';
-                    icon.style.color = 'var(--success)';
-                }
+                // Save position and place ribbon
+                const curScrollY = window.scrollY;
+                saveEbookProgress(activeReaderBookId, curScrollY);
+                _placeBookmarkRibbon(curScrollY);
+                toast('📌 Reading position saved!', 'success');
+                if (icon) { icon.className = 'fa-solid fa-bookmark'; icon.style.color = 'var(--success)'; }
             }
         }
 
         function changeReaderFontSize(delta) {
-            const container = document.getElementById('reader-book-container');
-            if (!container) return;
-            let currentSize = parseInt(localStorage.getItem('reader_font_size')) || 16;
-            currentSize = Math.max(12, Math.min(32, currentSize + delta));
-            localStorage.setItem('reader_font_size', currentSize);
-            container.style.setProperty('--reader-fs', `${currentSize}px`);
+            let size = parseInt(localStorage.getItem('reader_font_size')) || 17;
+            size = Math.max(12, Math.min(32, size + delta));
+            localStorage.setItem('reader_font_size', size);
+            _applyReaderTypography(localStorage.getItem('reader_font') || 'Lora', size, localStorage.getItem('reader_lh') || '1.9');
+            const badge = document.getElementById('reader-fs-badge');
+            if (badge) badge.textContent = size;
         }
 
         function setReaderTheme(theme) {
             const container = document.getElementById('reader-book-container');
             if (!container) return;
-            
-            // Remove previous theme classes
-            ['white', 'cream', 'sepia', 'charcoal'].forEach(t => {
-                container.classList.remove(`rt-${t}`);
-            });
-            
-            container.classList.add(`rt-${theme}`);
+            ['white','cream','sepia','charcoal','midnight'].forEach(t => container.classList.remove('rt-' + t));
+            container.classList.add('rt-' + theme);
             localStorage.setItem('reader_theme', theme);
-            
-            // Update active state border colors on theme buttons
-            const themeBtns = document.querySelectorAll('.reader-themes button');
-            const borders = { white: '#ccc', cream: '#ebdcb9', sepia: '#d2be90', charcoal: '#383633' };
-            themeBtns.forEach((btn, idx) => {
-                const btnTheme = ['white', 'cream', 'sepia', 'charcoal'][idx];
-                btn.style.borderColor = btnTheme === theme ? 'var(--accent)' : borders[btnTheme];
+            document.querySelectorAll('.reader-theme-swatch').forEach(btn => {
+                btn.classList.toggle('selected', btn.title === theme.charAt(0).toUpperCase() + theme.slice(1));
+                btn.style.borderColor = btn.classList.contains('selected') ? 'var(--accent)' : 'rgba(0,0,0,0.15)';
             });
         }
 
