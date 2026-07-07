@@ -594,6 +594,9 @@
             opacity: 0;
             margin: 0;
         }
+        .sidebar.collapsed .sidebar-privacy-row {
+            display: none !important;
+        }
         .sidebar.collapsed .sidebar-top {
             justify-content: center;
             padding: var(--sp-3) 0 0;
@@ -3315,9 +3318,8 @@
 
             <div class="sidebar-footer">
                 <span class="portal-badge sidebar-text" id="portal-badge" style="display:none"></span>
-                <div class="sidebar-privacy-row sidebar-text" style="font-size:10px;margin-bottom:8px;padding:0 8px;display:flex;gap:8px;justify-content:center;color:var(--ink-light)">
+                <div class="sidebar-privacy-row sidebar-text" style="font-size:10px;margin-bottom:8px;padding:0 var(--sp-1);display:flex;flex-direction:column;gap:4px;color:var(--ink-light)">
                     <a href="#" onclick="openPrivacyModal(); return false;" style="color:var(--ink-light);text-decoration:none;transition:color var(--dur-fast)">Privacy Policy</a>
-                    <span style="color:var(--border)">|</span>
                     <a href="#" onclick="openTermsModal(); return false;" style="color:var(--ink-light);text-decoration:none;transition:color var(--dur-fast)">Terms of Service</a>
                 </div>
                 <div class="sidebar-footer-row">
@@ -3390,11 +3392,11 @@
                             <option value="General">General</option>
                         </select>
                         <select class="filter-select" id="catalog-sort" onchange="searchBooks()" aria-label="Sort books">
-                            <option value="title_asc">Title (A-Z)</option>
-                            <option value="title_desc">Title (Z-A)</option>
-                            <option value="author_asc">Author (A-Z)</option>
-                            <option value="avail_desc">Available Copies</option>
-                            <option value="price_asc">Ebook Price (Low-High)</option>
+                            <option value="title_asc">Sort by: Title (A-Z)</option>
+                            <option value="title_desc">Sort by: Title (Z-A)</option>
+                            <option value="author_asc">Sort by: Author (A-Z)</option>
+                            <option value="avail_desc">Sort by: Available Copies</option>
+                            <option value="price_asc">Sort by: Ebook Price (Low-High)</option>
                         </select>
                         <label class="checkbox-wrap" style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);font-weight:500;color:var(--ink-mid);cursor:pointer;user-select:none;min-height:40px">
                             <input type="checkbox" id="catalog-available-only" onchange="searchBooks()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)" />
