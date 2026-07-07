@@ -2463,39 +2463,47 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: var(--sp-4);
+            position: relative;
         }
         .reader-layout.with-toc {
-            grid-template-columns: 220px 1fr;
+            grid-template-columns: 240px 1fr;
             align-items: start;
         }
+        .reader-layout:not(.with-toc) .reader-toc {
+            display: none !important;
+        }
 
-        /* ── TOC sidebar ── */
+        /* ── TOC sidebar (Fixed pane layout with padding) ── */
         .reader-toc {
             position: sticky;
-            top: 70px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--r-md);
-            padding: var(--sp-3);
-            max-height: calc(100vh - 100px);
+            top: 52px; /* Aligns perfectly below the toolbar */
+            background: var(--r-bg, var(--surface));
+            border: none;
+            border-right: 1px solid var(--r-border, var(--border));
+            border-radius: 0;
+            padding: var(--sp-4) var(--sp-4) var(--sp-4) var(--sp-4);
+            height: calc(100vh - 72px);
+            max-height: calc(100vh - 72px);
             overflow-y: auto;
             font-size: var(--text-xs);
+            transition: background 300ms, border-color 300ms, color 300ms;
         }
         .reader-toc h4 {
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            color: var(--ink-light);
-            margin-bottom: var(--sp-2);
+            color: var(--r-muted, var(--ink-light));
+            margin-bottom: var(--sp-3);
             padding-bottom: var(--sp-2);
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--r-border, var(--border));
+            transition: border-color 300ms, color 300ms;
         }
         .reader-toc-item {
             display: block;
-            padding: 5px var(--sp-2);
+            padding: 6px var(--sp-2);
             border-radius: var(--r-sm);
-            color: var(--ink-mid);
+            color: var(--r-muted, var(--ink-mid));
             font-size: var(--text-xs);
             font-weight: 500;
             cursor: pointer;
@@ -2506,13 +2514,77 @@
             text-align: left;
             width: 100%;
         }
-        .reader-toc-item:hover { background: var(--surface-2); color: var(--ink); }
-        .reader-toc-item.toc-active { background: var(--accent-pale); color: var(--accent); font-weight: 700; }
+        .reader-toc-item:hover {
+            background: var(--r-hover, var(--surface-2)) !important;
+            color: var(--r-color, var(--ink)) !important;
+        }
+        .reader-toc-item.toc-active {
+            background: var(--r-border, var(--accent-pale)) !important;
+            color: var(--r-color, var(--accent)) !important;
+            font-weight: 700;
+        }
 
-        /* ── Reader book container ── */
+        /* ── Theme custom properties mapping ── */
+        .reader-layout:has(.rt-white) {
+            --r-bg: #FFFFFF;
+            --r-color: #1C1810;
+            --r-muted: #7C766D;
+            --r-border: #E8E4DC;
+            --r-hover: #F5F3EF;
+        }
+        .reader-layout:has(.rt-cream) {
+            --r-bg: #FAF6EE;
+            --r-color: #2C251C;
+            --r-muted: #8C7D6A;
+            --r-border: #EADCB9;
+            --r-hover: #F3EBDD;
+        }
+        .reader-layout:has(.rt-sepia) {
+            --r-bg: #F4ECD8;
+            --r-color: #433422;
+            --r-muted: #8C6A42;
+            --r-border: #d2be90;
+            --r-hover: #EADCB9;
+        }
+        .reader-layout:has(.rt-charcoal) {
+            --r-bg: #1A1917;
+            --r-color: #D3CFC9;
+            --r-muted: #8F8A82;
+            --r-border: #383633;
+            --r-hover: #252422;
+        }
+        .reader-layout:has(.rt-midnight) {
+            --r-bg: #0D1117;
+            --r-color: #C9D1D9;
+            --r-muted: #8B949E;
+            --r-border: #21262D;
+            --r-hover: #161B22;
+        }
+
+        /* ── Focus Mode (minimal interface overlays) ── */
+        body.reader-focus .sidebar,
+        body.reader-focus .top-right-actions,
+        body.reader-focus #mobile-nav-toggle,
+        body.reader-focus #category-theme-banner {
+            display: none !important;
+        }
+        body.reader-focus .main-area {
+            padding-top: 0 !important;
+        }
+        body.reader-focus #ebook-reader-wrap {
+            padding: 0 !important;
+        }
+
+        /* Hide cart button when user is actively reading a book */
+        body.reader-active #cart-btn {
+            display: none !important;
+        }
+
+        /* ── Reader book container (inherits variables) ── */
         .reader-book {
-            background: var(--surface);
-            border: 1px solid var(--border);
+            background: var(--r-bg, var(--surface)) !important;
+            color: var(--r-color, var(--ink)) !important;
+            border: 1px solid var(--r-border, var(--border)) !important;
             border-radius: var(--r-md);
             box-shadow: var(--shadow-md);
             overflow: hidden;
@@ -2520,59 +2592,33 @@
             transition: background 300ms, color 300ms, border-color 300ms;
         }
 
-        /* ── Ebook Reader Themes ── */
-        .reader-book.rt-cream  { background:#FAF6EE!important; color:#2C251C!important; border-color:#EADCB9!important; }
-        .reader-book.rt-cream  .reader-cover { background:#F3EBDD!important; border-bottom-color:#E2D5C1!important; color:#2C251C!important; }
-        .reader-book.rt-cream  .reader-cover h2,
-        .reader-book.rt-cream  .reader-cover p,
-        .reader-book.rt-cream  .reader-cover div { color:#2C251C!important; }
-        .reader-book.rt-cream  .reader-title-page { background:#FAF6EE!important; color:#2C251C!important; border-bottom-color:#EADCB9!important; }
-        .reader-book.rt-cream  .reader-title-page h2,
-        .reader-book.rt-cream  .reader-title-page p { color:#2C251C!important; }
-        .reader-book.rt-cream  .reader-content p,
-        .reader-book.rt-cream  .reader-full-text p { color:#3a3020!important; }
-
-        .reader-book.rt-sepia  { background:#F4ECD8!important; color:#433422!important; border-color:#d2be90!important; }
-        .reader-book.rt-sepia  .reader-cover { background:#EADCB9!important; border-bottom-color:#D6C296!important; color:#433422!important; }
-        .reader-book.rt-sepia  .reader-cover h2,
-        .reader-book.rt-sepia  .reader-cover p,
-        .reader-book.rt-sepia  .reader-cover div { color:#433422!important; }
-        .reader-book.rt-sepia  .reader-title-page { background:#F4ECD8!important; color:#433422!important; border-bottom-color:#d2be90!important; }
-        .reader-book.rt-sepia  .reader-title-page h2,
-        .reader-book.rt-sepia  .reader-title-page p { color:#433422!important; }
-        .reader-book.rt-sepia  .reader-content p,
-        .reader-book.rt-sepia  .reader-full-text p { color:#4a3828!important; }
-
-        .reader-book.rt-charcoal { background:#1A1917!important; color:#D3CFC9!important; border-color:#383633!important; }
-        .reader-book.rt-charcoal .reader-cover { background:#252422!important; border-bottom-color:#383633!important; color:#D3CFC9!important; }
-        .reader-book.rt-charcoal .reader-cover h2,
-        .reader-book.rt-charcoal .reader-cover p,
-        .reader-book.rt-charcoal .reader-cover div { color:#D3CFC9!important; }
-        .reader-book.rt-charcoal .reader-title-page { background:#1A1917!important; color:#D3CFC9!important; border-bottom-color:#383633!important; }
-        .reader-book.rt-charcoal .reader-title-page h2,
-        .reader-book.rt-charcoal .reader-title-page p { color:#D3CFC9!important; }
-        .reader-book.rt-charcoal .reader-content p,
-        .reader-book.rt-charcoal .reader-full-text p { color:#bfbbb4!important; }
-
-        .reader-book.rt-midnight { background:#0D1117!important; color:#C9D1D9!important; border-color:#21262D!important; }
-        .reader-book.rt-midnight .reader-cover { background:#161B22!important; border-bottom-color:#21262D!important; color:#C9D1D9!important; }
-        .reader-book.rt-midnight .reader-cover h2,
-        .reader-book.rt-midnight .reader-cover p,
-        .reader-book.rt-midnight .reader-cover div { color:#C9D1D9!important; }
-        .reader-book.rt-midnight .reader-title-page { background:#0D1117!important; color:#C9D1D9!important; border-bottom-color:#21262D!important; }
-        .reader-book.rt-midnight .reader-title-page h2,
-        .reader-book.rt-midnight .reader-title-page p { color:#C9D1D9!important; }
-        .reader-book.rt-midnight .reader-content p,
-        .reader-book.rt-midnight .reader-full-text p { color:#adb8c4!important; }
-
-        .reader-book.rt-white { background:#FFFFFF!important; color:#1C1810!important; border-color:#E8E4DC!important; }
-        .reader-book.rt-white .reader-cover { background:#F5F3EF!important; border-bottom-color:#E8E4DC!important; color:#1C1810!important; }
-        .reader-book.rt-white .reader-cover h2,
-        .reader-book.rt-white .reader-cover p,
-        .reader-book.rt-white .reader-cover div { color:#1C1810!important; }
-        .reader-book.rt-white .reader-title-page { background:#FFFFFF!important; color:#1C1810!important; border-bottom-color:#E8E4DC!important; }
-        .reader-book.rt-white .reader-title-page h2,
-        .reader-book.rt-white .reader-title-page p { color:#1C1810!important; }
+        .reader-book .reader-cover {
+            background: var(--r-hover, var(--surface-2)) !important;
+            border-bottom: 1px solid var(--r-border, var(--border)) !important;
+            color: var(--r-color, var(--ink)) !important;
+        }
+        .reader-book .reader-cover h2,
+        .reader-book .reader-cover p,
+        .reader-book .reader-cover div {
+            color: var(--r-color, var(--ink)) !important;
+        }
+        .reader-book .reader-title-page {
+            background: var(--r-bg, var(--surface)) !important;
+            color: var(--r-color, var(--ink)) !important;
+            border-bottom: 1px solid var(--r-border, var(--border)) !important;
+        }
+        .reader-book .reader-title-page h2,
+        .reader-book .reader-title-page p {
+            color: var(--r-color, var(--ink)) !important;
+        }
+        .reader-book .reader-content p,
+        .reader-book .reader-full-text p {
+            color: var(--r-color, var(--ink)) !important;
+        }
+        .reader-book .reader-content h3,
+        .reader-book .reader-full-text h3 {
+            color: var(--r-color, var(--ink)) !important;
+        }
 
         /* ── Cover header ── */
         .reader-cover {
@@ -5337,11 +5383,33 @@
             _updateLHButtons(lh);
         }
 
-        function saveEbookProgress(bookId, forceScrollY) {
+        function saveEbookProgress(bookId, optionalScrollY) {
             if (!userInfo || !bookId) return;
-            // Store absolute pixel position so position 0 (top) is also valid
-            const scrollY = (forceScrollY !== undefined) ? forceScrollY : window.scrollY;
-            localStorage.setItem(`lib_bookmark_${userInfo.id}_${bookId}`, JSON.stringify({ scrollY, ts: Date.now() }));
+            const content = document.getElementById('reader-content');
+            if (!content) return;
+            const nodes = Array.from(content.querySelectorAll('p, h3'));
+            if (!nodes.length) return;
+
+            const scrollY = (optionalScrollY !== undefined) ? optionalScrollY : window.scrollY;
+
+            let activeIndex = 0;
+            let minDiff = Infinity;
+            const targetY = 85; // below the sticky toolbar
+            nodes.forEach((el, index) => {
+                const rect = el.getBoundingClientRect();
+                const absTop = rect.top + window.scrollY;
+                const diff = Math.abs(absTop - scrollY - targetY);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    activeIndex = index;
+                }
+            });
+
+            localStorage.setItem(`lib_bookmark_${userInfo.id}_${bookId}`, JSON.stringify({
+                paragraphIndex: activeIndex,
+                scrollY: scrollY,
+                ts: Date.now()
+            }));
         }
 
         function restoreEbookProgress(bookId) {
@@ -5349,95 +5417,103 @@
             const raw = localStorage.getItem(`lib_bookmark_${userInfo.id}_${bookId}`);
             if (raw === null) return;
 
-            let scrollY = null;
+            let paragraphIndex = null;
+            let fallbackScrollY = null;
             try {
                 const parsed = JSON.parse(raw);
-                if (typeof parsed === 'object' && parsed !== null && 'scrollY' in parsed) {
-                    scrollY = parsed.scrollY;
+                if (typeof parsed === 'object' && parsed !== null) {
+                    paragraphIndex = parsed.paragraphIndex;
+                    fallbackScrollY = parsed.scrollY;
                 } else {
                     const ratio = parseFloat(raw);
-                    if (!isNaN(ratio)) {
-                        const sh = document.documentElement.scrollHeight - window.innerHeight;
-                        scrollY = Math.round(ratio * sh);
-                    }
+                    if (!isNaN(ratio)) fallbackScrollY = ratio;
                 }
             } catch {
                 const ratio = parseFloat(raw);
-                if (!isNaN(ratio)) {
-                    const sh = document.documentElement.scrollHeight - window.innerHeight;
-                    scrollY = Math.round(ratio * sh);
-                }
+                if (!isNaN(ratio)) fallbackScrollY = ratio;
             }
-
-            if (scrollY === null || isNaN(scrollY)) return;
 
             // Light up bookmark icon in toolbar
             const icon = document.getElementById('reader-bookmark-icon');
             if (icon) { icon.className = 'fa-solid fa-bookmark'; icon.style.color = 'var(--success)'; }
 
             // Show toast immediately
-            if (scrollY > 0) {
+            if ((paragraphIndex !== null && paragraphIndex > 0) || fallbackScrollY > 0) {
                 setTimeout(() => toast('📌 Resuming from your last reading position…', 'success'), 100);
             }
 
-            // Retry-based scroll: keep trying until the page is tall enough to reach the target position.
-            // Large Gutenberg books can take 1-3 seconds to fully lay out in the browser.
             let attempts = 0;
-            const MAX_ATTEMPTS = 30;      // up to ~3 seconds total
-            const INTERVAL_MS  = 100;     // check every 100ms
+            const MAX_ATTEMPTS = 30;
+            const INTERVAL_MS = 100;
 
-            const tryRestoreScroll = () => {
-                const sh = document.documentElement.scrollHeight - window.innerHeight;
-
-                if (sh >= scrollY || attempts >= MAX_ATTEMPTS) {
-                    // Page is tall enough — scroll and place the ribbon
-                    window.scrollTo({ top: scrollY, behavior: 'instant' });
-
-                    // Place ribbon after scroll so getBoundingClientRect is relative to scrolled viewport
-                    requestAnimationFrame(() => {
-                        _placeBookmarkRibbon(scrollY);
-                        // One more scroll in case ribbon insertion shifted layout
-                        setTimeout(() => window.scrollTo({ top: scrollY, behavior: 'instant' }), 80);
-                    });
+            const tryRestore = () => {
+                const content = document.getElementById('reader-content');
+                if (!content) {
+                    attempts++;
+                    if (attempts < MAX_ATTEMPTS) setTimeout(tryRestore, INTERVAL_MS);
                     return;
                 }
 
-                // Page not tall enough yet — wait and retry
+                const nodes = Array.from(content.querySelectorAll('p, h3'));
+                if (nodes.length === 0) {
+                    attempts++;
+                    if (attempts < MAX_ATTEMPTS) setTimeout(tryRestore, INTERVAL_MS);
+                    return;
+                }
+
+                let targetNode = null;
+                if (paragraphIndex !== null && paragraphIndex >= 0 && paragraphIndex < nodes.length) {
+                    targetNode = nodes[paragraphIndex];
+                } else if (fallbackScrollY !== null) {
+                    let best = nodes[0];
+                    let bestDist = Infinity;
+                    let scrollVal = fallbackScrollY;
+                    if (fallbackScrollY <= 1.0) { // legacy ratio
+                        const sh = document.documentElement.scrollHeight - window.innerHeight;
+                        scrollVal = Math.round(fallbackScrollY * sh);
+                    }
+                    for (const el of nodes) {
+                        const absTop = el.getBoundingClientRect().top + window.scrollY;
+                        const dist = Math.abs(absTop - scrollVal);
+                        if (dist < bestDist) { bestDist = dist; best = el; }
+                    }
+                    targetNode = best;
+                }
+
+                if (targetNode) {
+                    const rect = targetNode.getBoundingClientRect();
+                    const absoluteTop = rect.top + window.scrollY;
+                    const destY = Math.max(0, absoluteTop - 80);
+
+                    window.scrollTo({ top: destY, behavior: 'instant' });
+
+                    // Place ribbon
+                    _placeBookmarkRibbonAtNode(targetNode);
+
+                    // Re-scroll just in case placing the ribbon shifted things
+                    setTimeout(() => {
+                        const newRect = targetNode.getBoundingClientRect();
+                        const newAbsTop = newRect.top + window.scrollY;
+                        window.scrollTo({ top: Math.max(0, newAbsTop - 80), behavior: 'instant' });
+                    }, 50);
+                    return;
+                }
+
                 attempts++;
-                setTimeout(tryRestoreScroll, INTERVAL_MS);
+                if (attempts < MAX_ATTEMPTS) {
+                    setTimeout(tryRestore, INTERVAL_MS);
+                }
             };
 
-            // Start checking after a short initial delay (rAF + 50ms for innerHTML to start painting)
-            requestAnimationFrame(() => setTimeout(tryRestoreScroll, 50));
+            setTimeout(tryRestore, 50);
         }
 
-        // Place a visual "You left off here" ribbon in the text at the given scrollY
-        function _placeBookmarkRibbon(scrollY) {
-            // Remove any existing ribbon
+        function _placeBookmarkRibbonAtNode(node) {
+            // Remove any existing ribbon first
             document.querySelectorAll('.reader-bookmark-ribbon').forEach(el => el.remove());
-
-            const content = document.getElementById('reader-content');
-            if (!content) return;
-
-            // Collect all text nodes (paragraphs and headings)
-            const nodes = Array.from(content.querySelectorAll('p, h3'));
-            if (!nodes.length) {
-                content.insertBefore(_buildRibbon(), content.firstChild);
-                return;
-            }
-
-            // After scrolling to `scrollY`, the paragraph that appears near the
-            // top of the viewport will have rect.top ≈ 0 (or small positive).
-            // We want the paragraph whose absolute top is closest to scrollY.
-            let best = nodes[0];
-            let bestDist = Infinity;
-            for (const el of nodes) {
-                const absTop = el.getBoundingClientRect().top + window.scrollY;
-                const dist = Math.abs(absTop - scrollY);
-                if (dist < bestDist) { bestDist = dist; best = el; }
-            }
-
-            best.parentNode.insertBefore(_buildRibbon(), best);
+            if (!node) return;
+            const ribbon = _buildRibbon();
+            node.parentNode.insertBefore(ribbon, node);
         }
 
         function _buildRibbon() {
@@ -5455,117 +5531,30 @@
             const key = `lib_bookmark_${userInfo.id}_${activeReaderBookId}`;
             const icon = document.getElementById('reader-bookmark-icon');
 
+            // Find current paragraph at target view line (85px from top)
+            const content = document.getElementById('reader-content');
+            if (!content) return;
+            const nodes = Array.from(content.querySelectorAll('p, h3'));
+            if (!nodes.length) return;
+
+            let activeIndex = 0;
+            let minDiff = Infinity;
+            const targetY = 85; 
+            nodes.forEach((el, index) => {
+                const rect = el.getBoundingClientRect();
+                const diff = Math.abs(rect.top - targetY);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    activeIndex = index;
+                }
+            });
+
             // Always update to the current position (replace any previous bookmark)
             const curScrollY = window.scrollY;
             saveEbookProgress(activeReaderBookId, curScrollY);
-            _placeBookmarkRibbon(curScrollY);
+            _placeBookmarkRibbonAtNode(nodes[activeIndex]);
             toast('📌 Bookmark updated to current position', 'success');
             if (icon) { icon.className = 'fa-solid fa-bookmark'; icon.style.color = 'var(--success)'; }
-        }
-            if (raw === null) return;
-
-            let scrollY = null;
-            try {
-                const parsed = JSON.parse(raw);
-                if (typeof parsed === 'object' && parsed !== null && 'scrollY' in parsed) {
-                    scrollY = parsed.scrollY;
-                } else {
-                    const ratio = parseFloat(raw);
-                    if (!isNaN(ratio)) {
-                        const sh = document.documentElement.scrollHeight - window.innerHeight;
-                        scrollY = Math.round(ratio * sh);
-                    }
-                }
-            } catch {
-                const ratio = parseFloat(raw);
-                if (!isNaN(ratio)) {
-                    const sh = document.documentElement.scrollHeight - window.innerHeight;
-                    scrollY = Math.round(ratio * sh);
-                }
-            }
-
-            if (scrollY === null || isNaN(scrollY)) return;
-
-            // Light up bookmark icon in toolbar
-            const icon = document.getElementById('reader-bookmark-icon');
-            if (icon) { icon.className = 'fa-solid fa-bookmark'; icon.style.color = 'var(--success)'; }
-
-            // Insert visual ribbon in the text at the bookmarked position
-            _placeBookmarkRibbon(scrollY);
-
-            // Scroll to position
-            const doScroll = (behavior) => window.scrollTo({ top: scrollY, behavior });
-            requestAnimationFrame(() => {
-                doScroll('instant');
-                setTimeout(() => doScroll('instant'), 150);
-                setTimeout(() => doScroll('smooth'), 350);
-            });
-            if (scrollY > 0) {
-                setTimeout(() => toast('📌 Resumed from your last reading position', 'success'), 250);
-            }
-        }
-
-        // Place a visual "You left off here" ribbon in the text at the given scrollY
-        function _placeBookmarkRibbon(scrollY) {
-            // Remove any existing ribbon first
-            document.querySelectorAll('.reader-bookmark-ribbon').forEach(el => el.remove());
-
-            const content = document.getElementById('reader-content');
-            if (!content) return;
-
-            // Find the paragraph closest to the bookmarked scroll position
-            const allParagraphs = content.querySelectorAll('p, h3, .reader-full-text p');
-            if (!allParagraphs.length) {
-                // No paragraphs yet (still loading) — insert at top of content
-                const ribbon = _buildRibbon();
-                content.insertBefore(ribbon, content.firstChild);
-                return;
-            }
-
-            // Find element whose top is closest to the saved scrollY
-            let best = allParagraphs[0];
-            let bestDist = Infinity;
-            for (const el of allParagraphs) {
-                const rect = el.getBoundingClientRect();
-                const absTop = rect.top + window.scrollY;
-                const dist = Math.abs(absTop - scrollY);
-                if (dist < bestDist) { bestDist = dist; best = el; }
-            }
-
-            const ribbon = _buildRibbon();
-            // Insert before the closest element
-            best.parentNode.insertBefore(ribbon, best);
-        }
-
-        function _buildRibbon() {
-            const div = document.createElement('div');
-            div.className = 'reader-bookmark-ribbon';
-            div.id = 'reader-bookmark-ribbon';
-            div.innerHTML = `<span class="reader-bookmark-ribbon-label">
-                <i class="fa-solid fa-bookmark" style="font-size:10px"></i> You left off here
-            </span>`;
-            return div;
-        }
-
-        function toggleExplicitBookmark() {
-            if (!activeReaderBookId || !userInfo) return;
-            const key = `lib_bookmark_${userInfo.id}_${activeReaderBookId}`;
-            const exists = localStorage.getItem(key) !== null;
-            const icon = document.getElementById('reader-bookmark-icon');
-            if (exists) {
-                // Remove bookmark and ribbon
-                localStorage.removeItem(key);
-                document.querySelectorAll('.reader-bookmark-ribbon').forEach(el => el.remove());
-                toast('Bookmark removed', 'warning');
-                if (icon) { icon.className = 'fa-regular fa-bookmark'; icon.style.color = ''; }
-            } else {
-                // Save position and place ribbon
-                const curScrollY = window.scrollY;
-                saveEbookProgress(activeReaderBookId, curScrollY);
-                _placeBookmarkRibbon(curScrollY);
-                toast('📌 Reading position saved!', 'success');
-                if (icon) { icon.className = 'fa-solid fa-bookmark'; icon.style.color = 'var(--success)'; }
-            }
         }
 
         function changeReaderFontSize(delta) {
@@ -6736,16 +6725,8 @@
             }
         }
 
-        // ── Scroll Listener for Ebook Progress ────────────────────
-        let saveProgressTimeout = null;
-        window.addEventListener('scroll', () => {
-            if (activeReaderBookId && userInfo && !isReaderPreviewMode) {
-                clearTimeout(saveProgressTimeout);
-                saveProgressTimeout = setTimeout(() => {
-                    saveEbookProgress(activeReaderBookId);
-                }, 300);
-            }
-        });
+
+
 
         // ── Bootstrap ─────────────────────────────────────────────
         if (token) {
