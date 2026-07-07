@@ -1,6 +1,6 @@
 from decimal import Decimal
 from flask import Blueprint, Response, jsonify
-from urllib.request import Request, urlopen
+import requests
 from flask_jwt_extended import verify_jwt_in_request, get_jwt, get_jwt_identity
 from sqlalchemy.exc import IntegrityError
 from app.extensions import db
@@ -60,14 +60,34 @@ def ebook_price(book):
 
 
 def reading_minutes(book):
-    base_minutes = {
-        "Fiction": 42,
-        "Non-fiction": 36,
-        "Reference": 28,
-        "Textbook": 54,
-        "General": 24,
+    # Gutenberg books mapped to their actual average reading times
+    gutenberg_minutes = {
+        "9780141439518": 600,   # Pride and Prejudice
+        "9780743273565": 250,   # The Great Gatsby
+        "9780140449136": 1000,  # Crime and Punishment
+        "9780451524935": 500,   # 1984
     }
-    return base_minutes.get(book.category, 30)
+    if book.isbn in gutenberg_minutes:
+        return gutenberg_minutes[book.isbn]
+
+    # Calculate actual reading time based on word count of the chapter summaries
+    from app.api.book_data import get_book_content
+    try:
+        chapters = get_book_content(book.isbn, book.title, book.author, book.category, book.description)
+        total_words = 0
+        for ch in chapters:
+            total_words += len(ch.get("heading", "").split())
+            total_words += len(ch.get("body", "").split())
+        return max(5, round(total_words / 200))
+    except Exception:
+        base_minutes = {
+            "Fiction": 45,
+            "Non-fiction": 35,
+            "Reference": 25,
+            "Textbook": 60,
+            "General": 30,
+        }
+        return base_minutes.get(book.category, 30)
 
 
 def book_payload(book, owned=False, purchase=None, include_sample=False):
@@ -256,14 +276,12 @@ def reader_text(book_id):
                 # Search using title and author for much higher accuracy
                 query = quote(f"{book.title} {book.author}")
                 search_url = f"https://gutendex.com/books/?search={query}"
-                req = Request(
-                    search_url,
-                    headers={
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                    }
-                )
-                with urlopen(req, timeout=5) as response:
-                    data = json.loads(response.read().decode("utf-8"))
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                }
+                res = requests.get(search_url, headers=headers, timeout=6)
+                res.raise_for_status()
+                data = res.json()
                 results = data.get("results", [])
                 if results:
                     # Look for plain text link
@@ -283,14 +301,66 @@ def reader_text(book_id):
         return Response(text, mimetype="text/plain; charset=utf-8")
 
     try:
-        req = Request(
-            url,
-            headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            }
-        )
-        with urlopen(req, timeout=12) as response:
-            text = response.read().decode("utf-8", errors="replace")
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+        res = requests.get(url, headers=headers, timeout=15, stream=True)
+        res.raise_for_status()
+
+        chunks = []
+        try:
+            for chunk in res.iter_content(chunk_size=8192):
+                if chunk:
+                    chunks.append(chunk)
+        except Exception:
+            # Catch incomplete reads / connection drops, keep whatever bytes were read!
+            pass
+
+        raw_bytes = b"".join(chunks)
+        text = raw_bytes.decode("utf-8", errors="replace")
+
+        if len(text) < 10000:
+            raise ValueError("Insufficient text read from Gutenberg source.")
+
+        # Strip Project Gutenberg headers and footers
+        start_markers = [
+            "*** START OF THIS PROJECT GUTENBERG EBOOK",
+            "*** START OF THE PROJECT GUTENBERG EBOOK",
+            "***START OF THE PROJECT GUTENBERG EBOOK",
+            "*** START OF THIS PROJECT GUTENBERG",
+        ]
+        end_markers = [
+            "*** END OF THIS PROJECT GUTENBERG EBOOK",
+            "*** END OF THE PROJECT GUTENBERG EBOOK",
+            "***END OF THE PROJECT GUTENBERG EBOOK",
+            "*** END OF THIS PROJECT GUTENBERG",
+        ]
+
+        start_idx = -1
+        for marker in start_markers:
+            idx = text.find(marker)
+            if idx != -1:
+                line_end = text.find("\n", idx)
+                if line_end != -1:
+                    start_idx = line_end + 1
+                else:
+                    start_idx = idx + len(marker)
+                break
+
+        end_idx = -1
+        for marker in end_markers:
+            idx = text.find(marker)
+            if idx != -1:
+                end_idx = idx
+                break
+
+        if start_idx != -1 and end_idx != -1:
+            text = text[start_idx:end_idx].strip()
+        elif start_idx != -1:
+            text = text[start_idx:].strip()
+        elif end_idx != -1:
+            text = text[:end_idx].strip()
+
     except Exception:
         # Network fallback to local chapters
         default_chapters = build_reader_content(book)
