@@ -88,6 +88,14 @@
             background: linear-gradient(145deg, #000000 0%, #0A0A0A 55%, #141414 100%);
         }
 
+        body.dark-mode .landing-hero-title {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .landing-hero-subtitle {
+            color: var(--ink-mid) !important;
+        }
+
         body.dark-mode .banner-clear {
             background: rgba(255, 255, 255, 0.1);
         }
@@ -233,13 +241,367 @@
         }
 
         /* ── Auth Screen ── */
+        /* ── Auth Screen & Landing Homepage ── */
         #auth-screen {
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
+            background: var(--paper);
+        }
+
+        .landing-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--sp-4) 6%;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .landing-signin-btn {
+            width: auto !important;
+            padding: 6px 16px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            border-radius: 20px !important;
+            background: var(--accent) !important;
+            color: #ffffff !important;
+            border: none !important;
+            cursor: pointer !important;
+            transition: background var(--dur-fast) var(--ease) !important;
+            line-height: 1.5 !important;
+        }
+
+        .landing-signin-btn:hover {
+            background: var(--accent-h) !important;
+        }
+
+        .landing-main {
+            flex: 1;
+            padding: var(--sp-8) 6%;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .landing-hero {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: var(--sp-8);
+            align-items: center;
+            margin-bottom: var(--sp-8);
+        }
+
+        .landing-hero-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .landing-hero-title {
+            font-size: var(--text-xl);
+            font-weight: 800;
+            color: #000000;
+            line-height: 1.2;
+            margin-bottom: var(--sp-3);
+            letter-spacing: -0.8px;
+        }
+
+        .landing-hero-subtitle {
+            font-size: var(--text-base);
+            color: #2A251D;
+            font-weight: 500;
+            line-height: 1.65;
+            margin-bottom: var(--sp-6);
+        }
+
+        .auth-hero-banner {
+            position: relative;
+            width: 100%;
+            height: 260px;
+            border-radius: var(--r-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .auth-hero-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--dur-med) var(--ease);
+        }
+
+        .auth-hero-banner:hover img {
+            transform: scale(1.02);
+        }
+
+        .auth-hero-banner-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.25) 60%, rgba(0, 0, 0, 0.1) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: var(--sp-4);
+            color: #fff;
+        }
+
+        .auth-hero-banner-title {
+            font-size: var(--text-md);
+            font-weight: 700;
+            color: #ffffff !important;
+            margin: 0 0 2px 0;
+            letter-spacing: -0.3px;
+        }
+
+        .auth-hero-banner-subtitle {
+            font-size: var(--text-xs);
+            color: rgba(255, 255, 255, 0.85);
+            margin: 0;
+        }
+
+        .featured-preview-section {
+            margin-top: var(--sp-4);
+            width: 100%;
+        }
+
+        .featured-preview-title {
+            font-size: var(--text-xs);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: var(--ink-light);
+            margin-bottom: var(--sp-4);
+            display: flex;
+            align-items: center;
+            gap: var(--sp-2);
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: var(--sp-4);
+            width: 100%;
+        }
+
+        .featured-card {
+            display: flex;
+            gap: var(--sp-3);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: var(--sp-3);
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+            cursor: pointer;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-deep);
+        }
+
+        .featured-card-cover {
+            width: 52px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: var(--r-sm);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            flex-shrink: 0;
+        }
+
+        .featured-card-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .featured-card-title {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+
+        .featured-card-author {
+            font-size: var(--text-xs);
+            color: var(--ink-light);
+            margin-bottom: var(--sp-1);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .featured-card-tag {
+            font-size: 9px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+            align-self: flex-start;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        /* ── Landing Spacing & Extra Content Sections ── */
+        .landing-features-section {
+            margin-top: 56px;
+            margin-bottom: var(--sp-8);
+            width: 100%;
+        }
+        
+        .landing-section-title {
+            font-size: var(--text-sm);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 700;
+            color: var(--ink-light);
+            margin-bottom: var(--sp-4);
+            display: flex;
+            align-items: center;
+            gap: var(--sp-2);
+        }
+
+        .landing-features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--sp-6);
+            width: 100%;
+        }
+
+        .landing-feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: var(--sp-5) var(--sp-5) 28px var(--sp-5);
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+        }
+
+        .landing-feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-deep);
+        }
+
+        .landing-feature-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--accent-pale);
+            color: var(--accent);
+            border-radius: var(--r-sm);
+            display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(145deg, #f0f4f8 0%, #fafaf7 55%, #f5f0eb 100%);
-            padding: var(--sp-5);
+            font-size: var(--text-base);
+            margin-bottom: var(--sp-4);
+        }
+
+        .landing-feature-title {
+            font-size: var(--text-sm);
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: var(--sp-2);
+        }
+
+        .landing-feature-desc {
+            font-size: var(--text-xs);
+            color: var(--ink-light);
+            line-height: 1.6;
+            margin: 0;
+            max-width: 270px;
+        }
+
+        .landing-stats-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--sp-4);
+            margin-top: var(--sp-8);
+            margin-bottom: var(--sp-4);
+            width: 100%;
+        }
+
+        .landing-stat-card {
+            background: var(--surface-2);
+            border-radius: var(--r-md);
+            padding: var(--sp-4) var(--sp-3);
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .landing-stat-num {
+            font-size: var(--text-lg);
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 2px;
+        }
+
+        .landing-stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            color: var(--ink-light);
+        }
+
+        .landing-footer {
+            border-top: 1px solid var(--border);
+            padding: var(--sp-6) 6%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--sp-3);
+            font-size: var(--text-xs);
+            color: var(--ink-light);
+            background: var(--surface);
+            margin-top: auto;
+            width: 100%;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .landing-footer-links {
+            display: flex;
+            gap: var(--sp-4);
+            justify-content: center;
+        }
+
+        .landing-footer-links a {
+            color: var(--ink-light);
+            text-decoration: none;
+            transition: color var(--dur-fast) var(--ease);
+        }
+
+        .landing-footer-links a:hover {
+            color: var(--accent);
+        }
+
+        @media (max-width: 900px) {
+            .landing-features-grid {
+                grid-template-columns: 1fr;
+                gap: var(--sp-4);
+            }
+            .landing-stats-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .landing-footer {
+                flex-direction: column;
+                gap: var(--sp-3);
+                text-align: center;
+            }
         }
 
         .auth-card {
@@ -249,35 +611,24 @@
             padding: var(--sp-6) var(--sp-5);
             width: 100%;
             max-width: 380px;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 10px 30px -10px rgba(28, 24, 16, 0.08), 0 1px 3px rgba(28, 24, 16, 0.02);
+            position: relative;
         }
 
         .auth-logo {
             text-align: center;
-            margin-bottom: var(--sp-5);
-        }
-
-        .auth-logo .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--accent);
-            border-radius: var(--r-md);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: #fff;
-            margin-bottom: var(--sp-2);
+            margin-bottom: var(--sp-4);
         }
 
         .auth-logo h1 {
-            font-size: var(--text-lg);
+            font-size: var(--text-md);
             letter-spacing: -.5px;
+            font-weight: 600;
         }
 
         .auth-logo p {
             color: var(--ink-light);
-            font-size: var(--text-sm);
+            font-size: var(--text-xs);
             margin-top: 2px;
         }
 
@@ -3288,6 +3639,46 @@
             }
         }
 
+        @media (max-width: 900px) {
+            .landing-header {
+                padding: var(--sp-3) var(--sp-4);
+            }
+
+            .landing-main {
+                padding: var(--sp-6) var(--sp-4);
+            }
+
+            .landing-hero {
+                grid-template-columns: 1fr;
+                gap: var(--sp-5);
+                text-align: center;
+                margin-bottom: var(--sp-6);
+            }
+
+            .landing-hero-content {
+                align-items: center;
+            }
+
+            .landing-hero-title {
+                font-size: var(--text-lg);
+            }
+
+            .landing-hero-subtitle {
+                font-size: var(--text-sm);
+                margin-bottom: var(--sp-4);
+            }
+
+            .auth-hero-banner {
+                height: 200px;
+                order: -1; /* banner on top on mobile */
+            }
+
+            .featured-grid {
+                grid-template-columns: 1fr;
+                gap: var(--sp-3);
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *,
             *::before,
@@ -3301,17 +3692,116 @@
 <body>
 
     <!-- ─── Auth Screen ─────────────────────────────────────────── -->
+    <!-- ─── Auth Screen (Landing Homepage) ─── -->
     <div id="auth-screen">
-        <div class="auth-card">
-            <div class="auth-logo">
-                <div class="logo-icon"><i class="fa-solid fa-book"></i></div>
-                <h1>Scribe</h1>
-                <p>Your digital library portal</p>
+        <header class="landing-header">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);color:var(--accent)">
+                <div style="width:32px;height:32px;background:var(--accent);color:#fff;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:14px"><i class="fa-solid fa-book"></i></div>
+                <span style="font-weight:700;font-size:var(--text-base);letter-spacing:-0.5px">Scribe</span>
+            </div>
+            <button class="landing-signin-btn" onclick="openAuthModal('login')">Sign In</button>
+        </header>
+
+        <main class="landing-main">
+            <div class="landing-hero">
+                <div class="landing-hero-content">
+                    <h1 class="landing-hero-title">Your Portal to Literature &amp; Knowledge</h1>
+                    <p class="landing-hero-subtitle">
+                        Discover classic novels, access high-quality interactive study guides, purchase digital ebooks, or request physical copy checkouts directly from the circulation desk.
+                    </p>
+                    <button class="btn-primary" onclick="openAuthModal('register')" style="width: auto !important; padding: 12px 28px !important; font-size: var(--text-xs) !important; border-radius: 30px !important; font-weight: 600 !important; white-space: nowrap !important;">Get Started — Join Free</button>
+                </div>
+                <div class="auth-hero-banner">
+                    <img src="library_hero.jpg" alt="Scribe Library Hero" />
+                    <div class="auth-hero-banner-overlay">
+                        <h2 class="auth-hero-banner-title">Step Into a World of Books</h2>
+                        <p class="auth-hero-banner-subtitle">Explore bookshelves, digital study guides, and borrow classics</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="featured-preview-section">
+                <div class="featured-preview-title">
+                    <i class="fa-solid fa-star"></i> Featured Books in our Catalog
+                </div>
+                <div class="featured-grid" id="auth-featured-grid">
+                    <!-- Dynamic rendering of featured books -->
+                </div>
             </div>
 
-            <div class="tab-switcher">
-                <button class="tab-btn active" onclick="switchAuthTab('login')">Sign In</button>
-                <button class="tab-btn" onclick="switchAuthTab('register')">Register</button>
+            <!-- Spacing & Layout Fillers: Why Choose Us -->
+            <div class="landing-features-section">
+                <div class="landing-section-title">
+                    <i class="fa-solid fa-compass"></i> Why Scribe Library?
+                </div>
+                <div class="landing-features-grid">
+                    <div class="landing-feature-card">
+                        <div class="landing-feature-icon">
+                            <i class="fa-solid fa-font"></i>
+                        </div>
+                        <div class="landing-feature-title">Immersive Reader</div>
+                        <p class="landing-feature-desc">Read thousands of classic public domain titles directly in our custom reader with adjustable typography, spacing, themes, and bookmarks.</p>
+                    </div>
+                    <div class="landing-feature-card">
+                        <div class="landing-feature-icon">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div class="landing-feature-title">Concept Study Guides</div>
+                        <p class="landing-feature-desc">Master literary works with professionally curated concept breakdowns, character overviews, chapter synopses, and quick summaries.</p>
+                    </div>
+                    <div class="landing-feature-card">
+                        <div class="landing-feature-icon">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <div class="landing-feature-title">Physical &amp; E-Book Checkout</div>
+                        <p class="landing-feature-desc">Reserve copies online to pick up at the circulation desk or access and read checkout e-books instantly within your secure account.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Panel -->
+            <div class="landing-stats-section">
+                <div class="landing-stat-card">
+                    <div class="landing-stat-num">15k+</div>
+                    <div class="landing-stat-label">Digital E-books</div>
+                </div>
+                <div class="landing-stat-card">
+                    <div class="landing-stat-num">100%</div>
+                    <div class="landing-stat-label">Free Membership</div>
+                </div>
+                <div class="landing-stat-card">
+                    <div class="landing-stat-num">4.9★</div>
+                    <div class="landing-stat-label">Reader Rating</div>
+                </div>
+                <div class="landing-stat-card">
+                    <div class="landing-stat-num">0</div>
+                    <div class="landing-stat-label">Late Fees on E-books</div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="landing-footer">
+            <p>&copy; 2026 Scribe Library Systems. All rights reserved.</p>
+            <div class="landing-footer-links">
+                <a href="#" onclick="openAuthModal('register'); return false;">Privacy Policy</a>
+                <a href="#" onclick="openAuthModal('register'); return false;">Terms of Service</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ─── Auth Modal (Sign In / Register) ─── -->
+    <div class="modal-overlay" id="auth-modal" style="display:none; align-items:center; justify-content:center; z-index:1100" onclick="if(event.target.id === 'auth-modal') closeAuthModal()">
+        <div class="auth-card" style="animation: modalSlideIn var(--dur-med) var(--ease)">
+            <button class="btn-close" onclick="closeAuthModal()" aria-label="Close" style="position:absolute; top:var(--sp-4); right:var(--sp-4); background:none; border:none; font-size:16px; cursor:pointer; color:var(--ink-light)"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div class="auth-logo" style="margin-bottom:var(--sp-4)">
+                <h1>Welcome to Scribe</h1>
+                <p style="font-size:var(--text-xs);color:var(--ink-light)">Sign in or create an account to get started</p>
+            </div>
+
+            <div class="tab-switcher" style="display:none">
+                <button class="tab-btn active" id="auth-tab-login" onclick="switchAuthTab('login')">Sign In</button>
+                <button class="tab-btn" id="auth-tab-register" onclick="switchAuthTab('register')">Register</button>
             </div>
 
             <div id="auth-error" class="error-msg" style="display:none"></div>
@@ -3326,7 +3816,10 @@
                     <label for="login-password">Password</label>
                     <input type="password" id="login-password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
                 </div>
-                <button class="btn-primary" onclick="doLogin()" id="login-btn">Sign In</button>
+                <button class="btn-primary" onclick="doLogin()" id="login-btn" style="width:100%">Sign In</button>
+                <div style="text-align:center; margin-top:var(--sp-4); font-size:var(--text-xs); color:var(--ink-light)">
+                    Don't have an account? <a href="#" onclick="switchAuthTab('register'); return false;" style="color:var(--accent); font-weight:600; text-decoration:none;">Register</a>
+                </div>
             </div>
 
             <div id="register-form" style="display:none">
@@ -3346,7 +3839,10 @@
                     <label for="reg-phone">Phone <span style="color:var(--ink-light);font-weight:400">(optional)</span></label>
                     <input type="tel" id="reg-phone" placeholder="+91 98765 43210" autocomplete="tel" />
                 </div>
-                <button class="btn-primary" onclick="doRegister()" id="register-btn">Create Account</button>
+                <button class="btn-primary" onclick="doRegister()" id="register-btn" style="width:100%">Create Account</button>
+                <div style="text-align:center; margin-top:var(--sp-4); font-size:var(--text-xs); color:var(--ink-light)">
+                    Already have an account? <a href="#" onclick="switchAuthTab('login'); return false;" style="color:var(--accent); font-weight:600; text-decoration:none;">Sign In</a>
+                </div>
             </div>
         </div>
     </div>
@@ -4114,11 +4610,87 @@
             setTimeout(() => el.remove(), 3500);
         }
 
+        function openAuthModal(tab = 'login') {
+            switchAuthTab(tab);
+            const modal = document.getElementById('auth-modal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('auth-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function renderAuthFeaturedBooks() {
+            const grid = document.getElementById('auth-featured-grid');
+            if (!grid) return;
+
+            const featuredList = [
+                {
+                    title: 'Pride and Prejudice',
+                    author: 'Jane Austen',
+                    category: 'Fiction',
+                    desc: 'Classic Romantic Novel',
+                    cover_image: 'pride_prejudice_cover.jpg'
+                },
+                {
+                    title: 'The Lord of the Rings',
+                    author: 'J.R.R. Tolkien',
+                    category: 'Fiction',
+                    desc: 'Epic Fantasy Masterpiece',
+                    cover_image: 'lord_of_the_rings_cover.jpg'
+                },
+                {
+                    title: 'Thinking, Fast and Slow',
+                    author: 'Daniel Kahneman',
+                    category: 'Non-fiction',
+                    desc: 'Psychology of Thought',
+                    cover_image: 'thinking_fast_slow_cover.jpg'
+                }
+            ];
+
+            grid.innerHTML = featuredList.map(book => {
+                const coverSvg = bookCoverSvg(book, 52, 72);
+
+                let badgeStyle = '';
+                if (book.category === 'Fiction') {
+                    badgeStyle = 'background:var(--danger-bg);color:var(--danger)';
+                } else {
+                    badgeStyle = 'background:var(--success-bg);color:var(--success)';
+                }
+
+                return `
+                <div class="featured-card" onclick="openAuthModal('register')">
+                    <img class="featured-card-cover" src="${coverSvg}" alt="Cover of ${esc(book.title)}">
+                    <div class="featured-card-info">
+                        <div class="featured-card-title" title="${esc(book.title)}">${esc(book.title)}</div>
+                        <div class="featured-card-author">${esc(book.author)}</div>
+                        <span class="featured-card-tag" style="${badgeStyle}">${esc(book.category)}</span>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
         // ── Auth ──────────────────────────────────────────────────
         function switchAuthTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach((b, i) =>
-                b.classList.toggle('active', (i === 0) === (tab === 'login'))
-            );
+            const loginTab = document.getElementById('auth-tab-login');
+            const regTab = document.getElementById('auth-tab-register');
+            if (loginTab && regTab) {
+                loginTab.classList.toggle('active', tab === 'login');
+                regTab.classList.toggle('active', tab === 'register');
+            }
+            
+            const modalTitle = document.querySelector('.auth-logo h1');
+            const modalDesc = document.querySelector('.auth-logo p');
+            if (tab === 'login') {
+                if (modalTitle) modalTitle.textContent = 'Welcome back to Scribe';
+                if (modalDesc) modalDesc.textContent = 'Sign in to access your library account';
+            } else {
+                if (modalTitle) modalTitle.textContent = 'Create your Scribe Account';
+                if (modalDesc) modalDesc.textContent = 'Join free to start reading and borrowing';
+            }
+            
             document.getElementById('login-form').style.display = tab === 'login' ? '' : 'none';
             document.getElementById('register-form').style.display = tab === 'register' ? '' : 'none';
             document.getElementById('auth-error').style.display = 'none';
@@ -4153,6 +4725,7 @@
             userRole = r.data.data.role;
             userInfo = r.data.data;
             addNotification(`Welcome back, ${userInfo.full_name}!`, 'info');
+            closeAuthModal();
             initApp();
         }
 
@@ -4301,6 +4874,7 @@
             document.getElementById('auth-screen').style.display = '';
             document.getElementById('login-email').value = '';
             document.getElementById('login-password').value = '';
+            renderAuthFeaturedBooks();
         }
 
         // ── App Init ──────────────────────────────────────────────
@@ -6983,6 +7557,8 @@
         // ── Bootstrap ─────────────────────────────────────────────
         if (token) {
             initApp();
+        } else {
+            renderAuthFeaturedBooks();
         }
 
         // ── Category Theme ──────────────────────────────────────────

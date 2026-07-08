@@ -100,7 +100,8 @@ def seed():
         "author"     : "Jane Austen",
         "isbn"       : "9780141439518",
         "category"   : "Fiction",
-        "description": "A romantic novel of manners set in rural England."
+        "description": "A romantic novel of manners set in rural England.",
+        "cover_image": "pride_prejudice_cover.jpg"
     },
     {
         "title"      : "The Catcher in the Rye",
@@ -121,7 +122,8 @@ def seed():
         "author"     : "J.R.R. Tolkien",
         "isbn"       : "9780618640157",
         "category"   : "Fiction",
-        "description": "An epic fantasy adventure in Middle-earth."
+        "description": "An epic fantasy adventure in Middle-earth.",
+        "cover_image": "lord_of_the_rings_cover.jpg"
     },
     {
         "title"      : "Crime and Punishment",
@@ -158,7 +160,8 @@ def seed():
         "author"     : "Daniel Kahneman",
         "isbn"       : "9780374533557",
         "category"   : "Non-fiction",
-        "description": "Explores the two systems that drive the way we think."
+        "description": "Explores the two systems that drive the way we think.",
+        "cover_image": "thinking_fast_slow_cover.jpg"
     },
     {
         "title"      : "The Power of Now",
@@ -294,6 +297,7 @@ def seed():
                     isbn        = book_data["isbn"],
                     category    = book_data["category"],
                     description = book_data["description"],
+                    cover_image = book_data.get("cover_image"),
                 )
                 db.session.add(book)
                 db.session.flush()  # get book.id before creating copies
