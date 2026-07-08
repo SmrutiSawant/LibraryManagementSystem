@@ -4283,7 +4283,7 @@
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
                             <div class="form-group">
                                 <label for="fine-reason">Reason</label>
-                                <select id="fine-reason" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--surface)">
+                                <select id="fine-reason" onchange="updateFineAmountPreset()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--surface)">
                                     <option value="Damage">Damage</option>
                                     <option value="Lost">Lost</option>
                                     <option value="Overdue">Overdue</option>
@@ -7105,6 +7105,20 @@
             resetFinePanel();
         }
 
+        function updateFineAmountPreset() {
+            const reason = document.getElementById('fine-reason').value;
+            const amountInput = document.getElementById('fine-amount');
+            const presets = {
+                Damage: 250,
+                Lost: 500,
+                Overdue: 50
+            };
+            if (amountInput) {
+                amountInput.value = presets[reason] || 50;
+            }
+        }
+        window.updateFineAmountPreset = updateFineAmountPreset;
+
         function resetFinePanel() {
             fineTargetMember = null;
             document.getElementById('fine-member-search').value = '';
@@ -7112,7 +7126,11 @@
             document.getElementById('fine-selected-member-info').innerHTML = '';
             document.getElementById('fine-txn-section').style.display = 'none';
             document.getElementById('fine-txn-select').innerHTML = '<option value="">-- Select a transaction --</option>';
-            document.getElementById('fine-amount').value = '';
+            
+            const reasonSelect = document.getElementById('fine-reason');
+            if (reasonSelect) reasonSelect.value = 'Damage';
+            updateFineAmountPreset();
+            
             document.getElementById('fine-create-error').style.display = 'none';
         }
 
