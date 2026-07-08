@@ -5,6 +5,7 @@ from app.services.circulation_service import (
     checkout_book,
     return_book,
     CirculationError,
+    search_copies_for_desk,
 )
 from app.extensions import db
 from app.utils import (
@@ -233,6 +234,29 @@ def member_search():
     try:
         members = search_member(query)
         return success_response(members)
+    except CirculationError as e:
+        return error_response(str(e), 400)
+
+
+# ── GET /api/circulation/search/copy?q=<query>&action=<checkout/return> ──────
+
+@circulation_bp.get("/search/copy")
+def copy_search():
+    """
+    Search for book copies by barcode, copy_code, title, author, or member details.
+    """
+    identity, err = librarian_required()
+    if err:
+        return err
+
+    query = request.args.get("q", "").strip()
+    action = request.args.get("action", "checkout").strip()
+    if not query:
+        return error_response("Search query parameter 'q' is required.", 400)
+
+    try:
+        results = search_copies_for_desk(query, action)
+        return success_response(results)
     except CirculationError as e:
         return error_response(str(e), 400)
 

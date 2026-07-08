@@ -4239,9 +4239,10 @@
                     <div id="circ-member-results" class="member-result-list"></div>
                     <div id="circ-selected-member" style="display:none;margin-bottom:10px;" class="success-msg"></div>
 
-                    <div class="form-group">
-                        <label for="circ-barcode">Book Barcode</label>
-                        <input type="text" id="circ-barcode" placeholder="Scan or enter barcode" oninput="debounceSearchBarcode()" onkeydown="if(event.key==='Enter'){event.preventDefault();handleBarcodeEnter();}" />
+                    <div class="form-group" style="position:relative">
+                        <label for="circ-barcode">Book Barcode / Title Search</label>
+                        <input type="text" id="circ-barcode" placeholder="Scan/enter barcode or type book title..." oninput="debounceSearchBarcode()" onkeydown="if(event.key==='Enter'){event.preventDefault();handleBarcodeEnter();}" />
+                        <div id="circ-barcode-results" class="member-result-list" style="display:none; position:absolute; top:100%; left:0; right:0; z-index:100; max-height:180px; overflow-y:auto; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-sm); box-shadow:var(--shadow-md); margin-top:-8px"></div>
                     </div>
                     <div id="circ-book-result" style="margin-bottom:10px;"></div>
 
@@ -4249,9 +4250,10 @@
                 </div>
 
                 <div id="circ-panel-return" style="display:none">
-                    <div class="form-group">
-                        <label for="return-barcode">Book Barcode</label>
-                        <input type="text" id="return-barcode" placeholder="Scan or enter barcode" oninput="debounceReturnBarcode()" onkeydown="if(event.key==='Enter'){event.preventDefault();handleReturnBarcodeEnter();}" />
+                    <div class="form-group" style="position:relative">
+                        <label for="return-barcode">Book Barcode / Title or Member Search</label>
+                        <input type="text" id="return-barcode" placeholder="Scan/enter barcode or type title/member..." oninput="debounceReturnBarcode()" onkeydown="if(event.key==='Enter'){event.preventDefault();handleReturnBarcodeEnter();}" />
+                        <div id="return-barcode-results" class="member-result-list" style="display:none; position:absolute; top:100%; left:0; right:0; z-index:100; max-height:180px; overflow-y:auto; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-sm); box-shadow:var(--shadow-md); margin-top:-8px"></div>
                     </div>
                     <div id="return-book-result" style="margin-bottom:10px;"></div>
                     <button class="btn-primary" onclick="doReturn()" id="return-btn" disabled>Process Return</button>
@@ -7122,6 +7124,12 @@
             document.getElementById('circ-barcode').value = '';
             document.getElementById('return-barcode').value = '';
             document.getElementById('circ-member-results').innerHTML = '';
+            
+            const cbr = document.getElementById('circ-barcode-results');
+            if (cbr) { cbr.innerHTML = ''; cbr.style.display = 'none'; }
+            const rbr = document.getElementById('return-barcode-results');
+            if (rbr) { rbr.innerHTML = ''; rbr.style.display = 'none'; }
+            
             document.getElementById('circ-book-result').innerHTML = '';
             document.getElementById('return-book-result').innerHTML = '';
             document.getElementById('circ-selected-member').style.display = 'none';
@@ -7160,6 +7168,9 @@
             sel.style.display = '';
             sel.innerHTML = `<i class="fa-solid fa-check"></i> ${member.full_name} (${member.member_code}) — Status: ${member.status}`;
             updateCheckoutBtn();
+            
+            const bcInput = document.getElementById('circ-barcode');
+            if (bcInput) bcInput.focus();
         }
 
         function debounceSearchBarcode() {
@@ -7170,21 +7181,63 @@
         async function searchBarcode() {
             const q = document.getElementById('circ-barcode').value.trim();
             const res = document.getElementById('circ-book-result');
-            if (!q) { res.innerHTML = ''; selectedCopy = null; updateCheckoutBtn(); return; }
+            const drop = document.getElementById('circ-barcode-results');
+            if (!q) { 
+                res.innerHTML = ''; 
+                drop.innerHTML = '';
+                drop.style.display = 'none';
+                selectedCopy = null; 
+                updateCheckoutBtn(); 
+                return; 
+            }
+            
+            // Try exact barcode first
             const r = await api('GET', `/circulation/search/barcode?q=${encodeURIComponent(q)}`);
-            if (!r.ok) { res.innerHTML = `<div class="error-msg">${r.data.error}</div>`; selectedCopy = null;
-                updateCheckoutBtn(); return; }
-            const d = r.data.data;
-            selectedCopy = { ...d.copy, title: d.book.title };
-            const avail = d.copy.status === 'Available';
-            res.innerHTML =
-                `<div style="padding:10px;border-radius:8px;border:1px solid ${avail ? 'var(--success)' : 'var(--danger)'};background:${avail ? 'var(--success-bg)' : 'var(--danger-bg)'}">
-              <div style="font-weight:500;font-size:var(--text-sm)">${esc(d.book.title)}</div>
-              <div style="font-size:var(--text-xs);color:var(--ink-light);margin:2px 0">${esc(d.book.author)} · ${d.copy.copy_code}</div>
-              <span class="status-pill status-${d.copy.status.toLowerCase()}">${d.copy.status}</span>
-              ${d.current_transaction ? `<div style="font-size:var(--text-xs);margin-top:4px;color:var(--warning)"><i class="fa-solid fa-triangle-exclamation"></i> Currently checked out</div>` : ''}
-            </div>`;
-            updateCheckoutBtn();
+            if (r.ok) {
+                drop.innerHTML = '';
+                drop.style.display = 'none';
+                const d = r.data.data;
+                selectedCopy = { ...d.copy, title: d.book.title };
+                const avail = d.copy.status === 'Available';
+                res.innerHTML =
+                    `<div style="padding:10px;border-radius:8px;border:1px solid ${avail ? 'var(--success)' : 'var(--danger)'};background:${avail ? 'var(--success-bg)' : 'var(--danger-bg)'}">
+                  <div style="font-weight:500;font-size:var(--text-sm)">${esc(d.book.title)}</div>
+                  <div style="font-size:var(--text-xs);color:var(--ink-light);margin:2px 0">${esc(d.book.author)} · ${d.copy.copy_code}</div>
+                  <span class="status-pill status-${d.copy.status.toLowerCase()}">${d.copy.status}</span>
+                  ${d.current_transaction ? `<div style="font-size:var(--text-xs);margin-top:4px;color:var(--warning)"><i class="fa-solid fa-triangle-exclamation"></i> Currently checked out</div>` : ''}
+                </div>`;
+                updateCheckoutBtn();
+            } else {
+                // Try fuzzy search fallback
+                const searchRes = await api('GET', `/circulation/search/copy?q=${encodeURIComponent(q)}&action=checkout`);
+                if (searchRes.ok && searchRes.data.data.length > 0) {
+                    const copies = searchRes.data.data;
+                    drop.innerHTML = copies.map(c => `
+                        <div class="member-result-item" onclick="selectCircCopy(${JSON.stringify(c).replace(/"/g, '&quot;')})" role="button" tabindex="0">
+                            <div class="member-result-name">${esc(c.title)}</div>
+                            <div class="member-result-meta">${c.barcode} · ${esc(c.author)} · <span style="color:var(--success)">Available</span></div>
+                        </div>
+                    `).join('');
+                    drop.style.display = 'block';
+                    res.innerHTML = '';
+                    selectedCopy = null;
+                    updateCheckoutBtn();
+                } else {
+                    drop.innerHTML = '';
+                    drop.style.display = 'none';
+                    res.innerHTML = `<div class="error-msg">No copy found with barcode or title "${esc(q)}"</div>`;
+                    selectedCopy = null;
+                    updateCheckoutBtn();
+                }
+            }
+        }
+
+        window.selectCircCopy = function(copy) {
+            document.getElementById('circ-barcode').value = copy.barcode;
+            document.getElementById('circ-barcode-results').innerHTML = '';
+            document.getElementById('circ-barcode-results').style.display = 'none';
+            searchBarcode();
+            document.getElementById('circ-barcode').focus();
         }
 
         function updateCheckoutBtn() {
@@ -7193,9 +7246,6 @@
         }
 
         async function handleBarcodeEnter() {
-            // Scanners (and fast typists) often fire Enter right after the
-            // debounced search would have run — resolve it immediately
-            // instead of waiting, then checkout if everything's ready.
             clearTimeout(barcodeSearchDebounce);
             await searchBarcode();
             if (!document.getElementById('checkout-btn').disabled) {
@@ -7233,33 +7283,78 @@
         async function searchReturnBarcode() {
             const q = document.getElementById('return-barcode').value.trim();
             const res = document.getElementById('return-book-result');
-            if (!q) { res.innerHTML = ''; returnCopyId = null; document.getElementById('return-btn').disabled = true; return; }
-            const r = await api('GET', `/circulation/search/barcode?q=${encodeURIComponent(q)}`);
-            if (!r.ok) { res.innerHTML = `<div class="error-msg">${r.data.error}</div>`; returnCopyId = null;
-                document.getElementById('return-btn').disabled = true; return; }
-            const d = r.data.data;
-            const checkedOut = d.copy.status === 'Checked Out';
-            returnCopyId = checkedOut ? d.copy.id : null;
-            returnCopyDetails = checkedOut ? { title: d.book.title, barcode: d.copy.barcode, member: d.current_transaction?.member?.full_name || 'unknown' } : null;
-            document.getElementById('return-btn').disabled = !checkedOut;
-
-            let html =
-                `<div style="padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--surface-2)">
-              <div style="font-weight:500;font-size:var(--text-sm)">${esc(d.book.title)}</div>
-              <div style="font-size:var(--text-xs);color:var(--ink-light);margin:2px 0">${esc(d.book.author)}</div>
-              <span class="status-pill status-${d.copy.status.toLowerCase().replace(' ', '-')}">${d.copy.status}</span>`;
-            if (d.current_transaction) {
-                const txn = d.current_transaction;
-                html += `<div style="font-size:var(--text-xs);margin-top:6px;color:var(--ink-mid)">
-                Borrowed by: <strong>${esc(txn.member?.full_name || '—')}</strong><br>
-                Due: ${fmtDate(txn.due_date)}<br>
-                Days overdue: ${txn.days_overdue || 0}
-              </div>`;
+            const drop = document.getElementById('return-barcode-results');
+            if (!q) { 
+                res.innerHTML = ''; 
+                drop.innerHTML = '';
+                drop.style.display = 'none';
+                returnCopyId = null; 
+                document.getElementById('return-btn').disabled = true; 
+                return; 
             }
-            if (!checkedOut) html +=
-                `<div style="font-size:var(--text-xs);margin-top:4px;color:var(--ink-light)">This copy is not currently checked out.</div>`;
-            html += '</div>';
-            res.innerHTML = html;
+            
+            // Try exact barcode first
+            const r = await api('GET', `/circulation/search/barcode?q=${encodeURIComponent(q)}`);
+            if (r.ok) {
+                drop.innerHTML = '';
+                drop.style.display = 'none';
+                const d = r.data.data;
+                const checkedOut = d.copy.status === 'Checked Out';
+                returnCopyId = checkedOut ? d.copy.id : null;
+                returnCopyDetails = checkedOut ? { title: d.book.title, barcode: d.copy.barcode, member: d.current_transaction?.member?.full_name || 'unknown' } : null;
+                document.getElementById('return-btn').disabled = !checkedOut;
+
+                let html =
+                    `<div style="padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--surface-2)">
+                  <div style="font-weight:500;font-size:var(--text-sm)">${esc(d.book.title)}</div>
+                  <div style="font-size:var(--text-xs);color:var(--ink-light);margin:2px 0">${esc(d.book.author)}</div>
+                  <span class="status-pill status-${d.copy.status.toLowerCase().replace(' ', '-')}">${d.copy.status}</span>`;
+                if (d.current_transaction) {
+                    const txn = d.current_transaction;
+                    html += `<div style="font-size:var(--text-xs);margin-top:6px;color:var(--ink-mid)">
+                    Borrowed by: <strong>${esc(txn.member?.full_name || '—')}</strong><br>
+                    Due: ${fmtDate(txn.due_date)}<br>
+                    Days overdue: ${txn.days_overdue || 0}
+                  </div>`;
+                }
+                if (!checkedOut) html +=
+                    `<div style="font-size:var(--text-xs);margin-top:4px;color:var(--ink-light)">This copy is not currently checked out.</div>`;
+                html += '</div>';
+                res.innerHTML = html;
+            } else {
+                // Try fuzzy return search
+                const searchRes = await api('GET', `/circulation/search/copy?q=${encodeURIComponent(q)}&action=return`);
+                if (searchRes.ok && searchRes.data.data.length > 0) {
+                    const copies = searchRes.data.data;
+                    drop.innerHTML = copies.map(c => {
+                        const borrowerStr = c.borrower ? ` · Borrower: ${esc(c.borrower.member_name)}` : '';
+                        return `
+                            <div class="member-result-item" onclick="selectReturnCopy(${JSON.stringify(c).replace(/"/g, '&quot;')})" role="button" tabindex="0">
+                                <div class="member-result-name">${esc(c.title)}</div>
+                                <div class="member-result-meta">${c.barcode} · ${esc(c.author)}${borrowerStr}</div>
+                            </div>
+                        `;
+                    }).join('');
+                    drop.style.display = 'block';
+                    res.innerHTML = '';
+                    returnCopyId = null;
+                    document.getElementById('return-btn').disabled = true;
+                } else {
+                    drop.innerHTML = '';
+                    drop.style.display = 'none';
+                    res.innerHTML = `<div class="error-msg">No checked-out copies found matching "${esc(q)}"</div>`;
+                    returnCopyId = null;
+                    document.getElementById('return-btn').disabled = true;
+                }
+            }
+        }
+
+        window.selectReturnCopy = function(copy) {
+            document.getElementById('return-barcode').value = copy.barcode;
+            document.getElementById('return-barcode-results').innerHTML = '';
+            document.getElementById('return-barcode-results').style.display = 'none';
+            searchReturnBarcode();
+            document.getElementById('return-barcode').focus();
         }
 
         async function doReturn() {
@@ -8080,6 +8175,8 @@
         const MEMBER_SEARCH_NAV = [
             { inputId: 'circ-member-search', resultsId: 'circ-member-results' },
             { inputId: 'fine-member-search', resultsId: 'fine-member-results' },
+            { inputId: 'circ-barcode', resultsId: 'circ-barcode-results' },
+            { inputId: 'return-barcode', resultsId: 'return-barcode-results' },
         ];
 
         document.addEventListener('keydown', function (e) {
@@ -8111,6 +8208,32 @@
                     }
                 }
                 return;
+            }
+        });
+
+        document.getElementById('circ-panel-checkout').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                if (e.target.id === 'circ-barcode') return;
+                if (e.target.closest('.member-result-item')) return;
+                
+                const btn = document.getElementById('checkout-btn');
+                if (btn && !btn.disabled) {
+                    e.preventDefault();
+                    doCheckout();
+                }
+            }
+        });
+
+        document.getElementById('circ-panel-return').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                if (e.target.id === 'return-barcode') return;
+                if (e.target.closest('.member-result-item')) return;
+                
+                const btn = document.getElementById('return-btn');
+                if (btn && !btn.disabled) {
+                    e.preventDefault();
+                    doReturn();
+                }
             }
         });
 

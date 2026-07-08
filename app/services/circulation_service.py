@@ -250,3 +250,85 @@ def return_book(copy_id):
         "member_name" : member.full_name,
         "fine_created": fine_created,
     }
+
+
+def search_copies_for_desk(query, action="checkout"):
+    """
+    Search for book copies by barcode, copy_code, title, author, or member info.
+    - If action == 'checkout', filters by copies that are 'Available'.
+    - If action == 'return', filters by copies that are 'Checked Out'.
+    """
+    query = query.strip()
+    if len(query) < 2:
+        raise CirculationError("Search query must be at least 2 characters.")
+
+    # 1. Search books matching title or author
+    books = Book.query.filter(
+        or_(
+            Book.title.ilike(f"%{query}%"),
+            Book.author.ilike(f"%{query}%")
+        )
+    ).all()
+    book_ids = [b.id for b in books]
+
+    # 2. Status filter based on action
+    status_filter = "Available" if action == "checkout" else "Checked Out"
+
+    # 3. For return action, search by active borrowing member's details
+    member_matching_copy_ids = []
+    if action == "return":
+        matching_members = Member.query.filter(
+            or_(
+                Member.full_name.ilike(f"%{query}%"),
+                Member.email.ilike(f"%{query}%"),
+                Member.member_code.ilike(f"%{query}%")
+            )
+        ).all()
+        if matching_members:
+            member_ids = [m.id for m in matching_members]
+            active_txns = Transaction.query.filter(
+                Transaction.status.in_(["Active", "Overdue"]),
+                Transaction.member_id.in_(member_ids)
+            ).all()
+            member_matching_copy_ids = [t.book_copy_id for t in active_txns]
+
+    # 4. Perform combined query
+    copy_query = BookCopy.query.filter(BookCopy.status == status_filter)
+
+    or_clauses = [
+        BookCopy.barcode.ilike(f"%{query}%"),
+        BookCopy.copy_code.ilike(f"%{query}%")
+    ]
+    if book_ids:
+        or_clauses.append(BookCopy.book_id.in_(book_ids))
+    if member_matching_copy_ids:
+        or_clauses.append(BookCopy.id.in_(member_matching_copy_ids))
+
+    copy_query = copy_query.filter(or_(*or_clauses))
+    copies = copy_query.limit(15).all()
+
+    results = []
+    for c in copies:
+        book = Book.query.get(c.book_id)
+        
+        borrower_info = None
+        if c.current_transaction_id:
+            txn = Transaction.query.get(c.current_transaction_id)
+            if txn:
+                m = Member.query.get(txn.member_id)
+                if m:
+                    borrower_info = {
+                        "member_name": m.full_name,
+                        "member_code": m.member_code
+                    }
+
+        results.append({
+            "barcode": c.barcode,
+            "copy_code": c.copy_code,
+            "status": c.status,
+            "condition": c.condition,
+            "title": book.title,
+            "author": book.author,
+            "borrower": borrower_info
+        })
+    return results
